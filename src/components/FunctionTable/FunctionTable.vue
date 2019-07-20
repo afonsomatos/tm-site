@@ -14,10 +14,10 @@
                     <td class="plus"><Icon class="icon" icon="add" /></td>
                 </tr>
 
-                <tr v-for="(header, index) in table.rowHeaders" :key="index">
+                <tr v-for="(header, i) in table.rowHeaders" :key="i">
                     <!-- Row title -->
-                    <td class="state">{{ table.rowHeaders[index] }} </td>
-                    <td class="val" v-for="(val, j) in table.rows[index]" :key="j">
+                    <td class="state">{{ table.rowHeaders[i] }} </td>
+                    <td class="val" v-for="(val, j) in table.rows[i]" :key="j" @click="cellClick(i, j)" :class="{ selected: isSelected(i, j) }">
                         {{ val }}
                     </td>
                     <td><!----></td>
@@ -36,14 +36,19 @@
 <script lang="ts">
 
 import Vue from 'vue'
-import Icon from "../Icon.vue"
+import _ from "lodash"
+import Icon from "@/components/Icon.vue"
+import Mutation from "@/store/mutation"
+
+import { getProgramFromModel } from "turing"
 
 interface Table {
     rowHeaders: string[],
     colHeaders: string[],
     rows: string[][]
 }
-let table = {
+
+let table: Table = {
     rowHeaders: ["S1", "S2", "S3"],
     colHeaders: ["A", "B", "C"],
     rows: [
@@ -54,8 +59,34 @@ let table = {
 }
 
 export default Vue.extend({
-    data() {
-        return { table }
+    methods: {
+        isSelected(i, j) {
+            return _.isEqual([i, j], this.$store.state.editTransition)
+        },
+        cellClick(i: number, j: number) {
+            this.$store.commit(Mutation.SET_EDITING_TRANSITION, [i, j])
+        }
+    },
+    computed: {
+        table() {
+            
+            let { states, charset, transitions } = this.$store.state.model
+            
+            let rows = transitions.map((arr, i) => {
+                return arr.map((t, j) => {
+                    let nextState = states[t[0]]
+                    let writeChar = charset[t[1]]
+                    let direction = t[2] ? 'R' : 'L'
+                    return `(${nextState}, ${writeChar}, ${direction})`
+                })
+            })
+
+            return {
+                rowHeaders: states,
+                colHeaders: charset,
+                rows
+            }
+        }
     },
     components: { Icon }
 })
@@ -114,7 +145,7 @@ export default Vue.extend({
         
         &.val, &.state, &.char, &.plus {
             cursor: pointer;
-            &:hover { background-color: rgba(0, 0, 0, 0.05);}    
+            &:hover, &.selected { background-color: rgba(0, 0, 0, 0.05);}    
         }
     }
 

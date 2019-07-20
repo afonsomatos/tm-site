@@ -12,4 +12,4 @@ export default interface Tab {
 }
 
 export const ALL_TABS : Tab[] = [ Run, Edit, Transform, Code ]
-export const START_TAB : Tab = Code
+export const START_TAB : Tab = Edit

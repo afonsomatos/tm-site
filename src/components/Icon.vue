@@ -20,6 +20,8 @@ export default Vue.extend({
     transition: color 0.25s, font-weight 0.25s;
     color: rgba(0, 0, 0, 0.6);
 
+    &.small { font-size: 24px; }
+
     &::selection { background: transparent; }
     &.clickable {
         cursor: pointer;

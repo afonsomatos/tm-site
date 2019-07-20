@@ -14,7 +14,7 @@
     "@types/node": "^12.6.2",
     "@vue/cli": "^3.9.2",
     "css-loader": "^3.0.0",
-    "turing": "file:../api",
+    "turing": "file:../tm",
     "vue": "^2.6.10",
     "vue-style-loader": "^4.1.2"
   },
