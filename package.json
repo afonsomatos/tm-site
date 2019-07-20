@@ -1,0 +1,34 @@
+{
+  "name": "site",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^12.6.2",
+    "@vue/cli": "^3.9.2",
+    "css-loader": "^3.0.0",
+    "turing": "file:../api",
+    "vue": "^2.6.10",
+    "vue-style-loader": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/vue": "^2.0.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
+    "vue-loader": "^15.7.0",
+    "vue-router": "^3.0.7",
+    "vue-template-compiler": "^2.6.10",
+    "vuex": "^3.1.1",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
+  }
+}
