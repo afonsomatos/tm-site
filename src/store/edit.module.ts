@@ -10,7 +10,9 @@ enum Mode {
 
 const state = {
     mode: Mode,
+
     transition: null,
+
     state: null,
     char: null
 }
@@ -20,7 +22,8 @@ const actions = {
     [Action.SET_EDITING_TRANSITION]: ({ state, rootState }, { stateId, readCharId }) => {
         state.mode = Mode.Transition
         state.transition = rootState.model.stateTransitions[stateId][readCharId]
-    }
+    },
+
 }
 
 const mutations = {

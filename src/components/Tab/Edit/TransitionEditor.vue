@@ -1,21 +1,24 @@
 <template>
     <Section title="Edit Transition">
         <div class="form">
-            <div>Next State</div>
-            <select @change="setState">
-                <option v-for="(state, i) in $store.state.model.states" :key="i" :selected="hasNextState(i)">{{ state }}</option> 
-            </select>
-            <div>Direction</div>
-            <div class="direction">
-                <div class="box" @click="setDirection(0)" :class="{ selected: hasDirection(0) }">
-                    <Icon class="small" icon="arrow_back"/>
+            <div>Undefined</div> <Toggle :checked="isUndefined" @change="setUndefined($event)" />
+            <template v-if="!isUndefined">
+                <div>Next State</div>
+                <select @change="setState">
+                    <option v-for="(state, i) in $store.state.model.states" :key="i" :selected="hasNextState(i)">{{ state }}</option> 
+                </select>
+                <div>Direction</div>
+                <div class="direction">
+                    <div class="box" @click="setDirection(0)" :class="{ selected: hasDirection(0) }">
+                        <Icon class="small" icon="arrow_back"/>
+                    </div>
+                    <div class="box" @click="setDirection(1)" :class="{ selected: hasDirection(1) }">
+                        <Icon class="small" icon="arrow_forward" />
+                    </div>
                 </div>
-                <div class="box" @click="setDirection(1)" :class="{ selected: hasDirection(1) }">
-                    <Icon class="small" icon="arrow_forward" />
-                </div>
-            </div>
-            <div>Write</div>
-            <Input class="small" :value="char" @input.native="setWriteChar" maxlength="1" @focus.native="$event.target.select()"/>
+                <div>Write</div>
+                <Input class="small" :value="char" @input.native="setWriteChar" maxlength="1" @focus.native="$event.target.select()"/>
+            </template>
         </div>
     </Section>
 </template>
@@ -28,6 +31,7 @@ import Action   from "@/store/action"
 import Vue      from 'vue'
 import Section  from "@/components/SideBar/Section.vue"
 import Icon     from "@/components/Icon.vue"
+import Toggle   from "@/components/Toggle.vue"
 import Input    from "@/components/Input.vue"
 
 export default Vue.extend({
@@ -36,11 +40,19 @@ export default Vue.extend({
         
         char() {
             return this.$store.state.edit.transition[1]
+        },
+
+        isUndefined() {
+            return this.$store.state.edit.transition[3] == true  
         }
 
     },
 
     methods: {
+        
+        setUndefined(isUndefined) {
+            Vue.set(this.$store.state.edit.transition, 3, isUndefined)
+        },
 
         setState(e) {
             let x = e.target.selectedIndex
@@ -64,7 +76,7 @@ export default Vue.extend({
         },
 
     },
-    components: { Section, Icon, Input }
+    components: { Section, Icon, Input, Toggle }
 })
 </script>
 

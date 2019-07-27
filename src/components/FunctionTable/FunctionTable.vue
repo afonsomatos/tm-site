@@ -99,8 +99,8 @@ export default Vue.extend({
             let rows = model.stateList.map(stateId => {
                 return model.readCharList.map(charId => {
                     let transition = model.stateTransitions[stateId][charId]
-                    if (transition === undefined)
-                        return "none"
+                    if (transition[3])
+                        return "undefined"
 
                     let nextState = model.states[ transition[0] ]
                     let writeChar = transition[1]

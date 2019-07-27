@@ -8,15 +8,15 @@ Vue.use(Vuex)
 
 const exampleModel = {
 
-    states: { [-1]: "R", 0: "S1", 1: "S2" },
+    states: { 0: "S1", 1: "S2" },
     readChars: { 0: 'A',  1: '#' },
 
     readCharList: [0, 1],
     stateList: [0, 1],
 
     stateTransitions: {
-        0: { 1: [0, 'D', 1], 0: [1, 'F', 1] },
-        1: { 1: [1, 'E', 1], 0: [1, 'G', 0] }
+        0: { 1: [0, 'D', 1, false], 0: [1, 'F', 1, false] },
+        1: { 1: [1, 'E', 1, false], 0: [1, 'G', 0, false] }
     },
 
     nextReadCharId: 2,
@@ -24,7 +24,7 @@ const exampleModel = {
     accept: 0
 }
 
-const getDefaultTransition = () => [-1, '_', 1]
+const getDefaultTransition = () => [0, 'X', 1, true]
 
 export default new Vuex.Store({
     
