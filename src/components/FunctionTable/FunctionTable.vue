@@ -7,24 +7,28 @@
                 <tr>
                     <td><!----></td>
                     <!-- Column title -->
-                    <td class="char" v-for="(header, index) in table.colHeaders" :key="index">
+                    <td class="char" v-for="(header, index) in table.colHeaders" :key="index" @click="selectReadChar(index)">
                         {{ header }}
                     </td>
                     <!-- Add column -->
-                    <td class="plus"><Icon class="icon" icon="add" /></td>
+                    <td class="plus" @click="addReadChar()">
+                        <Icon class="icon" icon="add" />
+                    </td>
                 </tr>
 
                 <tr v-for="(header, i) in table.rowHeaders" :key="i">
                     <!-- Row title -->
-                    <td class="state">{{ table.rowHeaders[i] }} </td>
-                    <td class="val" v-for="(val, j) in table.rows[i]" :key="j" @click="cellClick(i, j)" :class="{ selected: isSelected(i, j) }">
+                    <td class="state" :class="{ accept: i === $store.state.model.accept }" @click="selectState(i)">
+                        {{ table.rowHeaders[i] }}
+                    </td>
+                    <td class="val" v-for="(val, j) in table.rows[i]" :key="j" @click="selectTransition(i, j)" :class="{ selected: isTransitionSelected(i, j) }">
                         {{ val }}
                     </td>
                     <td><!----></td>
                 </tr>
                 
                 <!-- Add row -->
-                <tr>
+                <tr @click="addState()">
                     <td class="plus"><Icon class="icon" icon="add" /></td>
                     <td v-for="j in table.colHeaders.length + 1" :key="j"></td>
                 </tr>
@@ -39,8 +43,7 @@ import Vue from 'vue'
 import _ from "lodash"
 import Icon from "@/components/Icon.vue"
 import Mutation from "@/store/mutation"
-
-import { getProgramFromModel } from "turing"
+import Action from "@/store/action"
 
 interface Table {
     rowHeaders: string[],
@@ -48,42 +51,67 @@ interface Table {
     rows: string[][]
 }
 
-let table: Table = {
-    rowHeaders: ["S1", "S2", "S3"],
-    colHeaders: ["A", "B", "C"],
-    rows: [
-        ["(S3, B, L)", "(S3, B, L)", "(S3, B, L)"],
-        ["(S3, B, L)", "(S3, B, L)", "(S3, B, L)"],
-        ["(S3, B, L)", "(S3, B, L)", "(S3, B, L)"]
-    ]
-}
-
 export default Vue.extend({
+    
     methods: {
-        isSelected(i, j) {
-            return _.isEqual([i, j], this.$store.state.editTransition)
+
+        addReadChar() {
+            this.$store.commit(Mutation.ADD_READ_CHAR)
         },
-        cellClick(i: number, j: number) {
-            this.$store.commit(Mutation.SET_EDITING_TRANSITION, [i, j])
+
+        addState() {
+            this.$store.commit(Mutation.ADD_STATE)
+        },
+
+        selectState(index: number) {
+            let stateId = this.$store.state.model.stateList[index]
+            this.$store.commit(Mutation.SET_EDITING_STATE, index)
+        },
+
+        selectReadChar(index: number) {
+            let readCharId = this.$store.state.model.readCharList[index]
+            this.$store.commit(Mutation.SET_EDITING_CHAR, readCharId)
+        },
+
+        isTransitionSelected(stateIndex: number, readCharIndex: number) {
+            let stateId = this.$store.state.model.stateList[stateIndex]
+            let readCharId = this.$store.state.model.readCharList[readCharIndex]
+            return this.$store.getters.isTransitionSelected(stateId, readCharId)
+        },
+
+        selectTransition(stateIndex: number, readCharIndex: number) {
+            let stateId = this.$store.state.model.stateList[stateIndex]
+            let readCharId = this.$store.state.model.readCharList[readCharIndex]
+            this.$store.dispatch(Action.SET_EDITING_TRANSITION, { stateId, readCharId })
         }
+
     },
+
     computed: {
+        
         table() {
             
-            let { states, charset, transitions } = this.$store.state.model
-            
-            let rows = transitions.map((arr, i) => {
-                return arr.map((t, j) => {
-                    let nextState = states[t[0]]
-                    let writeChar = charset[t[1]]
-                    let direction = t[2] ? 'R' : 'L'
+            let model = this.$store.state.model
+
+            let rowHeaders = model.stateList.map(id => model.states[id])
+            let colHeaders = model.readCharList.map(id => model.readChars[id])
+
+            let rows = model.stateList.map(stateId => {
+                return model.readCharList.map(charId => {
+                    let transition = model.stateTransitions[stateId][charId]
+                    if (transition === undefined)
+                        return "none"
+
+                    let nextState = model.states[ transition[0] ]
+                    let writeChar = transition[1]
+                    let direction = transition[2] ? 'R' : 'L'
                     return `(${nextState}, ${writeChar}, ${direction})`
                 })
             })
 
             return {
-                rowHeaders: states,
-                colHeaders: charset,
+                rowHeaders,
+                colHeaders,
                 rows
             }
         }
@@ -143,8 +171,11 @@ export default Vue.extend({
         transition: background-color 0.5s;
         &.val { font-style: italic; }
         
-        &.val, &.state, &.char, &.plus {
+        &.state, &.char, &.val, &.plus {
             cursor: pointer;
+        }
+
+        &.val {
             &:hover, &.selected { background-color: rgba(0, 0, 0, 0.05);}    
         }
     }
@@ -155,6 +186,17 @@ export default Vue.extend({
     tr:last-child td { border-bottom: none; }
     tr td:last-child { border-right: none; }
 
+}
+
+.state {
+    background-color: #f0f0d9;
+    &:hover { background-color: #e8e8bc; }
+    &.accept { background-color: #c4f3cc; }
+}
+
+.char {
+    background-color: #d9ddf0;
+    &.selected, &:hover { background-color: #c0c8ec; }
 }
 
 </style>

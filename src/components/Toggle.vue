@@ -1,8 +1,8 @@
 <template>
-    <label class="switch">
-        <input class="check" type="checkbox">
-        <span class="slider round"></span>
-    </label>
+	<label class="switch">
+		<input class="check" type="checkbox" :checked="checked" @change="$emit('change', $event.target.checked)">
+		<span class="slider round"></span>
+	</label>
 </template>
 
 <script lang="ts">
@@ -10,11 +10,14 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-    
+	model: {
+    	prop: 'checked',
+    	event: 'change'
+  	},
+	props: ["checked"],
 })
 
 </script>
-
 
 <style lang="scss" scoped>
 

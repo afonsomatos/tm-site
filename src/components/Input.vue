@@ -23,7 +23,10 @@ input {
 	padding: 10px 20px;
 	border: 1px solid #D2D2D2;
 	
-	&.small { font: $font-small; }
+	&.small {
+		padding: 5px 10px;
+		font: $font-small;
+	}
 }
 
 </style>

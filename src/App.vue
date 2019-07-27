@@ -5,7 +5,7 @@
 
         <SideBar>
             <transition name="fade" mode="out-in">
-                <component v-bind:is="getSideBar()"></component>
+                <component v-bind:is="sidebar"></component>
             </transition>
         </SideBar>
     </div>
@@ -50,8 +50,8 @@ import SideBar      from "@/components/SideBar/SideBar.vue"
 import Middle       from "@/components/Middle/Middle.vue"
 
 export default Vue.extend({
-    methods: {
-        getSideBar() {
+    computed: {
+        sidebar() {
             return this.$store.state.currentTab.sideBar
         }
     },
