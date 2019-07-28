@@ -8,6 +8,8 @@ Vue.use(Vuex)
 
 const exampleModel = {
 
+    undefinedReadCharList: {},
+    
     states: { 0: "S1", 1: "S2" },
     readChars: { 0: 'A',  1: '#' },
 
@@ -62,14 +64,21 @@ export default new Vuex.Store({
             }
         },
 
+        [Mutation.SET_READ_CHAR]: ({model }, { charId, char }) => {
+            Vue.set(model.undefinedReadCharList, charId, false)
+            Vue.set(model.readChars, charId, char)
+        },
+
         [Mutation.DELETE_READ_CHAR]: ({ model }, charId) => {
             Vue.delete(model.readChars, charId)
             Vue.delete(model.readCharList, model.readCharList.indexOf(charId))
         },
 
         [Mutation.ADD_READ_CHAR]: ({ model }) => {
+
             Vue.set(model.readChars, model.nextReadCharId, '?')
-            
+            Vue.set(model.undefinedReadCharList, model.nextReadCharId, true)
+
             // Add default transitions
             model.stateList.forEach(id =>
                 Vue.set(model.stateTransitions[id], model.nextReadCharId, getDefaultTransition(model))

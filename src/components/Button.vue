@@ -24,7 +24,7 @@ export default Vue.extend({
 	color: $color-light;
 	background-color: $color-normal;
 	border: none;
-	padding: 6px 50px;
+	padding: 6px 20px;
 
 	&.danger { background-color: $color-negative; }
     &.run { background-color: $color-positive; }

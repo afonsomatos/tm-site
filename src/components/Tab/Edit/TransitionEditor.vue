@@ -87,15 +87,10 @@ select {
     padding: 3px 20px;
 }
 
-.direction {
-    display: grid;
-    grid-auto-flow: column;
-}
-
 $size: 32px;
 
 .box {
-    display: grid;
+    display: inline-grid;
     place-content: center;
     place-items: center;
     width: $size;
@@ -110,7 +105,7 @@ $size: 32px;
 
 .form {
     display: grid;
-    grid-template-columns: max-content min-content;
+    grid-template-columns: 100px min-content;
     grid-gap: 20px;
     align-items: center;
 }

@@ -65,7 +65,7 @@ export default Vue.extend({
 
         selectState(index: number) {
             let stateId = this.$store.state.model.stateList[index]
-            this.$store.commit(Mutation.SET_EDITING_STATE, index)
+            this.$store.commit(Mutation.SET_EDITING_STATE, stateId)
         },
 
         selectReadChar(index: number) {
