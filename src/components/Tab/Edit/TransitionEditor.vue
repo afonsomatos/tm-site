@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div>Write</div>
-                <Input class="small" :value="char" @input.native="setWriteChar" maxlength="1" @focus.native="$event.target.select()"/>
+                <Input class="small char-input" :value="char" @input.native="setWriteChar" maxlength="1" @focus.native="$event.target.select()"/>
             </template>
         </div>
     </Section>
@@ -82,6 +82,12 @@ export default Vue.extend({
 
 
 <style lang="scss" scoped>
+
+.char-input {
+    box-sizing: content-box;
+    text-align: center;
+    width: 1em;
+}
 
 select {
     padding: 3px 20px;

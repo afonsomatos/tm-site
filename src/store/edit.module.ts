@@ -1,6 +1,5 @@
 import Mutation from "./mutation"
 import Action from "./action"
-import Vue from "vue"
 
 enum Mode {
     Transition,
@@ -10,9 +9,7 @@ enum Mode {
 
 const state = {
     mode: Mode,
-
     transition: null,
-
     state: null,
     char: null
 }
@@ -32,14 +29,14 @@ const mutations = {
         state.mode = null
     },
 
-    [Mutation.SET_EDITING_CHAR]: (state, char) => {
+    [Mutation.SET_EDITING_CHAR]: (state, id: number) => {
         state.mode = Mode.Char
-        state.char = char
+        state.char = id
     },
     
-    [Mutation.SET_EDITING_STATE]: (state, i) => {
+    [Mutation.SET_EDITING_STATE]: (state, id: number) => {
         state.mode = Mode.State
-        state.state = i
+        state.state = id
     }
 
 }
@@ -49,6 +46,10 @@ const getters = {
     isEditingState:         state => state.mode == Mode.State,
     isEditingTransition:    state => state.mode == Mode.Transition,
     isEditingChar:          state => state.mode == Mode.Char,
+
+    isReadCharSelected: (state, getters) => (readCharId) => {
+        return getters.isEditingChar && state.char === readCharId
+    },
 
     isTransitionSelected: (state, getters, rootState) => (stateId, readCharId) => {
         return state.transition === rootState.model.stateTransitions[stateId][readCharId]

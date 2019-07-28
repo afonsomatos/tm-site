@@ -1,6 +1,6 @@
 <template>
     <Section title="Edit Char">
-        <Input :value="char" :key="char" @input.native="setChar" maxlength="1" @focus.native="$event.target.select()"/>
+        <Input v-focus :value="char" :key="char" @input.native="setChar" maxlength="1" @focus.native="$event.target.select()"/>
         <br><br>
         <Button class="danger" value="Delete column" @click.native="deleteReadChar()"/>
     </Section>
@@ -19,8 +19,12 @@ export default Vue.extend({
     
     computed: {
 
+        charId() {
+            return this.$store.state.edit.char
+        },
+
         char() {
-            return this.$store.state.model.readChars[this.$store.state.edit.char]
+            return this.$store.state.model.readChars[this.charId]
         },
 
     },
@@ -29,15 +33,14 @@ export default Vue.extend({
 
         deleteReadChar() {
             this.$store.commit(Mutation.DELETE_READ_CHAR, this.$store.state.edit.char)
+            this.$store.commit(Mutation.SET_NO_EDITING)
         },
 
-        // deleteChar() {
-        //     this.$store.commit(Mutation.SET_NO_EDITING)
-        //     this.$store.commit(Mutation.DELETE_CHAR_COLUMN, this.char)
-        // },
-
         setChar(e) {
-            Vue.set(this.$store.state.model.readChars, this.$store.state.edit.char, e.target.value)
+            this.$store.commit(Mutation.SET_READ_CHAR, {
+                charId: this.charId,
+                char: e.target.value
+            })
         }
 
     },

@@ -7,11 +7,18 @@
                 <tr>
                     <td><!----></td>
                     <!-- Column title -->
-                    <td class="char" v-for="(header, index) in table.colHeaders" :key="index" @click="selectReadChar(index)">
-                        {{ header }}
+                    <td class="char" v-for="(header, index) in table.colHeaders" :key="index" @click="selectReadChar(index)"
+                        :class="{ selected: isReadCharSelected(index) }">
+
+                        <template v-if="isReadCharUndefined(index)">
+                            <i>?</i>
+                        </template>
+                        <template v-else>
+                            {{ header }}
+                        </template>
                     </td>
                     <!-- Add column -->
-                    <td class="plus" @click="addReadChar()">
+                    <td class="plus" @click="addReadChar()" v-if="inEditMode">
                         <Icon class="icon" icon="add" />
                     </td>
                 </tr>
@@ -24,14 +31,16 @@
                     <td class="val" v-for="(val, j) in table.rows[i]" :key="j" @click="selectTransition(i, j)" :class="{ selected: isTransitionSelected(i, j) }">
                         {{ val }}
                     </td>
-                    <td><!----></td>
+                    <td v-if="inEditMode"><!----></td>
                 </tr>
                 
                 <!-- Add row -->
-                <tr @click="addState()">
-                    <td class="plus"><Icon class="icon" icon="add" /></td>
-                    <td v-for="j in table.colHeaders.length + 1" :key="j"></td>
-                </tr>
+                <template v-if="inEditMode">
+                    <tr>
+                        <td @click="addState()" class="plus"><Icon class="icon" icon="add" /></td>
+                        <td v-for="j in table.colHeaders.length + 1" :key="j"></td>
+                    </tr>
+                </template>
             </table>
         </div>
     </div>
@@ -41,9 +50,11 @@
 
 import Vue from 'vue'
 import _ from "lodash"
-import Icon from "@/components/Icon.vue"
+
+import { Tabs } from "@/components/Tab"
+import Icon     from "@/components/Icon.vue"
 import Mutation from "@/store/mutation"
-import Action from "@/store/action"
+import Action   from "@/store/action"
 
 interface Table {
     rowHeaders: string[],
@@ -55,6 +66,23 @@ export default Vue.extend({
     
     methods: {
 
+        getReadCharId(index: number) {
+            return this.$store.state.model.readCharList[index]
+        },
+
+        isReadCharUndefined(index: number) {
+            let readCharId = this.getReadCharId(index)
+            return this.$store.state.model.undefinedReadCharList[readCharId] == true
+        },
+
+        isReadCharSelected(index: number) {
+            if (!this.inEditMode)
+                return false
+
+            let readCharId = this.getReadCharId(index)
+            return this.$store.getters.isReadCharSelected(readCharId)
+        },
+
         addReadChar() {
             this.$store.commit(Mutation.ADD_READ_CHAR)
         },
@@ -64,22 +92,31 @@ export default Vue.extend({
         },
 
         selectState(index: number) {
+            if (!this.inEditMode) return
+
             let stateId = this.$store.state.model.stateList[index]
             this.$store.commit(Mutation.SET_EDITING_STATE, stateId)
         },
 
         selectReadChar(index: number) {
+            if (!this.inEditMode) return
+
             let readCharId = this.$store.state.model.readCharList[index]
             this.$store.commit(Mutation.SET_EDITING_CHAR, readCharId)
         },
 
         isTransitionSelected(stateIndex: number, readCharIndex: number) {
+            if (!this.inEditMode)
+                return false
+
             let stateId = this.$store.state.model.stateList[stateIndex]
             let readCharId = this.$store.state.model.readCharList[readCharIndex]
             return this.$store.getters.isTransitionSelected(stateId, readCharId)
         },
 
         selectTransition(stateIndex: number, readCharIndex: number) {
+            if (!this.inEditMode) return
+
             let stateId = this.$store.state.model.stateList[stateIndex]
             let readCharId = this.$store.state.model.readCharList[readCharIndex]
             this.$store.dispatch(Action.SET_EDITING_TRANSITION, { stateId, readCharId })
@@ -89,6 +126,10 @@ export default Vue.extend({
 
     computed: {
         
+        inEditMode() {
+            return this.$store.state.currentTab == Tabs.Edit
+        },
+
         table() {
             
             let model = this.$store.state.model
@@ -124,6 +165,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 
 @import "src/style/Lib";
+
+.undefined-char {
+    font-weight: bold;
+}
 
 .wrapper {
     width: 100%;

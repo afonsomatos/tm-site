@@ -1,7 +1,7 @@
 <template>
     <div>
         <StateEditor        v-if="$store.getters.isEditingState" />
-        <CharEditor         v-if="$store.getters.isEditingChar" />
+        <CharEditor         v-else-if="$store.getters.isEditingChar" />
         <TransitionEditor   v-else-if="$store.getters.isEditingTransition" />
     </div>
 </template>
