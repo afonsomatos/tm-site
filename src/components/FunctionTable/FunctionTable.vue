@@ -78,7 +78,7 @@ export default Vue.extend({
         isReadCharSelected(index: number) {
             if (!this.inEditMode)
                 return false
-
+    
             let readCharId = this.getReadCharId(index)
             return this.$store.getters.isReadCharSelected(readCharId)
         },

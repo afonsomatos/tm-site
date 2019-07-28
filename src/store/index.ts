@@ -1,6 +1,6 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import Tab, { START_TAB } from "@/components/Tab"
+import Tab, { Tabs } from "@/components/Tab"
 import edit from "./edit.module"
 import Mutation from "./mutation"
 
@@ -40,7 +40,7 @@ export default new Vuex.Store({
     modules: { edit },
     
     state: {
-        currentTab: START_TAB,
+        currentTab: Tabs.Run,
         model: exampleModel,
     },
 

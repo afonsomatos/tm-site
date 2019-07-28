@@ -1,12 +1,10 @@
 <template>
-    <div>
-        <Section title="Run Input">
-            <Input value="hello" class="tape-input" />
-            <div class="button-holder">
-                <Button class="run" value="Run"/>
-            </div>
-        </Section>
-    </div>
+    <Section title="Run Input">
+        <Input v-model="input" class="tape-input" />
+        <div class="button-holder">
+            <Button class="run" value="Run" @click="run"/>
+        </div>
+    </Section>
 </template>
 
 <script lang="ts">
@@ -16,6 +14,16 @@ import Input    from "@/components/Input.vue"
 import Button   from "@/components/Button.vue"
 
 export default Vue.extend({
+    data() {
+        return {
+            input: "turing"
+        }
+    },
+    methods: {
+        run() {
+            console.log("Now running input:", this.input)
+        }
+    },
     components: { Section, Input, Button }
 })
 </script>
