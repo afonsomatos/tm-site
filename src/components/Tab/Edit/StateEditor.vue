@@ -3,6 +3,7 @@
         <Input :value="stateName" :key="state" @input.native="changeStateName"/>
         <br><br>
         <Button value="Set Accept" @click.native="setAccept()" />
+        <Button value="Delete" @click.native="remove()" />
     </Section>
 </template>
 
@@ -28,6 +29,11 @@ export default Vue.extend({
         }
     },
     methods: {
+        
+        remove() {
+            this.$store.commit(Mutation.DELETE_STATE, this.state)
+        },
+
         setAccept() {
             this.$store.commit(Mutation.SET_ACCEPT_STATE, this.state)
         },

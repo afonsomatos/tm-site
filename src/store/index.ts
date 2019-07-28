@@ -24,7 +24,14 @@ const exampleModel = {
     accept: 0
 }
 
-const getDefaultTransition = () => [0, 'X', 1, true]
+function getDefaultTransition(model) {
+    return [
+        model.stateList[0],
+        model.readChars[ model.readCharList[0] ],
+        1,
+        true
+    ]
+}
 
 export default new Vuex.Store({
     
@@ -37,6 +44,24 @@ export default new Vuex.Store({
 
     mutations: {
 
+        [Mutation.DELETE_STATE]: ({ model }, stateId) => {
+            
+            Vue.delete(model.states, stateId)
+            Vue.delete(model.stateList, model.stateList.indexOf(stateId))
+
+            // Make dependent transitions undefined
+            for (let id of model.stateList) {
+                if (stateId == id) continue
+                for (let char of model.readCharList) {
+                    let transition = model.stateTransitions[id][char]
+                    if (transition[0] === stateId) {
+                        transition[0] = model.stateList[0]
+                        transition[3] = true
+                    }
+                }
+            }
+        },
+
         [Mutation.DELETE_READ_CHAR]: ({ model }, charId) => {
             Vue.delete(model.readChars, charId)
             Vue.delete(model.readCharList, model.readCharList.indexOf(charId))
@@ -47,7 +72,7 @@ export default new Vuex.Store({
             
             // Add default transitions
             model.stateList.forEach(id =>
-                Vue.set(model.stateTransitions[id], model.nextReadCharId, getDefaultTransition())
+                Vue.set(model.stateTransitions[id], model.nextReadCharId, getDefaultTransition(model))
                 // model.stateTransitions[id][model.nextReadCharId] = getDefaultTransition()
             )
 
@@ -64,7 +89,7 @@ export default new Vuex.Store({
             
             // Add default transitions
             model.readCharList.forEach((id: number) =>
-                Vue.set(model.stateTransitions[model.nextStateId], id, getDefaultTransition())
+                Vue.set(model.stateTransitions[model.nextStateId], id, getDefaultTransition(model))
                 // model.stateTransitions[model.nextStateId][id] = getDefaultTransition()
             )
             
