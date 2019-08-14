@@ -2,6 +2,7 @@ import Vue from "vue"
 import Vuex from "vuex"
 import Tab, { Tabs } from "@/components/Tab"
 import edit from "./edit.module"
+import run from "./run.module"
 import Mutation from "./mutation"
 
 Vue.use(Vuex)
@@ -37,7 +38,10 @@ function getDefaultTransition(model) {
 
 export default new Vuex.Store({
     
-    modules: { edit },
+    modules: {
+        edit,
+        run
+    },
     
     state: {
         currentTab: Tabs.Run,

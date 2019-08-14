@@ -8,6 +8,7 @@
 
 import Vue from 'vue'
 import * as d3 from "d3"
+import { Event } from "@/store/run.module"
 
 const translate = (x, y) => `translate(${x}, ${y})`
 
@@ -29,16 +30,16 @@ export default Vue.extend({
             return d3.select(this.$refs.svg)
         },
 
-        wrapper() {
-            return this.svg.append("g")
-        },
-        
         cells() {
             return Math.ceil(this.width / this.height)
         },
     
         cellSize() {
             return this.height
+        },
+
+        bus() {
+            return this.$store.state.run.bus
         }
     
     },
@@ -46,7 +47,11 @@ export default Vue.extend({
     mounted() {
         this.wrapper = this.svg.append("g")
         this.redraw()
+        
         window.addEventListener("resize", this.redraw)
+
+        this.bus.$on(Event.Load, () => console.log("Loading"))
+        this.bus.$on(Event.Run, () => console.log("Running"))
     },
 
     methods: {
@@ -138,8 +143,7 @@ export default Vue.extend({
             
             let cursor = selection.selectAll(".cursor").data([0])
             
-            let triangle = d3.symbol()
-                .type(d3.symbolTriangle)
+            let triangle = d3.symbol().type(d3.symbolTriangle)
                 
             let xPos = (Math.floor((this.width / this.height) / 2) + 0.5) * this.cellSize
             
@@ -152,6 +156,62 @@ export default Vue.extend({
                 .attr("transform", () =>
                     translate(xPos, this.height - 4))
                 .raise()
+        },
+
+        moveRight(selection) {
+            
+            this.head++
+            
+            let array = this.visible()
+            let last = array[ array.length - 1]
+            
+            // Add cell
+            selection.datum(last).call(this.addCell)
+
+            // Shift wrapper right
+            selection.attr("transform", translate(this.cellSize, 0))
+
+            // Shift cells to the left
+            this.repositionCells(this.wrapper, -1)
+            
+            // Smooth right transition
+            selection.transition()
+                .attr("transform", translate(0, 0))
+                // Ready to remove left most
+                .on("end", () => {
+                    selection.select(".cell").remove()
+                    this.updateCells(selection)
+                })
+        },
+
+        moveLeft(selection) {
+
+            this.head--
+            
+            selection.attr("transform", translate(-this.cellSize, 0))
+            this.repositionCells(this.wrapper, 1)
+            
+            let first = this.visible()[0]
+            
+            // Add cell at start
+            selection.datum(first).call(this.addCell)
+                
+            // Smooth right transition
+            selection.transition()
+                .attr("transform", translate(0, 0))
+                // Ready to remove left most
+                .on("end", () => {
+                    selection.select(".cell:last-child").remove()
+                    this.updateCells(selection)
+                })
+        },
+
+        simulate() {
+            setInterval(selection => {
+                let dx = Math.random() < 0.5 ? -1 : 1
+                if (dx === 1) this.moveRight(selection)
+                if (dx === -1) this.moveLeft(selection)
+            }, 3000, this.wrapper)
         }
 
     },

@@ -12,6 +12,7 @@ import Vue      from 'vue'
 import Section  from "@/components/SideBar/Section.vue"
 import Input    from "@/components/Input.vue"
 import Button   from "@/components/Button.vue"
+import Action   from "@/store/action"
 
 export default Vue.extend({
     data() {
@@ -21,7 +22,7 @@ export default Vue.extend({
     },
     methods: {
         run() {
-            console.log("Now running input:", this.input)
+            this.$store.dispatch(Action.RUN, this.input)
         }
     },
     components: { Section, Input, Button }

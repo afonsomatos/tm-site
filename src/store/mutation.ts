@@ -25,7 +25,9 @@ enum Mutation
     DELETE_READ_CHAR = "deleteReadChar",
     ADD_READ_CHAR = "addReadChar",
 
-    DELETE_STATE = "deleteState"
+    DELETE_STATE = "deleteState",
+
+    LOAD = "load",
 }
 
 export default Mutation
