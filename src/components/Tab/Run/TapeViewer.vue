@@ -1,11 +1,6 @@
 <template>
     <div class="tape-viewer">
-        <div class="tape">
-            <div class="cell" v-for="n in 20" :key="n">
-                {{ n % 10 }}
-            </div>
-            <Icon class="cursor" icon="arrow_drop_up" />
-        </div>
+        <Tape />
         <div class="controllers">
             <div>
                 <!---->
@@ -26,9 +21,10 @@
 
 import Vue from 'vue'
 import Icon from "@/components/Icon.vue"
+import Tape from "./Tape.vue"
 
 export default Vue.extend({
-    components: { Icon }
+    components: { Icon, Tape }
 })
 
 </script>
@@ -70,15 +66,6 @@ $cell-size: 60px;
     margin-bottom: -21px;
     vertical-align: text-bottom;
     text-align: center;
-}
-
-.tape {
-    position: relative;
-    border: 1px solid $color-active;
-    background: #F8F8F8;
-    display: flex;
-    flex-direction: row;
-    justify-items: center;
 }
 
 .tape-viewer {

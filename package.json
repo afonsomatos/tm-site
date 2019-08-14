@@ -11,9 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/d3": "^5.7.2",
     "@types/node": "^12.6.2",
     "@vue/cli": "^3.9.2",
     "css-loader": "^3.0.0",
+    "d3": "^5.9.7",
     "turing": "file:../tm",
     "vue": "^2.6.10",
     "vue-style-loader": "^4.1.2"

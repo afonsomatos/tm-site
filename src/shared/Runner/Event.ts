@@ -12,12 +12,11 @@ export enum Tag {
 }
 
 export default interface Event {
-    tag: Tag
+    tag: Tag,
 }
 
 export interface TransitionEvent extends Event {
     tag: Tag.Transition
-    from: number
     direction: number
     write: string
 }
@@ -26,4 +25,3 @@ export interface LoadEvent extends Event {
     tag: Tag.Load
     input: string
 }
-

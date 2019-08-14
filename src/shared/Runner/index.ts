@@ -1,16 +1,21 @@
 import { SubjectAdapter } from "../Observer"
-import Event, { Type } from "./Event"
+import Event, { TransitionEvent, Tag } from "./Event"
 
 export default class Runner extends SubjectAdapter<Event> {
 
-    public do(): void {
+    public load(input: string): void {
+        
+    }
 
+    public do(): void {
         setInterval(() => {
-            let x = {
-                type: Type.Transition,
-                payload: { from: 3, direction: 1, write:'a' }
+
+            let event: TransitionEvent = {
+                tag: Tag.Transition,
+                direction: 1,
+                write: 'a',
             }
-            this.notify(x)
+            this.notify(event)
         }, 1000)
     }
 
