@@ -33,7 +33,9 @@ enum Mutation
 
     CLEAR_INTERVAL = "clearInterval",
     SET_INTERVAL = "setInterval",
-    SET_TRANSITION = "setTransition"
+    SET_TRANSITION = "setTransition",
+
+    BACK = "back"
 }
 
 export default Mutation

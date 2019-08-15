@@ -9,7 +9,8 @@ export enum Event {
     Other = "other",
     Pause = "pause",
     Resume = "resume",
-    Transition = "transition"
+    Transition = "transition",
+    Back = "roll",
 }
 
 export enum Status {
@@ -32,10 +33,11 @@ const state = {
     head: 0,
     status: Status.Paused,
     input: "example",
+    log: [],
     tape: "example".split(''),
     bus: new Vue(),
     interval: null,
-    transition: { direction: Direction.Right, write: 'X' } 
+    transition: { direction: Direction.Right, write: 'x' } 
 }
 
 const actions = {
@@ -54,7 +56,7 @@ const actions = {
 
     [Action.STEP]: ({ state, commit }) => {
         let direction = Direction.Right // Math.random() < 0.5 ? Direction.Right : Direction.Left
-        let write = '+'
+        let write = 'x'
         commit(Mutation.SET_TRANSITION, { direction, write })
         state.bus.$emit(Event.Transition)
     },
@@ -69,14 +71,26 @@ const actions = {
         dispatch(Action.LOAD, state.input)
     },
 
+    [Action.BACK]: ({ commit }) => {
+        commit(Mutation.BACK)
+        state.bus.$emit(Event.Back)
+    }
 }
 
 const mutations = {
 
+    [Mutation.BACK]: (state) => {
+        if (state.log.length === 0) return
+        let { tape, head } = state.log.pop()
+        state.tape = tape.slice()
+        state.head = head
+    },
+
     [Mutation.LOAD]: (state, input: String) => {
         state.input = input
-        state.tape = input.toUpperCase().split('')
+        state.tape = input.split('')
         state.head = 0
+        state.log = []
     },
 
     [Mutation.SET_STATUS]: (state, status: Status) => {
@@ -93,9 +107,9 @@ const mutations = {
 
     [Mutation.SET_TRANSITION]: (state, transition) => {
         state.transition = transition
+        state.log.push({ head: state.head, tape: state.tape.slice() })
         Vue.set(state.tape, state.head, transition.write)
         state.head += transition.direction
-        console.log(state.tape)
     }
 
 }

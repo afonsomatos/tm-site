@@ -68,6 +68,10 @@ export default Vue.extend({
             this.redraw()
         })
 
+        this.bus.$on(Event.Back, () => {
+            this.redraw()
+        })
+        
     },
 
     methods: {

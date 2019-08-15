@@ -55,7 +55,7 @@ const getters = {
         return state.transition === rootState.model.stateTransitions[stateId][readCharId]
     },
 
-    char: (state) => state.transition[1]
+    char: (state) => (state.transition || {})[1]
 }
 
 export default {

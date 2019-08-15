@@ -6,7 +6,7 @@
                 <!---->
             </div>
             <div>
-                <Icon icon="replay" :clickable="true" @click="resume" />
+                <Icon icon="replay" :clickable="true" @click="back" />
 
                 <Icon v-if="playing" icon="pause" :clickable="true" @click="pause" />
                 <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" />
@@ -49,7 +49,8 @@ export default Vue.extend({
             resume: Action.RESUME,
             pause:  Action.PAUSE,
             repeat: Action.REPEAT,
-            step:   Action.STEP
+            step:   Action.STEP,
+            back:   Action.BACK
         })
     }
 })
