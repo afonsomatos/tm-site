@@ -4,7 +4,11 @@ enum Action
     SET_EDIT_CHAR = "setEditChar",
     SET_UNDEFINED_TRANSITION = "setUndefinedTransition",
 
-    RUN = "run"
+    RUN = "run",
+    PAUSE = "pause",
+    RESUME = "resume",
+    LOAD = "load",
+    REPEAT = "repeat"
 }
 
 export default Action

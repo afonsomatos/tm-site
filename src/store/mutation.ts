@@ -28,6 +28,8 @@ enum Mutation
     DELETE_STATE = "deleteState",
 
     LOAD = "load",
+
+    SET_STATUS = "setStatus"
 }
 
 export default Mutation
