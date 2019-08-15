@@ -1,5 +1,5 @@
 <template>
-    <i class="icon material-icons" :class="{ clickable }">{{ icon }}</i>
+    <i class="icon material-icons" :class="{ clickable }" @click="click">{{ icon }}</i>
 </template>
 
 <script lang="ts">
@@ -7,7 +7,12 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-    props: ["icon", "clickable"]
+    props: ["icon", "clickable"],
+    methods: {
+        click() {
+            this.$emit("click")
+        }
+    }
 })
 
 </script>

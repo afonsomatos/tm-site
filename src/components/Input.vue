@@ -1,5 +1,5 @@
 <template>
-    <input type="text">
+    <input @input="changeValue" :value="value" type="text">
 </template>
 
 <script lang="ts">
@@ -7,7 +7,12 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-    
+	props: ["value"],
+  	methods: {
+    	changeValue(e) {
+      		this.$emit("input", e.target.value);
+    	}
+  	}
 })
 
 </script>
