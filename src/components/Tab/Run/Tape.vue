@@ -17,7 +17,6 @@ export default Vue.extend({
     data() {
         return {
             height: 60,
-            head: 0,
             width: 0,
             wrapper: null,
         }
@@ -39,14 +38,26 @@ export default Vue.extend({
 
         bus() {
             return this.$store.state.run.bus
+        },
+
+        transition() {
+            return this.$store.state.run.transition
+        },
+
+        head() {
+            return this.$store.state.run.head
+        },
+
+        tape() {
+            return this.$store.state.run.tape || {}
         }
     
     },
 
     mounted() {
         this.wrapper = this.svg.append("g")
+
         this.redraw()
-        
         window.addEventListener("resize", this.redraw)
 
         this.bus.$on(Event.Transition, () => {
@@ -54,7 +65,6 @@ export default Vue.extend({
         })
 
         this.bus.$on(Event.Load, () => {
-            this.head = 0
             this.redraw()
         })
 
@@ -63,7 +73,7 @@ export default Vue.extend({
     methods: {
         
         simulate(selection) {
-            let dx = this.$store.state.run.transition.direction
+            let dx = this.transition.direction
             //Math.random() < 0.5 ? -1 : 1
             if (dx === 1) this.moveRight(selection)
             if (dx === -1) this.moveLeft(selection)
@@ -76,7 +86,7 @@ export default Vue.extend({
         },
 
         indexToChar(i) {
-            return this.$store.state.run.input[i]
+            return this.tape[i]
         },
 
         redraw() {
@@ -152,6 +162,10 @@ export default Vue.extend({
                 .merge(cells)
                     .select("text")
                     .text(this.indexToChar)
+                    // Head transition
+                    .classed("head", false)
+                    .filter(d => d === this.head)
+                    .classed("head", true)
                 
             this.repositionCells(selection)
         },
@@ -177,8 +191,6 @@ export default Vue.extend({
 
         moveRight(selection) {
             
-            this.head++
-            
             let array = this.visible()
             let last = array[ array.length - 1]
             
@@ -203,8 +215,6 @@ export default Vue.extend({
 
         moveLeft(selection) {
 
-            this.head--
-            
             selection.attr("transform", translate(-this.cellSize, 0))
             this.repositionCells(this.wrapper, 1)
             
@@ -249,6 +259,8 @@ export default Vue.extend({
 
 text {
     font: $tape-font-big;
+
+    &.head { fill: $color-active; }
 }
 
 </style>

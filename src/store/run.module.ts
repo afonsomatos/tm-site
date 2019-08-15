@@ -28,9 +28,11 @@ export interface Transition {
 }
 
 const state = {
-    step: 1000,
+    step: 2000,
+    head: 0,
     status: Status.Paused,
     input: "example",
+    tape: "example".split(''),
     bus: new Vue(),
     interval: null,
     transition: { direction: Direction.Right, write: 'X' } 
@@ -51,8 +53,9 @@ const actions = {
     },
 
     [Action.STEP]: ({ state, commit }) => {
-        let direction = Math.random() < 0.5 ? Direction.Right : Direction.Left
-        commit(Mutation.SET_TRANSITION, { direction })
+        let direction = Direction.Right // Math.random() < 0.5 ? Direction.Right : Direction.Left
+        let write = '+'
+        commit(Mutation.SET_TRANSITION, { direction, write })
         state.bus.$emit(Event.Transition)
     },
 
@@ -72,6 +75,8 @@ const mutations = {
 
     [Mutation.LOAD]: (state, input: String) => {
         state.input = input
+        state.tape = input.toUpperCase().split('')
+        state.head = 0
     },
 
     [Mutation.SET_STATUS]: (state, status: Status) => {
@@ -88,6 +93,9 @@ const mutations = {
 
     [Mutation.SET_TRANSITION]: (state, transition) => {
         state.transition = transition
+        Vue.set(state.tape, state.head, transition.write)
+        state.head += transition.direction
+        console.log(state.tape)
     }
 
 }
