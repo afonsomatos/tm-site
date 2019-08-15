@@ -35,8 +35,9 @@ import Vue from 'vue'
 import { mapMutations } from "vuex"
 import Action from "./Action.vue"
 
+import StoreAction from "@/store/action"
 import Mutation from "@/store/mutation"
-import Tab, { ALL_TABS } from "@/components/Tab"
+import Tab, { ALL_TABS, Tabs } from "@/components/Tab"
 
 export default Vue.extend({
     data() {
@@ -49,6 +50,11 @@ export default Vue.extend({
             return this.$store.state.currentTab === tab
         },
         setTab(tab: Tab) {
+            
+            if (this.$store.state.currentTab === Tabs.Run) {
+                this.$store.dispatch(StoreAction.PAUSE)
+            }
+
             this.$store.commit(Mutation.SET_TAB, tab)
         }
     },
