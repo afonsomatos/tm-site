@@ -124,6 +124,10 @@ export default Vue.extend({
 
             let cells = selection.selectAll(".cell").data(this.visible())
 
+            // Delete unused cells
+            cells.exit()
+                .remove()
+
             // Create missing cells
             cells.enter()
                     .append("g")
