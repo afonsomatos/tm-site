@@ -33,7 +33,7 @@ const state = {
     input: "example",
     bus: new Vue(),
     interval: null,
-    transition: { direction: Direction.Right } 
+    transition: { direction: Direction.Right, write: 'X' } 
 }
 
 const actions = {
@@ -50,13 +50,15 @@ const actions = {
         state.bus.$emit(Event.Pause)
     },
 
-    [Action.RESUME]: ({ commit }) => {
+    [Action.STEP]: ({ state, commit }) => {
+        let direction = Math.random() < 0.5 ? Direction.Right : Direction.Left
+        commit(Mutation.SET_TRANSITION, { direction })
+        state.bus.$emit(Event.Transition)
+    },
+
+    [Action.RESUME]: ({ dispatch, commit }) => {
         commit(Mutation.SET_STATUS, Status.Playing)
-        commit(Mutation.SET_INTERVAL, () => {
-            let direction = Math.random() < 0.5 ? Direction.Right : Direction.Left
-            commit(Mutation.SET_TRANSITION, { direction })
-            state.bus.$emit(Event.Transition)
-        })
+        commit(Mutation.SET_INTERVAL, () => dispatch(Action.STEP))
         state.bus.$emit(Event.Resume)
     },
     

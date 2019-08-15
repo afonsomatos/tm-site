@@ -8,7 +8,10 @@ enum Action
     PAUSE = "pause",
     RESUME = "resume",
     LOAD = "load",
-    REPEAT = "repeat"
+    REPEAT = "repeat",
+
+    STEP = "step",
+    BACK = "back"
 }
 
 export default Action

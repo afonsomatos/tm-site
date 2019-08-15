@@ -11,7 +11,7 @@
                 <Icon v-if="playing" icon="pause" :clickable="true" @click="pause" />
                 <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" />
 
-                <Icon icon="redo"   :clickable="true" />
+                <Icon icon="redo"   :clickable="true" @click="step"/>
             </div>
             <div>
                 <Icon icon="repeat" :clickable="true" @click="repeat" />
@@ -48,7 +48,8 @@ export default Vue.extend({
         ...mapActions({
             resume: Action.RESUME,
             pause:  Action.PAUSE,
-            repeat: Action.REPEAT
+            repeat: Action.REPEAT,
+            step:   Action.STEP
         })
     }
 })
