@@ -20,7 +20,6 @@ export default Vue.extend({
             head: 0,
             width: 0,
             wrapper: null,
-            interval: null
         }
     },
     
@@ -50,10 +49,11 @@ export default Vue.extend({
         
         window.addEventListener("resize", this.redraw)
 
-        this.bus.$on(Event.Resume, this.resume)
-        this.bus.$on(Event.Pause, this.pause)
+        this.bus.$on(Event.Transition, () => {
+            this.simulate(this.wrapper)
+        })
+
         this.bus.$on(Event.Load, () => {
-            this.pause()
             this.head = 0
             this.redraw()
         })
@@ -62,16 +62,9 @@ export default Vue.extend({
 
     methods: {
         
-        resume() {
-            this.interval = setInterval(this.simulate, 1000, this.wrapper)
-        },
-
-        pause() {
-            clearInterval(this.interval)
-        },
-
         simulate(selection) {
-            let dx = Math.random() < 0.5 ? -1 : 1
+            let dx = this.$store.state.run.transition.direction
+            //Math.random() < 0.5 ? -1 : 1
             if (dx === 1) this.moveRight(selection)
             if (dx === -1) this.moveLeft(selection)
         },

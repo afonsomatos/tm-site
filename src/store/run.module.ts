@@ -8,7 +8,8 @@ export enum Event {
     Run = "run",
     Other = "other",
     Pause = "pause",
-    Resume = "resume"
+    Resume = "resume",
+    Transition = "transition"
 }
 
 export enum Status {
@@ -17,11 +18,22 @@ export enum Status {
     Stopped
 }
 
+export enum Direction {
+    Left = -1,
+    Right = 1
+}
+
+export interface Transition {
+    direction: Direction
+}
+
 const state = {
+    step: 1000,
     status: Status.Paused,
-    head: 0,
-    input: "abcdefghijklmonpqrstuvxwyz",
-    bus: new Vue()
+    input: "example",
+    bus: new Vue(),
+    interval: null,
+    transition: { direction: Direction.Right } 
 }
 
 const actions = {
@@ -34,11 +46,17 @@ const actions = {
 
     [Action.PAUSE]: ({ state, commit }) => {
         commit(Mutation.SET_STATUS, Status.Paused)
+        commit(Mutation.CLEAR_INTERVAL)
         state.bus.$emit(Event.Pause)
     },
 
     [Action.RESUME]: ({ commit }) => {
         commit(Mutation.SET_STATUS, Status.Playing)
+        commit(Mutation.SET_INTERVAL, () => {
+            let direction = Math.random() < 0.5 ? Direction.Right : Direction.Left
+            commit(Mutation.SET_TRANSITION, { direction })
+            state.bus.$emit(Event.Transition)
+        })
         state.bus.$emit(Event.Resume)
     },
     
@@ -56,6 +74,18 @@ const mutations = {
 
     [Mutation.SET_STATUS]: (state, status: Status) => {
         state.status = status
+    },
+
+    [Mutation.SET_INTERVAL]: (state, interval) => {
+        state.interval = setInterval(interval, state.step)
+    },
+
+    [Mutation.CLEAR_INTERVAL]: (state) => {
+        clearInterval(state.interval)
+    },
+
+    [Mutation.SET_TRANSITION]: (state, transition) => {
+        state.transition = transition
     }
 
 }

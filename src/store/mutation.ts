@@ -29,7 +29,11 @@ enum Mutation
 
     LOAD = "load",
 
-    SET_STATUS = "setStatus"
+    SET_STATUS = "setStatus",
+
+    CLEAR_INTERVAL = "clearInterval",
+    SET_INTERVAL = "setInterval",
+    SET_TRANSITION = "setTransition"
 }
 
 export default Mutation
