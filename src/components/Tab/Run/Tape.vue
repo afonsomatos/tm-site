@@ -209,6 +209,7 @@ export default Vue.extend({
             
             // Smooth right transition
             selection.transition()
+                .duration(this.$store.state.run.step)
                 .attr("transform", translate(0, 0))
                 // Ready to remove left most
                 .on("end", () => {

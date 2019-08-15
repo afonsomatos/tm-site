@@ -25,6 +25,7 @@
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex';
 
+import _ from "lodash"
 import Icon from "@/components/Icon.vue"
 import Tape from "./Tape.vue"
 import Getter from "@/store/getter"
@@ -42,6 +43,13 @@ export default Vue.extend({
 
         paused() {
             return this.status === Status.Paused
+        },
+
+        step() {
+            return _.throttle(
+                () => this.$store.dispatch(Action.STEP),
+                this.$store.state.run.step,
+                { trailing: false })
         }
     },
     methods: {
@@ -49,9 +57,8 @@ export default Vue.extend({
             resume: Action.RESUME,
             pause:  Action.PAUSE,
             repeat: Action.REPEAT,
-            step:   Action.STEP,
             back:   Action.BACK
-        })
+        }),
     }
 })
 

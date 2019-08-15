@@ -29,7 +29,8 @@ export interface Transition {
 }
 
 const state = {
-    step: 2000,
+    delay: 1000,
+    step: 500,
     head: 0,
     status: Status.Paused,
     input: "example",
@@ -98,7 +99,8 @@ const mutations = {
     },
 
     [Mutation.SET_INTERVAL]: (state, interval) => {
-        state.interval = setInterval(interval, state.step)
+        clearInterval(state.interval)
+        state.interval = setInterval(interval, state.delay)
     },
 
     [Mutation.CLEAR_INTERVAL]: (state) => {
