@@ -50,7 +50,7 @@ export default Vue.extend({
             return this.$store.state.currentTab === tab
         },
         setTab(tab: Tab) {
-            
+            if (this.isTab(tab)) return
             if (this.$store.state.currentTab === Tabs.Run) {
                 this.$store.dispatch(StoreAction.PAUSE)
             }
