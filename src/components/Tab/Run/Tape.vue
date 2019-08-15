@@ -19,8 +19,8 @@ export default Vue.extend({
             height: 60,
             head: 0,
             width: 0,
-            fullTape: "abcdefghij",
             wrapper: null,
+            interval: null
         }
     },
     
@@ -43,19 +43,39 @@ export default Vue.extend({
         }
     
     },
-    
+
     mounted() {
         this.wrapper = this.svg.append("g")
         this.redraw()
         
         window.addEventListener("resize", this.redraw)
 
-        this.bus.$on(Event.Load, () => console.log("Loading"))
-        this.bus.$on(Event.Run, () => console.log("Running"))
+        this.bus.$on(Event.Resume, this.resume)
+        this.bus.$on(Event.Pause, this.pause)
+        this.bus.$on(Event.Load, () => {
+            this.pause()
+            this.head = 0
+            this.redraw()
+        })
+
     },
 
     methods: {
         
+        resume() {
+            this.interval = setInterval(this.simulate, 1000, this.wrapper)
+        },
+
+        pause() {
+            clearInterval(this.interval)
+        },
+
+        simulate(selection) {
+            let dx = Math.random() < 0.5 ? -1 : 1
+            if (dx === 1) this.moveRight(selection)
+            if (dx === -1) this.moveLeft(selection)
+        },
+
         visible() {
             return Array(this.cells).fill(" ").map((_, i) => {
                 return this.head - Math.ceil(this.cells / 2) + i + 1
@@ -63,7 +83,7 @@ export default Vue.extend({
         },
 
         indexToChar(i) {
-            return this.fullTape[i]
+            return this.$store.state.run.input[i]
         },
 
         redraw() {
@@ -209,14 +229,6 @@ export default Vue.extend({
                     this.updateCells(selection)
                 })
         },
-
-        simulate() {
-            setInterval(selection => {
-                let dx = Math.random() < 0.5 ? -1 : 1
-                if (dx === 1) this.moveRight(selection)
-                if (dx === -1) this.moveLeft(selection)
-            }, 3000, this.wrapper)
-        }
 
     },
 })

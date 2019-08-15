@@ -6,12 +6,15 @@
                 <!---->
             </div>
             <div>
-                <Icon icon="replay" :clickable="true" />
-                <Icon icon="pause"  :clickable="true" />
+                <Icon icon="replay" :clickable="true" @click="resume" />
+
+                <Icon v-if="playing" icon="pause" :clickable="true" @click="pause" />
+                <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" />
+
                 <Icon icon="redo"   :clickable="true" />
             </div>
             <div>
-                <Icon icon="repeat" :clickable="true" />
+                <Icon icon="repeat" :clickable="true" @click="repeat" />
             </div>
         </div>
     </div>
@@ -20,11 +23,34 @@
 <script lang="ts">
 
 import Vue from 'vue'
+import { mapActions, mapGetters } from 'vuex';
+
 import Icon from "@/components/Icon.vue"
 import Tape from "./Tape.vue"
+import Getter from "@/store/getter"
+import Action from "@/store/action"
+import { Status } from "@/store/run.module"
 
 export default Vue.extend({
-    components: { Icon, Tape }
+    components: { Icon, Tape },
+    computed: {
+        ...mapGetters({ status: Getter.STATUS }),
+
+        playing() {
+            return this.status === Status.Playing
+        },
+
+        paused() {
+            return this.status === Status.Paused
+        }
+    },
+    methods: {
+        ...mapActions({
+            resume: Action.RESUME,
+            pause:  Action.PAUSE,
+            repeat: Action.REPEAT
+        })
+    }
 })
 
 </script>

@@ -1,8 +1,8 @@
 <template>
-    <Section title="Run Input">
+    <Section title="Load">
         <Input v-model="input" class="tape-input" />
         <div class="button-holder">
-            <Button class="run" value="Run" @click="run"/>
+            <Button class="green" value="Load" @click="load"/>
         </div>
     </Section>
 </template>
@@ -21,8 +21,8 @@ export default Vue.extend({
         }
     },
     methods: {
-        run() {
-            this.$store.dispatch(Action.RUN, this.input)
+        load() {
+            this.$store.dispatch(Action.LOAD, this.input)
         }
     },
     components: { Section, Input, Button }
