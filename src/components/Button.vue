@@ -27,7 +27,7 @@ export default Vue.extend({
 	padding: 6px 20px;
 
 	&.danger { background-color: $color-negative; }
-    &.run { background-color: $color-positive; }
+    &.green { background-color: $color-positive; }
     
     &:hover { cursor: pointer; }
 }
