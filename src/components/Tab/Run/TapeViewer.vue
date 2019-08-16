@@ -45,7 +45,7 @@ export default Vue.extend({
             return this.status === Status.Paused
         },
 
-        step() {
+        stepThrottle() {
             return _.throttle(
                 () => this.$store.dispatch(Action.STEP),
                 this.$store.state.run.step,
@@ -57,8 +57,18 @@ export default Vue.extend({
             resume: Action.RESUME,
             pause:  Action.PAUSE,
             repeat: Action.REPEAT,
-            back:   Action.BACK
+            backAction:   Action.BACK
         }),
+
+        step() {
+            if (!this.playing)
+                this.stepThrottle()
+        },
+
+        back() {
+            if (!this.playing)
+                this.backAction()
+        }
     }
 })
 

@@ -2,7 +2,8 @@
     <Section title="Edit State">
         <Input v-focus :value="stateName" :key="state" @input.native="changeStateName" @focus.native="$event.target.select()"/>
         <br><br>
-        <Button value="Set Accept" @click.native="setAccept()" />
+        <Button value="Accept" @click="setAccept()" /> 
+        <Button value="Start"  @click="setStart()" />
         <Button value="Delete" @click.native="remove()" />
     </Section>
 </template>
@@ -33,6 +34,10 @@ export default Vue.extend({
         remove() {
             this.$store.commit(Mutation.DELETE_STATE, this.state)
             this.$store.commit(Mutation.SET_NO_EDITING)
+        },
+
+        setStart() {
+            this.$store.commit(Mutation.SET_START_STATE, this.state)
         },
 
         setAccept() {
