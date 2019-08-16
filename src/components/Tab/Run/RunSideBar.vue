@@ -17,7 +17,7 @@ import Action   from "@/store/action"
 export default Vue.extend({
     data() {
         return {
-            input: "turing"
+            input: "11101"
         }
     },
     methods: {

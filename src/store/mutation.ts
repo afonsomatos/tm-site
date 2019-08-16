@@ -38,8 +38,8 @@ enum Mutation
 
     BACK = "back",
 
-    SET_SIMULATOR = "setSimulator"
-
+    SET_SIMULATOR = "setSimulator",
+    CLEAR_LOG = "clearLog"
 }
 
 export default Mutation

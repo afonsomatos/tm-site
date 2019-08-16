@@ -48,6 +48,12 @@ export interface Transition {
     write: string
 }
 
+export interface State {
+    time: number,
+    space: number,
+    state: string
+}
+
 const state = {
     delay: 1000,
     step: 500,
@@ -111,6 +117,7 @@ const actions = {
     [Action.LOAD]: ({ state, commit, dispatch, rootState }, input: string) => {
         let program = VuexModelToProgram(rootState.model)
         commit(Mutation.SET_SIMULATOR, new Simulator(program))
+        commit(Mutation.CLEAR_LOG)
         dispatch(Action.PAUSE)
         commit(Mutation.LOAD, input)
         state.bus.$emit(Event.Load)
@@ -175,6 +182,10 @@ const mutations = {
         state.interval = setInterval(interval, state.delay)
     },
 
+    [Mutation.CLEAR_LOG]: state => {
+        state.snapshots = []
+    },
+
     [Mutation.CLEAR_INTERVAL]: (state) => {
         clearInterval(state.interval)
     },
@@ -200,6 +211,22 @@ const getters = {
         return simulator.getTape()
     },
     
+    [Getter.STATE]: ({ simulator }) => {
+        if (!simulator)
+            return {
+                time: 0,
+                space: 0,
+                state: "None"
+            }
+
+        let status = simulator.getStatus()
+        return {
+            time: status.time,
+            space: status.space,
+            state: "None"
+        }
+    },
+
     [Getter.HEAD]: ({ simulator }) => {
         if (!simulator)
             return 0
