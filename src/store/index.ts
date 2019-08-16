@@ -11,20 +11,22 @@ const exampleModel = {
 
     undefinedReadCharList: {},
     
-    states: { 0: "S1", 1: "S2" },
-    readChars: { 0: 'A',  1: '#' },
+    states: { 0: "S1", 1: "S2", 2: "S3" },
+    readChars: { 0: "0",  1: "1", 2: "#" },
 
-    readCharList: [0, 1],
-    stateList: [0, 1],
+    readCharList: [0, 1, 2],
+    stateList: [0, 1, 2],
 
     stateTransitions: {
-        0: { 1: [1, '#', 1, false], 0: [0, 'B', 1, false] },
-        1: { 1: [1, 'E', 1, true],  0: [1, 'G', 0, true] }
+        0: { 1: [0, '0', 1, false],  0: [0, '1', 1, false], 2: [1, '#', 0, false] },
+        1: { 1: [1, '0', 0, false],  0: [1, '1', 0, false], 2: [0, '#', 1, false] },
+
+        2: { 1: [1, '0', 0, true ],  0: [1, '1', 0, true],  2: [1, '#', 1, true] }
     },
 
-    nextReadCharId: 2,
-    nextStateId: 2,
-    accept: 1,
+    nextReadCharId: 3,
+    nextStateId: 3,
+    accept: 2,
     start: 0
 }
 
@@ -125,6 +127,10 @@ export default new Vuex.Store({
         [Mutation.SET_ACCEPT_STATE]: (state, index) => {
             state.model.accept = index
         },
+
+        [Mutation.SET_START_STATE]: (state, index) => {
+            state.model.start = index
+        }
 
         // [Mutation.DELETE_CHAR_COLUMN]: (state, index) => {
         //     state.model.charset.splice(index,  + 1)

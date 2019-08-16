@@ -25,8 +25,10 @@
 
                 <tr v-for="(header, i) in table.rowHeaders" :key="i">
                     <!-- Row title -->
-                    <td class="state" :class="{ accept: i === $store.state.model.accept }" @click="selectState(i)">
+                    <td class="state" @click="selectState(i)">
                         {{ table.rowHeaders[i] }}
+                        <Icon v-if="isAcceptState(i)" class="state-icon" icon="done" />
+                        <Icon v-if="isStartState(i)" class="state-icon" icon="forward" />
                     </td>
                     <td class="val" v-for="(val, j) in table.rows[i]" :key="j" @click="selectTransition(i, j)" :class="{ selected: isTransitionSelected(i, j) }">
                         {{ val }}
@@ -65,6 +67,16 @@ interface Table {
 export default Vue.extend({
     
     methods: {
+
+        isAcceptState(index: number) {
+            let stateId = this.$store.state.model.stateList[index]
+            return this.$store.state.model.accept === stateId
+        },
+
+        isStartState(index: number) {
+            let stateId = this.$store.state.model.stateList[index]
+            return this.$store.state.model.start === stateId
+        },
 
         getReadCharId(index: number) {
             return this.$store.state.model.readCharList[index]
@@ -233,10 +245,15 @@ export default Vue.extend({
 
 }
 
+.state-icon {
+    font-size: 20px;
+    line-height: 20px;
+}
+
 .state {
+    line-height: 20px;
     background-color: #f0f0d9;
     &:hover { background-color: #e8e8bc; }
-    &.accept { background-color: #c4f3cc; }
 }
 
 .char {
