@@ -184,7 +184,9 @@ const mutations = {
         state.snapshots.push(snapshot)
         // Vue.set(state.tape, state.head, transition.write)
         // state.head += transition.direction
-    }
+    },
+
+    [Mutation.SET_SIMULATOR]: (state, simulator) => state.simulator = simulator
 
 }
 

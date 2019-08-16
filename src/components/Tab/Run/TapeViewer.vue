@@ -107,7 +107,7 @@ $cell-size: 60px;
     //border: 1px solid #C4C4C4;
     border-bottom: none;
     padding: 20px;
-    background: $side-background;
+    background: $color-gray-2;
 }
 
 </style>
