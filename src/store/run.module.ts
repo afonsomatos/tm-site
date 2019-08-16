@@ -233,7 +233,7 @@ const getters = {
         return simulator.getStatus().index
     },
 
-    [Getter.TURING_STATUS]: ({ simulator }) => {
+    [Getter.TURING_STATUS]: ({ status, simulator }) => {
         if (!simulator)
             return TuringStatus.Idle
 
@@ -241,7 +241,9 @@ const getters = {
             return TuringStatus.Accepted
         else if (simulator.rejected)
             return TuringStatus.Rejected
-        return TuringStatus.Running
+        else if (status === Status.Playing)
+            return TuringStatus.Running
+        return TuringStatus.Idle
     }
 }
 
