@@ -67,24 +67,39 @@ export default Vue.extend({
         this.wrapper = this.svg.append("g")
 
         this.redraw()
-        window.addEventListener("resize", this.redraw)
+        window.addEventListener("resize", this.onResize)
 
-        this.bus.$on(Event.Transition, () => {
-            this.simulate(this.wrapper)
-        })
-
-        this.bus.$on(Event.Load, () => {
-            this.redraw()
-        })
-
-        this.bus.$on(Event.Back, () => {
-            this.redraw()
-        })
+        this.bus.$on(Event.Transition, this.onTransition)
+        this.bus.$on(Event.Load, this.onLoad)
+        this.bus.$on(Event.Back, this.onBack)
         
+    },
+
+    beforeDestroy() {
+      this.bus.$off(Event.Transition, this.onTransition)
+      this.bus.$off(Event.Load, this.onLoad)
+      this.bus.$off(Event.Back, this.onBack)  
+      window.removeEventListener("resize", this.onResize)
     },
 
     methods: {
         
+        onResize() {
+            this.redraw()
+        },
+
+        onTransition() { 
+            this.simulate(this.wrapper)
+        },
+
+        onLoad() {
+            this.redraw()
+        },
+
+        onBack() {
+            this.redraw()
+        },
+
         simulate(selection) {
             let dx = this.transition.direction
             //Math.random() < 0.5 ? -1 : 1
