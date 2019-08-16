@@ -18,13 +18,14 @@ const exampleModel = {
     stateList: [0, 1],
 
     stateTransitions: {
-        0: { 1: [0, 'D', 1, false], 0: [1, 'F', 1, false] },
-        1: { 1: [1, 'E', 1, false], 0: [1, 'G', 0, false] }
+        0: { 1: [1, '#', 1, false], 0: [0, 'B', 1, false] },
+        1: { 1: [1, 'E', 1, true],  0: [1, 'G', 0, true] }
     },
 
     nextReadCharId: 2,
     nextStateId: 2,
-    accept: 0
+    accept: 1,
+    start: 0
 }
 
 function getDefaultTransition(model) {

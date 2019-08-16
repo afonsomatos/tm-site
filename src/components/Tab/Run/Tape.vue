@@ -1,5 +1,5 @@
 <template>
-    <svg ref="svg" class="tape">
+    <svg ref="svg" class="tape" :class="status">
 
     </svg>
 </template>
@@ -8,7 +8,9 @@
 
 import Vue from 'vue'
 import * as d3 from "d3"
-import { Event } from "@/store/run.module"
+import { Event, TuringStatus } from "@/store/run.module"
+import { mapGetters } from 'vuex';
+import Getter from "@/store/getter"
 
 const translate = (x, y) => `translate(${x}, ${y})`
 
@@ -24,6 +26,21 @@ export default Vue.extend({
     
     computed: {
         
+        ...mapGetters({
+            head: Getter.HEAD,
+            tape: Getter.TAPE,
+        }),
+
+        status() {
+            let turingStatus = this.$store.getters[Getter.TURING_STATUS]
+            switch (turingStatus) {
+                case TuringStatus.Rejected: return "rejected"
+                case TuringStatus.Accepted: return "accepted"
+                case TuringStatus.Running:  return "running"
+                default:                    return "idle"
+            }
+        },
+
         svg() {
             return d3.select(this.$refs.svg)
         },
@@ -44,14 +61,6 @@ export default Vue.extend({
             return this.$store.state.run.transition
         },
 
-        head() {
-            return this.$store.state.run.head
-        },
-
-        tape() {
-            return this.$store.state.run.tape || {}
-        }
-    
     },
 
     mounted() {
@@ -90,7 +99,7 @@ export default Vue.extend({
         },
 
         indexToChar(i) {
-            return this.tape[i]
+            return this.tape()[i]
         },
 
         redraw() {
@@ -230,6 +239,7 @@ export default Vue.extend({
                 
             // Smooth right transition
             selection.transition()
+                .duration(this.$store.state.run.step)
                 .attr("transform", translate(0, 0))
                 // Ready to remove left most
                 .on("end", () => {
@@ -252,6 +262,10 @@ export default Vue.extend({
     border-left: none;
     border-right: none;
     width: 100%;
+
+    &.rejected { border-color: $color-negative; }
+    &.accepted { border-color: $color-positive; }
+    &.idle { border-color: $color-normal; }
 }
 
 .cursor {

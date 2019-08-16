@@ -1,6 +1,9 @@
 enum Getter
 {
-    STATUS = "status"
+    STATUS = "status",
+    HEAD = "head",
+    TAPE = "tape",
+    TURING_STATUS = "turingStatus"
 }
 
 export default Getter

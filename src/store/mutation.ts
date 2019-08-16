@@ -35,7 +35,9 @@ enum Mutation
     SET_INTERVAL = "setInterval",
     SET_TRANSITION = "setTransition",
 
-    BACK = "back"
+    BACK = "back",
+
+    SET_SIMULATOR = "setSimulator"
 }
 
 export default Mutation

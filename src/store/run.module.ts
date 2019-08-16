@@ -1,7 +1,19 @@
 import Vue from "vue"
+import _ from "lodash"
+
 import Mutation from "./mutation"
 import Getter from "./getter"
 import Action from "./action"
+
+import turing, {
+    ProgramModel,
+    Simulator,
+    getProgramFromModel,
+    Snapshot,
+    Direction as turingDirection
+} from "turing"
+
+import Program from "turing/src/Program"
 
 export enum Event {
     Load = "load",
@@ -19,31 +31,86 @@ export enum Status {
     Stopped
 }
 
+export enum TuringStatus {
+    Rejected,
+    Running,
+    Accepted,
+    Idle
+} 
+
 export enum Direction {
     Left = -1,
     Right = 1
 }
 
 export interface Transition {
-    direction: Direction
+    direction: Direction,
+    write: string
 }
 
 const state = {
     delay: 1000,
     step: 500,
-    head: 0,
     status: Status.Paused,
     input: "example",
-    log: [],
-    tape: "example".split(''),
+    snapshots: [],
+    simulator: undefined,
     bus: new Vue(),
     interval: null,
     transition: { direction: Direction.Right, write: 'x' } 
 }
 
+function VuexModelToProgram(model): Program {
+
+    let states = {}
+
+    for (let key in model.stateTransitions) {
+        let arr = states[ model.states[key] ] = []
+        for (let from in model.stateTransitions[key]) {
+            let [state, write, dir, notdefined] = model.stateTransitions[key][from]
+            if (notdefined) continue 
+            arr.push([
+                model.readChars[ from ],
+                write,
+                ['L', 'R'][dir],
+                model.states[ state ]
+            ]) //[read, write, directionChar, nextState] 
+        }
+    }
+
+    let programModel: ProgramModel = {
+        states,
+        accept: model.states[ model.accept ],
+        start: model.states[ model.start ],
+        reject: "_qrj",
+        empty: "#",
+        extensions: undefined,
+    }
+
+    console.log(programModel)
+
+    return getProgramFromModel(programModel)
+}
+
+function ProgramTransitionToVuexTransition(transition: turing.Transition): Transition {
+
+    let direction: Direction = null
+    if (transition.direction == turingDirection.Right)
+        direction = Direction.Right
+    else if (transition.direction == turingDirection.Left)
+        direction = Direction.Left
+        
+    let write: string = transition.write
+
+    return { direction, write }
+}
+
+
 const actions = {
 
-    [Action.LOAD]: ({ state, commit, dispatch }, input) => {
+    [Action.LOAD]: ({ state, commit, dispatch, rootState }, input: string) => {
+        let program = VuexModelToProgram(rootState.model)
+        commit(Mutation.SET_SIMULATOR, new Simulator(program))
         dispatch(Action.PAUSE)
         commit(Mutation.LOAD, input)
         state.bus.$emit(Event.Load)
@@ -55,10 +122,18 @@ const actions = {
         state.bus.$emit(Event.Pause)
     },
 
-    [Action.STEP]: ({ state, commit }) => {
-        let direction = Direction.Right // Math.random() < 0.5 ? Direction.Right : Direction.Left
-        let write = 'x'
-        commit(Mutation.SET_TRANSITION, { direction, write })
+    [Action.STEP]: ({ dispatch, state, commit }) => {
+
+        let snapshot = state.simulator.snapshot
+        let programTransition = state.simulator.next()
+
+        if (state.simulator.finished) {
+            dispatch(Action.PAUSE)
+            return
+        }
+
+        let transition = ProgramTransitionToVuexTransition(programTransition)
+        commit(Mutation.SET_TRANSITION, { transition, snapshot })
         state.bus.$emit(Event.Transition)
     },
 
@@ -81,17 +156,14 @@ const actions = {
 const mutations = {
 
     [Mutation.BACK]: (state) => {
-        if (state.log.length === 0) return
-        let { tape, head } = state.log.pop()
-        state.tape = tape.slice()
-        state.head = head
+        if (state.snapshots.length === 0) return
+        let snapshot = state.snapshots.pop()
+        state.simulator.rollBack(snapshot)
     },
 
     [Mutation.LOAD]: (state, input: String) => {
         state.input = input
-        state.tape = input.split('')
-        state.head = 0
-        state.log = []
+        state.simulator.load(input)
     },
 
     [Mutation.SET_STATUS]: (state, status: Status) => {
@@ -107,19 +179,41 @@ const mutations = {
         clearInterval(state.interval)
     },
 
-    [Mutation.SET_TRANSITION]: (state, transition) => {
+    [Mutation.SET_TRANSITION]: (state, { transition, snapshot }) => {
         state.transition = transition
-        state.log.push({ head: state.head, tape: state.tape.slice() })
-        Vue.set(state.tape, state.head, transition.write)
-        state.head += transition.direction
+        state.snapshots.push(snapshot)
+        // Vue.set(state.tape, state.head, transition.write)
+        // state.head += transition.direction
     }
 
 }
 
 const getters = {
 
-    [Getter.STATUS]: (state) => state.status
+    [Getter.STATUS]: ({ status }) => status,
 
+    [Getter.TAPE]: ({ simulator }) => () => {
+        if (!simulator)
+            return {}
+        return simulator.getTape()
+    },
+    
+    [Getter.HEAD]: ({ simulator }) => {
+        if (!simulator)
+            return 0
+        return simulator.getStatus().index
+    },
+
+    [Getter.TURING_STATUS]: ({ simulator }) => {
+        if (!simulator)
+            return TuringStatus.Idle
+
+        if (simulator.accepted)
+            return TuringStatus.Accepted
+        else if (simulator.rejected)
+            return TuringStatus.Rejected
+        return TuringStatus.Running
+    }
 }
 
 export default {
