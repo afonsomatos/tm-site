@@ -6,15 +6,15 @@
                 <!---->
             </div>
             <div>
-                <Icon icon="replay" :clickable="true" @click="back" />
+                <Icon icon="replay" :clickable="true" @click="back" :disable="!loaded"/>
 
-                <Icon v-if="playing" icon="pause" :clickable="true" @click="pause" />
-                <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" />
+                <Icon v-if="playing" icon="pause" :clickable="true" @click="pause"           :disable="!loaded"/>
+                <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" :disable="!loaded"/>
 
-                <Icon icon="redo"   :clickable="true" @click="step"/>
+                <Icon icon="redo"   :clickable="true" @click="step" :disable="!loaded"/>
             </div>
             <div>
-                <Icon icon="repeat" :clickable="true" @click="repeat" />
+                <Icon icon="repeat" :clickable="true" @click="repeat" :disable="!loaded" />
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@ import { Status } from "@/store/run.module"
 export default Vue.extend({
     components: { Icon, Tape },
     computed: {
-        ...mapGetters({ status: Getter.STATUS }),
+        ...mapGetters({ status: Getter.STATUS, loaded: Getter.LOADED }),
 
         playing() {
             return this.status === Status.Playing

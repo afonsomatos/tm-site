@@ -1,5 +1,7 @@
 <template>
-    <i class="icon material-icons" :class="{ clickable }" @click="click">{{ icon }}</i>
+    <i class="icon material-icons"
+        :class="{ clickable, disable }"
+        @click="click">{{ icon }}</i>
 </template>
 
 <script lang="ts">
@@ -7,7 +9,7 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-    props: ["icon", "clickable"],
+    props: ["icon", "clickable", "disable"],
     methods: {
         click() {
             this.$emit("click")
@@ -28,10 +30,15 @@ export default Vue.extend({
     &.small { font-size: 24px; }
 
     &::selection { background: transparent; }
-    &.clickable {
+    &.clickable:not(.disable) {
         cursor: pointer;
         &:hover { color: rgba(0, 0, 0, 0.8); }
         &:active { font-weight: bold; }
+    }
+
+    &.clickable.disable {
+        cursor: default;
+        color: rgba(0, 0, 0, 0.4);
     }
 }
 

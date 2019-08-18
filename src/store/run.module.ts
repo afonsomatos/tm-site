@@ -9,7 +9,6 @@ import turing, {
     ProgramModel,
     Simulator,
     getProgramFromModel,
-    Snapshot,
     Direction as turingDirection
 } from "turing"
 
@@ -144,9 +143,16 @@ const actions = {
         state.bus.$emit(Event.Transition)
     },
 
-    [Action.RESUME]: ({ dispatch, commit }) => {
-        commit(Mutation.SET_STATUS, Status.Playing)
+    [Action.RESUME]: ({ state, dispatch, commit }) => {
+
+        // Simulator has not been created
+        if (!state.simulator)
+            return
+        
+        commit(Mutation.CLEAR_INTERVAL)
         commit(Mutation.SET_INTERVAL, () => dispatch(Action.STEP))
+        commit(Mutation.SET_STATUS, Status.Playing)
+
         state.bus.$emit(Event.Resume)
     },
     
@@ -203,6 +209,10 @@ const mutations = {
 
 const getters = {
 
+    [Getter.LOADED]: ({ simulator }) => {
+        return simulator instanceof Simulator
+    }, 
+
     [Getter.STATUS]: ({ status }) => status,
 
     [Getter.TAPE]: ({ simulator }) => () => {
@@ -223,7 +233,7 @@ const getters = {
         return {
             time: status.time,
             space: status.space,
-            state: "None"
+            state: status.state
         }
     },
 
