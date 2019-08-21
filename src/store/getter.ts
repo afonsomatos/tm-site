@@ -7,6 +7,12 @@ enum Getter
     STATE = "state",
 
     LOADED = "loaded",
+
+
+    STATE_NAME = "stateName",
+    TRANSITION = "transition",
+
+    TRANSITION_GROUP = "transitionGroup"
 }
 
 export default Getter

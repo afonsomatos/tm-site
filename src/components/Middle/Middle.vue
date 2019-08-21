@@ -7,6 +7,7 @@
         <div class="main">
             <transition name="fade">
                 <FunctionTable v-if="isGrid()" />
+                <Diagram v-else />
             </transition>
         </div>
         <div class="float">
@@ -22,6 +23,7 @@
 import Vue           from "vue"
 import Icon          from "@/components/Icon.vue"
 import FunctionTable from "@/components/FunctionTable/FunctionTable.vue"
+import Diagram       from "@/components/Diagram/index.vue"
 
 enum Mode { Diagram, Grid }
 
@@ -45,10 +47,10 @@ export default Vue.extend({
     },
     data() {
         return {
-            mode: Mode.Grid,
+            mode: Mode.Diagram,
         }
     },
-    components: { Icon, FunctionTable }
+    components: { Icon, FunctionTable, Diagram }
 })
 
 </script>
@@ -89,12 +91,10 @@ export default Vue.extend({
     background-color: #EFEFEF;
     overflow: hidden;
     display: grid;
-    grid-template-rows: min-content auto;
+    grid-template-rows: min-content auto min-content;
 }
 
 .float {
-    position: absolute;
-    bottom: 0;
     width: 100%;
 }
 

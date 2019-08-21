@@ -23,7 +23,7 @@ export default Vue.extend({
 
 .side-bar {
     background: $side-background;
-    width: 400px;
+    width: 300px;
 }
 
 </style>

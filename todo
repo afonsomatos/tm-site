@@ -1,0 +1,18 @@
+- Prototype state diagram
+- States with the same name clash
+    - Show error message in input
+    - New states have a number appended as default
+- Add scrolling to table
+- Add config settings to Run tab
+    - speed
+
+- Add notifications/warnings/errors support
+- User can't see the whole input because space is too small
+    and letters are too big
+
+- Style table
+
+- Allow resize horizontal side bar: http://jsfiddle.net/meetamit/e38bLdjk/1/
+
+- Highlight transitions in table when running
+

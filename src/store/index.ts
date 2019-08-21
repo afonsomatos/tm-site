@@ -1,6 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import Tab, { Tabs } from "@/components/Tab"
+import diagram from "./diagram.module"
 import edit from "./edit.module"
 import run from "./run.module"
 import Mutation from "./mutation"
@@ -43,7 +44,8 @@ export default new Vuex.Store({
     
     modules: {
         edit,
-        run
+        run,
+        diagram
     },
     
     state: {

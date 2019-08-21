@@ -30,10 +30,11 @@ export default Vue.extend({
 @import "src/style/Lib";
 
 .status {
-    padding: 10px 20px;
+    padding: 5px 20px;
     background: $color-gray-3;
-    display: inline-grid;
+    display: grid;
     grid-auto-flow: column;
+    grid-auto-columns: max-content;
     grid-gap: 30px;
 }
 

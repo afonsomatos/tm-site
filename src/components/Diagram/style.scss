@@ -1,0 +1,57 @@
+.zoom-label {
+    cursor: pointer;
+    text-anchor: end;
+    &:hover { font-weight: 500; }
+    transform: translate(-20px, -20px)
+}
+
+.app-wrapper {
+    font-family: "Segoe UI light";
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+}
+
+#svg {
+    width: 100%;
+    display: block;
+    height: 100%;
+}
+
+#background {
+    cursor: grab;
+    fill: #efefef;
+    &:active { cursor: grabbing; }
+}
+
+.node {
+    cursor: move;
+    &:active { stroke: #000; }
+    
+    &:active .circle { stroke: #000; }
+}
+
+.node-label {
+    fill: rgba(0, 0, 0, 0.76);
+}
+
+.circle {
+    fill: #89cca2;
+    paint-order: stroke;
+    stroke-width: 3px;
+}
+
+.link {
+    stroke: #707070;
+    stroke-width: 1px;
+    fill: transparent;
+    marker-end: url(#arrow-head);
+
+    &:hover { stroke: red; }
+}
+
+#arrow-head {
+    stroke: #707070;
+    fill: none;
+}

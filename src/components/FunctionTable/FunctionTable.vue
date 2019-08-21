@@ -219,12 +219,12 @@ export default Vue.extend({
 .table {
     grid-area: table;
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     
     td {
         vertical-align: middle;
         padding: 20px;
-        border: 1px solid #858585;
+        border: 1px solid #b6b9c9;
         transition: background-color 0.5s;
         &.val { font-style: italic; }
         
@@ -237,7 +237,7 @@ export default Vue.extend({
         }
     }
 
-    tr:first-child td { border-top: 0; }
+    tr:first-child td { border-top: none; }
     tr td:first-child { border-left: none; }
     
     tr:last-child td { border-bottom: none; }
