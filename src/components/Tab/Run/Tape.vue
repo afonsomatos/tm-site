@@ -281,20 +281,21 @@ export default Vue.extend({
     &.rejected { border-color: $color-negative; }
     &.accepted { border-color: $color-positive; }
     &.idle { border-color: $color-normal; }
-}
 
-.cursor {
-    fill: $color-active;
-}
+    .cursor {
+        fill: $color-active;
+    }
 
-.rect {
-    fill: white;
-}
+    .rect {
+        fill: white;
+    }
 
-text {
-    font: $tape-font-big;
+    text {
+        font: $tape-font-big;
 
-    &.head { fill: $color-active; }
+        &.head { fill: $color-active; }
+    }
+
 }
 
 </style>

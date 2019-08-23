@@ -42,10 +42,7 @@ enum Mutation
     CLEAR_LOG = "clearLog",
 
     SET_MENU = "setMenu",
-    
-    SELECT_STATE = "selectState",
-    SELECT_GROUP = "selectTransitionGroup",
-    SELECT_TRANSITION = "selectTransition",
+
 }
 
 export default Mutation

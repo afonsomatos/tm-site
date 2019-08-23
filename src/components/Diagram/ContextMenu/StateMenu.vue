@@ -9,18 +9,19 @@
 import Vue from 'vue'
 import Icon from "./Icon.vue"
 import { mapActions, mapMutations } from 'vuex'
-import Action from "@/store/action"
-import Mutation from '../../../store/mutation';
+
+import Action from "@/store/modules/diagram/action"
+import Mutation from '@/store/modules/diagram/mutation'
 
 export default Vue.extend({
     components: { Icon },
     methods: {
 
-        ...mapMutations({
+        ...mapMutations("diagram", {
             setMenu: Mutation.SET_MENU
         }),
 
-        ...mapActions({
+        ...mapActions("diagram", {
             delete: Action.DELETE_STATE
         }),
 

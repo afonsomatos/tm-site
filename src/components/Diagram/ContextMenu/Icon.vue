@@ -17,7 +17,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .icon {
-    font-size: 28px;
+    font-size: 24px;
     color: #2f2f2f;
     cursor: pointer;
 }

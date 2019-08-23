@@ -8,6 +8,7 @@
 import Vue from 'vue'
 import StateMenu from "./StateMenu.vue"
 import TransitionMenu from "./TransitionMenu.vue"
+import EditTransition from "./EditTransition.vue"
 import Rename from "./Rename.vue"
 
 export default Vue.extend({
@@ -31,7 +32,8 @@ export default Vue.extend({
             menus: {
                 state: StateMenu,
                 transition: TransitionMenu,
-                rename: Rename,        
+                rename: Rename,
+                editTransition: EditTransition,
             } 
         }
     },
@@ -47,6 +49,12 @@ export default Vue.extend({
 
 .wrapper {
     position: absolute;
+    color: #616161;
+    font-size: 20px;
+    font-family: "Segoe UI semibold";
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.17);
+    background-color: white;
+    border-radius: 6px;
 }
 
 </style>

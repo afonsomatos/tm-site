@@ -192,13 +192,14 @@ export default Vue.extend({
 
 .main {
     display: grid;
-    padding-bottom: 200px;
     grid-template-areas: "empty      col-label"
                          "row-label  table";
     grid-template-rows: min-content min-content;
     grid-template-columns: min-content auto;
     grid-column-gap: 50px;
+    place-content: center;
     grid-row-gap: 40px;
+    height: 100%;
 }
 
 .icon {

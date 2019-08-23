@@ -82,7 +82,7 @@ export default class Graph {
     private status: Status
     private transform: Transform
 
-    private nodeRadius: number = 40
+    private nodeRadius: number = 30
 
     constructor(svgElement: SVGElement) {
 

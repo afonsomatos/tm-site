@@ -2,7 +2,7 @@
     <div class="v-menu">
         <icon name="add" class="add" @click="add" />
         <div class="group">
-            <div v-for="(t, i) in transitions" :key="i">
+            <div v-for="(t, i) in transitions" :key="i" @click="clickTransition(i)">
                 {{ text(t) }}
             </div>
         </div>
@@ -12,25 +12,36 @@
 <script lang="ts">
 import Vue from 'vue'
 import Icon from "./Icon.vue"
-import Mutation from "@/store/mutation"
-import Getter from "@/store/getter"
 import { Transition, Direction } from "@/shared/types"
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
+
+import Mutation from "@/store/modules/diagram/mutation"
+import Getter from "@/store/modules/diagram/getter"
 
 export default Vue.extend({
     components: { Icon },
     methods: {
+        ...mapMutations("diagram", {
+            selectTransition: Mutation.SELECT_TRANSITION,
+            setMenu: Mutation.SET_MENU,
+            addTransition: Mutation.ADD_TRANSITION,
+        }),
+
         text(transition: Transition): string {
             return `${transition.read} → ${transition.write}, ` +
                 (transition.direction === Direction.Right ? 'R' : 'L') 
         },
         add() {
-            // continue here
+            this.addTransition()
+        },
+        clickTransition(i: number) {
+            this.selectTransition(this.$store.state.diagram.transitionGroup[i])
+            this.setMenu("editTransition")
         }
     },
     computed: {
-        ...mapGetters({
+        ...mapGetters("diagram", {
             getTransition: Getter.TRANSITION
         }),
         transitions() {
@@ -45,8 +56,10 @@ export default Vue.extend({
     text-align: center;
     overflow: hidden;
     background-color: white;
+    font-size: 20px;
+    white-space: nowrap;
+    color: #616161;
     border-radius: 6px;
-    box-shadow: 0px 0px 40px 6px rgba(0, 0, 0, 0.3);
 }
 
 .add {
@@ -58,7 +71,7 @@ export default Vue.extend({
         font-family: "Segoe UI semibold";
         letter-spacing: 5px;
         cursor: pointer;
-        padding: 15px 20px;
+        padding: 10px 15px;
         background: #eee;
     }
 

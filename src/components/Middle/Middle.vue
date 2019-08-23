@@ -1,14 +1,14 @@
 <template>
     <div class="middle">
-        <div class="top">
-            <Icon class="icon" icon="share"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
-            <Icon class="icon" icon="grid_on" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
-        </div>
         <div class="main">
             <transition name="fade">
                 <FunctionTable v-if="isGrid()" />
                 <Diagram v-else />
             </transition>
+        </div>
+        <div class="top">
+            <Icon class="icon" icon="share"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
+            <Icon class="icon" icon="grid_on" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
         </div>
         <div class="float">
             <transition name="slide">
@@ -91,7 +91,7 @@ export default Vue.extend({
     background-color: #EFEFEF;
     overflow: hidden;
     display: grid;
-    grid-template-rows: min-content auto min-content;
+    grid-template-rows: auto min-content;
 }
 
 .float {
@@ -101,10 +101,14 @@ export default Vue.extend({
 .top {
     height: 73px;
     display: grid;
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    padding-left: 50px;
     grid-auto-flow: column;
     grid-gap: 20px;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     align-content: center;
 }
 

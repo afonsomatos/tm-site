@@ -1,7 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import Tab, { Tabs } from "@/components/Tab"
-import diagram from "./diagram.module"
+import diagram from "./modules/diagram"
 import edit from "./edit.module"
 import run from "./run.module"
 import Mutation from "./mutation"

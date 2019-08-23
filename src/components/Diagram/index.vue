@@ -24,9 +24,10 @@ import * as d3 from "d3"
 import Vue from "vue"
 import Graph from "./Graph/index"
 import ContextMenu from "./ContextMenu/index.vue"
-import Action from "@/store/action"
 import { mapActions, mapMutations } from "vuex"
-import Mutation from "../../store/mutation";
+
+import Mutation from "@/store/modules/diagram/mutation"
+import Action from "@/store/modules/diagram/action"
 
 export default Vue.extend({
 	components: { ContextMenu },
@@ -36,7 +37,7 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		...mapMutations({
+		...mapMutations("diagram", {
 			setMenu: Mutation.SET_MENU,
 			selectState: Mutation.SELECT_STATE
 		}),
@@ -58,8 +59,12 @@ export default Vue.extend({
 			self.setMenu("transition")
 			self.selectState(0)
 		})
-
-		d3.select(svg).on("mousedown", () => self.setMenu(null))
+	
+		// Close context menu when clicking outside it
+		d3.select(document.body).on("mousedown", () => {
+			if (svg.contains(d3.event.target) || svg === d3.event.target)
+				this.setMenu(null)
+		}, true)
 
 		new Graph(svg)
     }
