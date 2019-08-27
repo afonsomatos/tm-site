@@ -15,3 +15,20 @@
 
 - Highlight transitions in table when running
 
+* State
+	- Add a new state
+	- Delete state
+	- Change state name
+* Transition
+	- Add a transition
+	- Delete transition
+	- Change Read, Write, Direction
+	
+* Present Context Menu within bounds of diagram editor
+	
+* Update diagram when changes happen
+* Update diagram when switching from table
+
+* Work on standardizing icons
+	- Adobe Illustrator
+	- https://icomoon.io/app/#/select
