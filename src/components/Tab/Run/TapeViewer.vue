@@ -6,15 +6,15 @@
                 <!---->
             </div>
             <div>
-                <Icon icon="replay" :clickable="true" @click="back" />
+                <Icon icon="replay" :clickable="true" @click="back" :disable="!loaded"/>
 
-                <Icon v-if="playing" icon="pause" :clickable="true" @click="pause" />
-                <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" />
+                <Icon v-if="playing" icon="pause" :clickable="true" @click="pause"           :disable="!loaded"/>
+                <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" :disable="!loaded"/>
 
-                <Icon icon="redo"   :clickable="true" @click="step"/>
+                <Icon icon="redo"   :clickable="true" @click="step" :disable="!loaded"/>
             </div>
             <div>
-                <Icon icon="repeat" :clickable="true" @click="repeat" />
+                <Icon icon="repeat" :clickable="true" @click="repeat" :disable="!loaded" />
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@ import { Status } from "@/store/run.module"
 export default Vue.extend({
     components: { Icon, Tape },
     computed: {
-        ...mapGetters({ status: Getter.STATUS }),
+        ...mapGetters({ status: Getter.STATUS, loaded: Getter.LOADED }),
 
         playing() {
             return this.status === Status.Playing
@@ -45,7 +45,7 @@ export default Vue.extend({
             return this.status === Status.Paused
         },
 
-        step() {
+        stepThrottle() {
             return _.throttle(
                 () => this.$store.dispatch(Action.STEP),
                 this.$store.state.run.step,
@@ -57,8 +57,18 @@ export default Vue.extend({
             resume: Action.RESUME,
             pause:  Action.PAUSE,
             repeat: Action.REPEAT,
-            back:   Action.BACK
+            backAction:   Action.BACK
         }),
+
+        step() {
+            if (!this.playing)
+                this.stepThrottle()
+        },
+
+        back() {
+            if (!this.playing)
+                this.backAction()
+        }
     }
 })
 
@@ -107,7 +117,7 @@ $cell-size: 60px;
     //border: 1px solid #C4C4C4;
     border-bottom: none;
     padding: 20px;
-    background: $side-background;
+    background: $color-gray-2;
 }
 
 </style>

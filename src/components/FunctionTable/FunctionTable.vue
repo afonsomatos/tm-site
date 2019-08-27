@@ -25,8 +25,10 @@
 
                 <tr v-for="(header, i) in table.rowHeaders" :key="i">
                     <!-- Row title -->
-                    <td class="state" :class="{ accept: i === $store.state.model.accept }" @click="selectState(i)">
+                    <td class="state" @click="selectState(i)">
                         {{ table.rowHeaders[i] }}
+                        <Icon v-if="isAcceptState(i)" class="state-icon" icon="done" />
+                        <Icon v-if="isStartState(i)" class="state-icon" icon="forward" />
                     </td>
                     <td class="val" v-for="(val, j) in table.rows[i]" :key="j" @click="selectTransition(i, j)" :class="{ selected: isTransitionSelected(i, j) }">
                         {{ val }}
@@ -65,6 +67,16 @@ interface Table {
 export default Vue.extend({
     
     methods: {
+
+        isAcceptState(index: number) {
+            let stateId = this.$store.state.model.stateList[index]
+            return this.$store.state.model.accept === stateId
+        },
+
+        isStartState(index: number) {
+            let stateId = this.$store.state.model.stateList[index]
+            return this.$store.state.model.start === stateId
+        },
 
         getReadCharId(index: number) {
             return this.$store.state.model.readCharList[index]
@@ -180,13 +192,14 @@ export default Vue.extend({
 
 .main {
     display: grid;
-    padding-bottom: 200px;
     grid-template-areas: "empty      col-label"
                          "row-label  table";
     grid-template-rows: min-content min-content;
     grid-template-columns: min-content auto;
     grid-column-gap: 50px;
+    place-content: center;
     grid-row-gap: 40px;
+    height: 100%;
 }
 
 .icon {
@@ -207,12 +220,12 @@ export default Vue.extend({
 .table {
     grid-area: table;
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     
     td {
         vertical-align: middle;
         padding: 20px;
-        border: 1px solid #858585;
+        border: 1px solid #b6b9c9;
         transition: background-color 0.5s;
         &.val { font-style: italic; }
         
@@ -225,7 +238,7 @@ export default Vue.extend({
         }
     }
 
-    tr:first-child td { border-top: 0; }
+    tr:first-child td { border-top: none; }
     tr td:first-child { border-left: none; }
     
     tr:last-child td { border-bottom: none; }
@@ -233,10 +246,15 @@ export default Vue.extend({
 
 }
 
+.state-icon {
+    font-size: 20px;
+    line-height: 20px;
+}
+
 .state {
+    line-height: 20px;
     background-color: #f0f0d9;
     &:hover { background-color: #e8e8bc; }
-    &.accept { background-color: #c4f3cc; }
 }
 
 .char {

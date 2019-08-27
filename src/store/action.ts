@@ -11,7 +11,7 @@ enum Action
     REPEAT = "repeat",
 
     STEP = "step",
-    BACK = "back"
+    BACK = "back",
 }
 
 export default Action

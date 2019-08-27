@@ -15,6 +15,7 @@ enum Mutation
 
     SET_NO_EDITING = "setNoEditing",
 
+    SET_START_STATE = "setStartState",
     SET_ACCEPT_STATE = "setAcceptState",
     DELETE_CHAR_COLUMN = "deleteCharColumn",
 
@@ -35,7 +36,13 @@ enum Mutation
     SET_INTERVAL = "setInterval",
     SET_TRANSITION = "setTransition",
 
-    BACK = "back"
+    BACK = "back",
+
+    SET_SIMULATOR = "setSimulator",
+    CLEAR_LOG = "clearLog",
+
+    SET_MENU = "setMenu",
+
 }
 
 export default Mutation

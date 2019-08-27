@@ -1,13 +1,14 @@
 <template>
     <div class="middle">
+        <div class="main">
+            <!-- <transition name="fade"> -->
+                <FunctionTable v-if="isGrid()" />
+                <Diagram v-else />
+            <!-- </transition> -->
+        </div>
         <div class="top">
             <Icon class="icon" icon="share"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
             <Icon class="icon" icon="grid_on" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
-        </div>
-        <div class="main">
-            <transition name="fade">
-                <FunctionTable v-if="isGrid()" />
-            </transition>
         </div>
         <div class="float">
             <transition name="slide">
@@ -22,6 +23,7 @@
 import Vue           from "vue"
 import Icon          from "@/components/Icon.vue"
 import FunctionTable from "@/components/FunctionTable/FunctionTable.vue"
+import Diagram       from "@/components/Diagram/index.vue"
 
 enum Mode { Diagram, Grid }
 
@@ -45,10 +47,10 @@ export default Vue.extend({
     },
     data() {
         return {
-            mode: Mode.Grid,
+            mode: Mode.Diagram,
         }
     },
-    components: { Icon, FunctionTable }
+    components: { Icon, FunctionTable, Diagram }
 })
 
 </script>
@@ -89,22 +91,24 @@ export default Vue.extend({
     background-color: #EFEFEF;
     overflow: hidden;
     display: grid;
-    grid-template-rows: min-content auto;
+    grid-template-rows: auto min-content;
 }
 
 .float {
-    position: absolute;
-    bottom: 0;
     width: 100%;
 }
 
 .top {
     height: 73px;
     display: grid;
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    padding-left: 50px;
     grid-auto-flow: column;
     grid-gap: 20px;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     align-content: center;
 }
 
