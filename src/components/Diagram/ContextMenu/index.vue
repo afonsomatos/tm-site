@@ -50,7 +50,7 @@ export default Vue.extend({
 .wrapper {
     position: absolute;
     color: #616161;
-    font-size: 20px;
+    font-size: 24px;
     font-family: "Segoe UI semibold";
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.17);
     background-color: white;

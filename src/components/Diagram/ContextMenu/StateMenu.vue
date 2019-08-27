@@ -1,20 +1,20 @@
 <template>
     <div class="v-menu">
-        <icon name="create" @click="setMenu('rename')" />
-        <icon name="delete" class="red" @click="remove" />
+        <icon-btn icon="edit" @click="setMenu('rename')" :clickable="true" />
+        <icon-btn icon="delete" class="red" @click="remove" :clickable="true" />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Icon from "./Icon.vue"
+import IconBtn from "@/components/IconBtn.vue"
 import { mapActions, mapMutations } from 'vuex'
 
 import Action from "@/store/modules/diagram/action"
 import Mutation from '@/store/modules/diagram/mutation'
 
 export default Vue.extend({
-    components: { Icon },
+    components: { IconBtn },
     methods: {
 
         ...mapMutations("diagram", {
@@ -34,6 +34,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+
 .v-menu {
     background-color: white;
     border-radius: 6px;

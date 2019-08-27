@@ -1,18 +1,18 @@
 <template>
     <div class="rename">
-        <icon class="icon" name="arrow_back" @click="setMenu('state')" />
+        <icon-btn class="icon" icon="left-arrow-alt" @click="setMenu('state')" :clickable="true" />
         <input class="input" value="State" />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Icon from "./Icon.vue"
+import IconBtn from "@/components/IconBtn.vue"
 import { mapMutations } from 'vuex'
 import Mutation from "@/store/modules/diagram/mutation"
 
 export default Vue.extend({
-    components: { Icon },
+    components: { IconBtn },
     methods: {
         ...mapMutations("diagram", {
             setMenu: Mutation.SET_MENU

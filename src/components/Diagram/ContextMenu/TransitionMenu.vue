@@ -1,6 +1,6 @@
 <template>
     <div class="v-menu">
-        <icon name="add" class="add" @click="add" />
+        <icon-btn icon="add" class="add" @click="add" />
         <div class="group">
             <div v-for="(t, i) in transitions" :key="i" @click="clickTransition(i)">
                 {{ text(t) }}
@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Icon from "./Icon.vue"
+import IconBtn from "@/components/IconBtn.vue"
 import { Transition, Direction } from "@/shared/types"
 
 import { mapGetters, mapMutations } from 'vuex'
@@ -20,7 +20,7 @@ import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
 
 export default Vue.extend({
-    components: { Icon },
+    components: { IconBtn },
     methods: {
         ...mapMutations("diagram", {
             selectTransition: Mutation.SELECT_TRANSITION,

@@ -12,7 +12,7 @@
         </div>
 
         <div class="bottom">
-            <Action icon="code" />
+            <Action icon="github" />
         </div>
     </div>
 </template>

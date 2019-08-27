@@ -6,15 +6,15 @@
                 <!---->
             </div>
             <div>
-                <Icon icon="replay" :clickable="true" @click="back" :disable="!loaded"/>
+                <IconBtn icon="replay" :clickable="true" @click="back" :disable="!loaded"/>
 
-                <Icon v-if="playing" icon="pause" :clickable="true" @click="pause"           :disable="!loaded"/>
-                <Icon v-else-if="paused" icon="play_arrow" :clickable="true" @click="resume" :disable="!loaded"/>
+                <IconBtn v-if="playing" icon="pause" :clickable="true" @click="pause"           :disable="!loaded"/>
+                <IconBtn v-else-if="paused" icon="play" :clickable="true" @click="resume" :disable="!loaded"/>
 
-                <Icon icon="redo"   :clickable="true" @click="step" :disable="!loaded"/>
+                <IconBtn icon="redo"   :clickable="true" @click="step" :disable="!loaded"/>
             </div>
             <div>
-                <Icon icon="repeat" :clickable="true" @click="repeat" :disable="!loaded" />
+                <IconBtn icon="repeat" :clickable="true" @click="repeat" :disable="!loaded" />
             </div>
         </div>
     </div>
@@ -26,14 +26,14 @@ import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex';
 
 import _ from "lodash"
-import Icon from "@/components/Icon.vue"
+import IconBtn from "@/components/IconBtn.vue"
 import Tape from "./Tape.vue"
 import Getter from "@/store/getter"
 import Action from "@/store/action"
 import { Status } from "@/store/run.module"
 
 export default Vue.extend({
-    components: { Icon, Tape },
+    components: { IconBtn, Tape },
     computed: {
         ...mapGetters({ status: Getter.STATUS, loaded: Getter.LOADED }),
 
@@ -116,6 +116,7 @@ $cell-size: 60px;
 .tape-viewer {
     //border: 1px solid #C4C4C4;
     border-bottom: none;
+    font-size: 38px;
     padding: 20px;
     background: $color-gray-2;
 }

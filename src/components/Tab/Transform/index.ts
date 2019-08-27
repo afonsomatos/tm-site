@@ -2,5 +2,5 @@ import Tab from "@/components/Tab"
 
 export default {
     sideBar: {},
-    tabIcon: "functions",
+    tabIcon: "sum",
 } as Tab

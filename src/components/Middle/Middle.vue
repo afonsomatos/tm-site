@@ -7,8 +7,8 @@
             <!-- </transition> -->
         </div>
         <div class="top">
-            <Icon class="icon" icon="share"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
-            <Icon class="icon" icon="grid_on" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
+            <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
+            <Icon class="icon" icon="grid" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
         </div>
         <div class="float">
             <transition name="slide">
@@ -100,6 +100,7 @@ export default Vue.extend({
 
 .top {
     height: 73px;
+    font-size: 38px;
     display: grid;
     z-index: 1;
     position: absolute;

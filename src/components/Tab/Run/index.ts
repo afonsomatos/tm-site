@@ -5,6 +5,6 @@ import BottomFloat from "./BottomFloat.vue"
 
 export default {
     sideBar: RunSideBar,
-    tabIcon: "play_arrow",
+    tabIcon: "play",
     bottomFloat: BottomFloat
 } as Tab

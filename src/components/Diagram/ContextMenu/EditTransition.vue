@@ -1,9 +1,9 @@
 <template>
     <div class="v-menu">
         <div class="icons">
-            <icon name="arrow_back" class="icon" @click="goBack" />
+            <icon-btn icon="left-arrow" class="icon" @click="goBack" clickable="true" />
             <div><!-- --></div>
-            <icon name="delete" class="icon red" @click="remove" />
+            <icon-btn icon="delete" class="icon red" @click="remove" clickable="true" />
         </div>
         <div class="read-write">
             <div>{{ transition.read }}</div>
@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Icon from "./Icon.vue"
+import IconBtn from "@/components/IconBtn.vue"
 
 import { Transition, Direction } from "@/shared/types"
 
@@ -28,7 +28,7 @@ import Getter from "@/store/modules/diagram/getter"
 import { mapMutations, mapGetters } from 'vuex'
 
 export default Vue.extend({
-    components: { Icon },
+    components: { IconBtn },
     computed: {
         ...mapGetters("diagram", {
             transition: Getter.CURRENT_TRANSITION,

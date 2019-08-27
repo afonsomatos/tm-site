@@ -1,17 +1,17 @@
 <template>
     <div class="action">
-        <Icon class="icon" :class="{ selected }" :icon="icon" />
+        <IconBtn class="icon" :class="{ selected }" :icon="icon" />
     </div>
 </template>
 
 <script lang="ts">
 
 import Vue from 'vue'
-import Icon from '../Icon.vue'
+import IconBtn from '@/components/IconBtn.vue'
 
 export default Vue.extend({
     props: ["icon", "selected"],
-    components: { Icon }
+    components: { IconBtn }
 })
 
 </script>
@@ -23,6 +23,7 @@ export default Vue.extend({
 $side: 73px;
 
 .action {
+    font-size: 38px;
     display: flex;
     align-items: center;
     justify-content: center;

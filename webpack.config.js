@@ -13,7 +13,7 @@ module.exports = {
             test: /\.scss$/,
             use: [
               'vue-style-loader',
-              'css-loader'
+              'css-loader?url=false'
             ]
         },
         {
