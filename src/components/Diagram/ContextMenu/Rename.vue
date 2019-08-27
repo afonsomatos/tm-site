@@ -9,12 +9,12 @@
 import Vue from 'vue'
 import Icon from "./Icon.vue"
 import { mapMutations } from 'vuex'
-import Mutation from "@/store/mutation"
+import Mutation from "@/store/modules/diagram/mutation"
 
 export default Vue.extend({
     components: { Icon },
     methods: {
-        ...mapMutations({
+        ...mapMutations("diagram", {
             setMenu: Mutation.SET_MENU
         })
     }

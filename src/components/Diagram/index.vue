@@ -21,7 +21,9 @@
 <script lang="ts">
 
 import * as d3 from "d3"
+import _ from "lodash"
 import Vue from "vue"
+import { Diagram, Node, Link } from "./Graph/types"
 import Graph from "./Graph/index"
 import ContextMenu from "./ContextMenu/index.vue"
 import { mapActions, mapMutations } from "vuex"
@@ -33,6 +35,7 @@ export default Vue.extend({
 	components: { ContextMenu },
 	data() {
 		return {
+			graph: undefined,
 			contextPos: [0, 0],
 		}
 	},
@@ -41,24 +44,55 @@ export default Vue.extend({
 			setMenu: Mutation.SET_MENU,
 			selectState: Mutation.SELECT_STATE
 		}),
+
+		update() {
+			let model = this.$store.state.model
+			let nodeIds: number[] = _.clone(model.stateList)
+			let linkIds: number[] = []
+			let links: Link[] = []
+			let nodes: Node[] = nodeIds.map(id => {
+				let [x, y] = model.statesPos[id]
+				return { x, y, label: model.states[id] } as Node
+			})
+
+			let i = 0
+			for (let nodeId in model.stateTransitions) {
+				let transitions = model.stateTransitions[nodeId]
+				Object.values(transitions)
+					.filter(x => !x[3])
+					.map<Link>(x => {
+						return {
+							from: model.stateList[nodeId],
+							to: <number> x[0],
+							label: "hoho"
+						}
+					})
+					.forEach(l => {
+						linkIds.push(i++)
+						links.push(l)
+					})
+			}
+
+			let diagram: Diagram = {
+				nodes,
+				nodeIds,
+				linkIds,
+				links
+			}
+
+			console.log(diagram)
+			this.graph.update(diagram)
+		}
 	},
 	computed: {
 		showContextMenu() {
 			return this.$store.state.diagram.menu !== null
 		}
 	},
-    mounted() {
+	mounted() {
 		let svg = this.$refs.svg as SVGSVGElement
-		let self = this
 
-		d3.select(svg).on("contextmenu", function() {
-			d3.event.preventDefault()
-
-			self.contextPos = d3.mouse(this)
-
-			self.setMenu("transition")
-			self.selectState(0)
-		})
+		d3.select(svg).on("contextmenu", () => d3.event.preventDefault())
 	
 		// Close context menu when clicking outside it
 		d3.select(document.body).on("mousedown", () => {
@@ -66,7 +100,18 @@ export default Vue.extend({
 				this.setMenu(null)
 		}, true)
 
-		new Graph(svg)
+		// Initialize graph
+		this.graph = new Graph(svg, {
+			nodeRightClick: (id: number) => {
+				d3.event.preventDefault()
+				console.log("State was right-clicked", id)
+				this.contextPos = d3.mouse(svg)
+				this.selectState(id)
+				this.setMenu("state")
+			}
+		})
+
+		this.update()
     }
 })
 

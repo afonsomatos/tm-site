@@ -11,6 +11,9 @@ Vue.use(Vuex)
 const exampleModel = {
 
     undefinedReadCharList: {},
+
+    statesPos: { 0: [100, 100], 1: [200, 200], 2: [300, 300] },
+
     
     states: { 0: "S1", 1: "S2", 2: "S3" },
     readChars: { 0: "0",  1: "1", 2: "#" },

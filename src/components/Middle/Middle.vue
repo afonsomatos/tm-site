@@ -1,10 +1,10 @@
 <template>
     <div class="middle">
         <div class="main">
-            <transition name="fade">
+            <!-- <transition name="fade"> -->
                 <FunctionTable v-if="isGrid()" />
                 <Diagram v-else />
-            </transition>
+            <!-- </transition> -->
         </div>
         <div class="top">
             <Icon class="icon" icon="share"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>

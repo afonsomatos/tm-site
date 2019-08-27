@@ -41,3 +41,11 @@ export enum Line {
     Arc,
     Loop
 }
+
+export interface State {
+
+}
+
+export interface Adapter {
+    nodeRightClick: (id: number) => void,
+}

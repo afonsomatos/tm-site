@@ -1,4 +1,3 @@
-- Prototype state diagram
 - States with the same name clash
     - Show error message in input
     - New states have a number appended as default

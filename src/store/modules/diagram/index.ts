@@ -66,6 +66,7 @@ const getters: GetterTree<State, any> = {
         return "State"
     },
     [Getter.TRANSITION]: state => (id: number): Transition => {
+        console.log("Getting transition", id)
         return {
             direction: 1,
             read: 'A',

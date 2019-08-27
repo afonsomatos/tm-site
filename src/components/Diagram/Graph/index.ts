@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import { ZoomBehavior, Selection, } from "d3"
 
-import { Diagram, Status, Transform, Vector, Line, Node } from "./types"
+import { Diagram, Status, Transform, Vector, Line, Node, Adapter } from "./types"
 import { sub, add, mul, unit, vec, ang, norm } from "./util"
 
 function defaultDiagram(): Diagram {
@@ -84,7 +84,7 @@ export default class Graph {
 
     private nodeRadius: number = 30
 
-    constructor(svgElement: SVGElement) {
+    constructor(svgElement: SVGElement, private adapter: Adapter) {
 
         this.diagram = defaultDiagram()
         this.status = defaultStatus()
@@ -103,6 +103,12 @@ export default class Graph {
         //this.update()
     }
     
+    public update(diagram: Diagram) {
+        this.diagram = diagram
+        this.setupNodes()
+        this.setupLinks()
+    }
+
     private areLinked(a: number, b: number): boolean {
         return this.diagram.linkIds.some(id => {
             let link = this.diagram.links[id]
@@ -182,10 +188,14 @@ export default class Graph {
             .selectAll<SVGGElement, number>(".node")
             .data(this.diagram.nodeIds)
 
+        nodeSelection.exit().remove()
+
         let newNodes = nodeSelection
             .enter()
                 .append("g")
                 .attr("class", "node")
+                .attr("id", id => id)
+                .on("contextmenu", id => this.adapter.nodeRightClick(id))
 
         newNodes.append("circle")
                 .attr("class", "circle")
@@ -264,6 +274,8 @@ export default class Graph {
             .selectAll<SVGPathElement, number>(".link")
             .data(this.diagram.linkIds)
 
+        selection.exit().remove()
+        
         selection
             .enter()
                 .append("path")
