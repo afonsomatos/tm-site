@@ -14,7 +14,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 
- @import "@/style/Icomoon.scss";
+@import "@/style/Icomoon.scss";
 
 .icon {
     vertical-align: middle;
