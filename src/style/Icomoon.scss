@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?cyrbe0');
-  src:  url('fonts/icomoon.eot?cyrbe0#iefix')   format('embedded-opentype'),
-        url('fonts/icomoon.ttf?cyrbe0')         format('truetype'),
-        url('fonts/icomoon.woff?cyrbe0')        format('woff'),
-        url('fonts/icomoon.svg?cyrbe0#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?ezq8d0');
+  src:  url('fonts/icomoon.eot?ezq8d0#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?ezq8d0') format('truetype'),
+    url('fonts/icomoon.woff?ezq8d0') format('woff'),
+    url('fonts/icomoon.svg?ezq8d0#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,60 +25,69 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-code:before {
-  content: "\e912";
-}
-.icon-diagram:before {
-  content: "\e908";
-}
-.icon-left-arrow:before {
+.icon-forward:before {
   content: "\e900";
 }
-.icon-right-arrow:before {
+.icon-clear:before {
   content: "\e901";
 }
-.icon-circle-add:before {
+.icon-done:before {
   content: "\e902";
 }
-.icon-delete:before {
+.icon-left-arrow:before {
   content: "\e903";
 }
-.icon-function:before {
+.icon-right-arrow:before {
   content: "\e904";
 }
-.icon-left-arrow-alt:before {
+.icon-circle-add:before {
   content: "\e905";
 }
-.icon-right-arrow-alt:before {
+.icon-delete:before {
   content: "\e906";
 }
-.icon-add:before {
+.icon-function:before {
   content: "\e907";
 }
-.icon-grid:before {
+.icon-left-arrow-alt:before {
+  content: "\e908";
+}
+.icon-right-arrow-alt:before {
   content: "\e909";
 }
-.icon-sum:before {
+.icon-add:before {
   content: "\e90a";
 }
-.icon-redo:before {
+.icon-diagram:before {
   content: "\e90b";
 }
-.icon-play:before {
+.icon-sum:before {
   content: "\e90c";
 }
-.icon-pause:before {
+.icon-redo:before {
   content: "\e90d";
 }
-.icon-replay:before {
+.icon-play:before {
   content: "\e90e";
 }
-.icon-repeat:before {
+.icon-pause:before {
   content: "\e90f";
 }
-.icon-edit:before {
+.icon-replay:before {
   content: "\e910";
 }
-.icon-github:before {
+.icon-repeat:before {
   content: "\e911";
+}
+.icon-edit:before {
+  content: "\e912";
+}
+.icon-github:before {
+  content: "\e913";
+}
+.icon-code:before {
+  content: "\e914";
+}
+.icon-grid:before {
+  content: "\ea71";
 }
