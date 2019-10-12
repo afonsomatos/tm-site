@@ -5,7 +5,9 @@ enum Getter {
     STATE_NAME = "stateName",
     TRANSITION = "transition",
     TRANSITION_GROUP = "transitionGroup",
-    CURRENT_TRANSITION = "currentTransition"
+    POSITION = "position",
+    CURRENT_TRANSITION = "currentTransition",
+    TRANSFORM = "transform",
 }
 
 export default Getter

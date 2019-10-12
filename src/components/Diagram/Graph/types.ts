@@ -1,3 +1,5 @@
+import { Point } from "@/shared/types"
+
 export interface Diagram {
     nodes: {
         [id: number]: Node
@@ -48,4 +50,7 @@ export interface State {
 
 export interface Adapter {
     nodeRightClick: (id: number) => void,
+    transformed: (transform: Transform) => void,
+    stateMoved: (id: number, pos: Point) => void
+    //backgroundRightClick: (pos: Point) => void
 }

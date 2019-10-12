@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper" :style="{ left: x + 'px', top: y + 'px' }">
+    <div class="wrapper" :style="style">
         <component :is="menus[currentMenu]" />
     </div>
 </template>
@@ -10,22 +10,16 @@ import StateMenu from "./StateMenu.vue"
 import TransitionMenu from "./TransitionMenu.vue"
 import EditTransition from "./EditTransition.vue"
 import Rename from "./Rename.vue"
+import AddState from "./AddState.vue"
+
+import { mapGetters } from "vuex"
+import Getter from "@/store/modules/diagram/getter"
 
 export default Vue.extend({
     components: {
         StateMenu,
         Rename,
         TransitionMenu,
-    },
-    props: {
-        x: {
-            type: Number,
-            default: 400
-        },
-        y: {
-            type: Number,
-            default: 100
-        }
     },
     data() {
         return {
@@ -34,12 +28,26 @@ export default Vue.extend({
                 transition: TransitionMenu,
                 rename: Rename,
                 editTransition: EditTransition,
+                addState: AddState,
             } 
         }
     },
     computed: {
+
+        ...mapGetters("diagram", {
+            position: Getter.POSITION
+        }),
+
         currentMenu() {
             return this.$store.state.diagram.menu
+        },
+
+        style() {
+            let [left, top] = this.position 
+            return {
+                left: left + "px",
+                top: top + "px"
+            }
         }
     }
 })

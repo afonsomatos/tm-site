@@ -103,6 +103,11 @@ export default class Graph {
         //this.update()
     }
     
+    public setTransform(transform: Transform) {
+        this.transform = transform
+        this.zoom.scaleTo(this.svg, transform.k)
+    }
+
     public update(diagram: Diagram) {
         this.diagram = diagram
         this.setupNodes()
@@ -131,6 +136,7 @@ export default class Graph {
             this.transform = { x, y, k }
             this.wrapper.attr("transform", transformAttr(this.transform))
             this.updateZoomLabel()
+            this.adapter.transformed(this.transform)
         })
 
         this.svg.call(this.zoom)
@@ -175,6 +181,9 @@ export default class Graph {
         d3.selectAll(".link")
             .data(this.diagram.linkIds)
             .attr("d", d => this.line(d))
+
+        // Notify adapter
+        this.adapter.stateMoved(id, [x, y])
     }
 
     private setupNodes() {

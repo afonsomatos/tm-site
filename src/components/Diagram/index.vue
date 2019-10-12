@@ -1,11 +1,7 @@
 <template>
 	<div id="app">
 		<div class="app-wrapper" ref="wrapper">
-			<context-menu
-				v-if="showContextMenu"
-				:x="contextPos[0]"
-				:y="contextPos[1]"
-				/>
+			<context-menu v-if="showContextMenu" />
 			<svg id="svg" ref="svg">
 				<rect id="background" x="0" y="0" width="100%" height="100%" fill="transparent"/>
 				<defs>
@@ -23,7 +19,7 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import Vue from "vue"
-import { Diagram, Node, Link } from "./Graph/types"
+import { Diagram, Node, Link, Adapter } from "./Graph/types"
 import Graph from "./Graph/index"
 import ContextMenu from "./ContextMenu/index.vue"
 import { mapActions, mapMutations } from "vuex"
@@ -31,17 +27,25 @@ import { mapActions, mapMutations } from "vuex"
 import Mutation from "@/store/modules/diagram/mutation"
 import Action from "@/store/modules/diagram/action"
 
+import { Point } from "@/shared/types"
+
 export default Vue.extend({
 	components: { ContextMenu },
 	data() {
 		return {
 			graph: undefined,
-			contextPos: [0, 0],
 		}
 	},
 	methods: {
+		
+		...mapActions("diagram", {
+			setStatePosition: Action.SET_STATE_POSITION,
+		}),
+
 		...mapMutations("diagram", {
+			setPosition: Mutation.SET_POSITION,
 			setMenu: Mutation.SET_MENU,
+			setTransform: Mutation.SET_TRANSFORM,
 			selectState: Mutation.SELECT_STATE
 		}),
 
@@ -105,10 +109,27 @@ export default Vue.extend({
 			nodeRightClick: (id: number) => {
 				d3.event.preventDefault()
 				console.log("State was right-clicked", id)
-				this.contextPos = d3.mouse(svg)
+				this.setPosition(d3.mouse(svg))
 				this.selectState(id)
 				this.setMenu("state")
+			},
+
+			transformed: this.setTransform.bind(this),
+
+			stateMoved: (id: number, pos: Point) => {
+				this.setStatePosition({ id, pos })
 			}
+		})
+
+		this.graph.setTransform(this.$store.state.diagram.transform)
+
+        // Add new state
+		d3.select("#background").on("contextmenu", () => {
+			console.log("Background was right-clicked")
+			let pos = d3.mouse(svg)
+			this.setPosition(pos)
+			this.setMenu("addState")
+			this.$store.state.diagram.update = this.update.bind(this)
 		})
 
 		this.update()

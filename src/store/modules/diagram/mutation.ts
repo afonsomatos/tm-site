@@ -5,7 +5,9 @@ enum Mutation {
     SELECT_TRANSITION = "selectTransition",
     DELETE_TRANSITION = "deleteTransition",
     EDIT_TRANSITION = "editTransition",
-    ADD_TRANSITION = "addTransition"
+    ADD_TRANSITION = "addTransition",
+    SET_POSITION = "setPosition",
+    SET_TRANSFORM = "setTransform"
 }
 
 export default Mutation

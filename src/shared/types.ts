@@ -8,3 +8,5 @@ export interface Transition {
     write: string,
     direction: Direction
 }
+
+export type Point = [number, number]

@@ -6,6 +6,8 @@ import edit from "./edit.module"
 import run from "./run.module"
 import Mutation from "./mutation"
 
+import { Point } from "@/shared/types"
+
 Vue.use(Vuex)
 
 const exampleModel = {
@@ -102,12 +104,16 @@ export default new Vuex.Store({
         },
 
         [Mutation.ADD_STATE]: ({ model }) => {
-        
-            model.stateList.push(model.nextStateId)
-
-            Vue.set(model.states, model.nextStateId, "State")
-            Vue.set(model.stateTransitions, model.nextStateId, {})
             
+            let id = model.nextStateId
+            model.stateList.push(id)
+
+            Vue.set(model.states, id, "State")
+            Vue.set(model.stateTransitions, id, {})
+
+            // Set default position of state on diagram
+            Vue.set(model.statesPos, id, [100, 100])
+
             // Add default transitions
             model.readCharList.forEach((id: number) =>
                 Vue.set(model.stateTransitions[model.nextStateId], id, getDefaultTransition(model))
