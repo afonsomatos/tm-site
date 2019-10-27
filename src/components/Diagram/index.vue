@@ -8,6 +8,9 @@
 					<marker id="arrow-head" viewBox="-5 -5 10 10" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="10">
 						<path  d="M -5 5, 0 0.3, -5 -5"></path>
 					</marker>
+					<marker id="arrow-head-temporary" viewBox="-5 -5 10 10" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="10">
+						<path  d="M -5 5, 0 0.3, -5 -5"></path>
+					</marker>
 				</defs>
 			</svg>
 		</div>
@@ -85,7 +88,7 @@ export default Vue.extend({
 			}
 
 			console.log(diagram)
-			this.graph.update(diagram)
+			this.graph.setDiagram(diagram)
 		}
 	},
 	computed: {
@@ -118,8 +121,14 @@ export default Vue.extend({
 
 			stateMoved: (id: number, pos: Point) => {
 				this.setStatePosition({ id, pos })
+			},
+
+			newLink: (from: number, to: number) => {
+				console.log(`New transition from ${from} to ${to}.`)
 			}
 		})
+
+		this.$store.state.diagram.graph = this.graph
 
 		this.graph.setTransform(this.$store.state.diagram.transform)
 
@@ -129,11 +138,11 @@ export default Vue.extend({
 			let pos = d3.mouse(svg)
 			this.setPosition(pos)
 			this.setMenu("addState")
-			this.$store.state.diagram.update = this.update.bind(this)
 		})
 
 		this.update()
-    }
+	},
+	
 })
 
 </script>

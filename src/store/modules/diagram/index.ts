@@ -10,27 +10,28 @@ import RootAction from "@/store/action"
 import { Transform } from "@/components/Diagram/Graph/types"
 
 import Vue from "vue"
+import Graph from "@/components/Diagram/Graph"
 
 interface State {
     position: Point,
     state: number,
     transitionGroup: number[],
     transition: number,
+    // Identifies which context menu is being shown. Null means it's closed. 
     menu: null | string,
-    update: () => void,
-
     // Current transform on the diagram
     transform: Transform
+    // Current diagram graph object
+    graph?: Graph
 }
 
 const state: State = {
-    update: () => {},
     position: [0, 0],
     state: 0,
     transitionGroup: [0, 2],
     transition: 0,
     menu: null,
-
+    graph: null,
     transform: { x: 1, y: 1, k: 1 },
 }
 
@@ -61,6 +62,18 @@ const actions: ActionTree<State, any> = {
         let pos = [ (x - transform.x) / transform.k, (y - transform.y) / transform.k ]
 
         dispatch(Action.SET_STATE_POSITION, { id, pos })
+
+        if (state.graph) {
+            state.graph.addNode(x, y, "Hehe")
+        }
+
+    },
+
+    [Action.CREATE_TRANSITION]: () => {
+
+        if (state.graph) {
+            state.graph.newTransition(state.state)
+        }
     },
 
     [Action.SET_STATE_POSITION]: ({ rootState }, { id, pos }) => {
@@ -123,7 +136,7 @@ const getters: GetterTree<State, any> = {
     }
 }
 
-const module: Module<State, any> = {
+const mod: Module<State, any> = {
     namespaced: true,
     state,
     mutations,
@@ -131,4 +144,4 @@ const module: Module<State, any> = {
     getters
 }
 
-export default module
+export default mod

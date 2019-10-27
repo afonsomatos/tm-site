@@ -1,5 +1,6 @@
 <template>
     <div class="v-menu">
+        <icon-btn icon="add" @click="createTransition" :clickable="true" />
         <icon-btn icon="edit" @click="setMenu('rename')" :clickable="true" />
         <icon-btn icon="delete" class="red" @click="remove" :clickable="true" />
     </div>
@@ -22,11 +23,17 @@ export default Vue.extend({
         }),
 
         ...mapActions("diagram", {
+            newTransition: Action.CREATE_TRANSITION,
             delete: Action.DELETE_STATE
         }),
 
         remove() {
             this.delete()
+            this.setMenu(null)
+        },
+
+        createTransition() {
+            this.newTransition()
             this.setMenu(null)
         }
     }
