@@ -1,8 +1,9 @@
 import * as d3 from "d3"
 import { ZoomBehavior, Selection, } from "d3"
 
-import { Diagram, Status, Transform, Vector, Line, Node, Adapter } from "./types"
+import { Diagram, Status, Transform, Vector, Line, Node, Adapter, Link } from "./types"
 import { sub, add, mul, unit, vec, ang, norm } from "./util"
+import { Point } from "@/shared/types"
 
 function defaultDiagram(): Diagram {
     return {
@@ -69,7 +70,7 @@ function transformAttr(transform: Transform): string {
 
 export default class Graph {
 
-    private svg: Selection<SVGElement, any, any, any>
+    private svg: Selection<SVGSVGElement, any, any, any>
     private wrapper: Selection<SVGGElement, any, any, any>
 
     private zoom: ZoomBehavior<SVGElement, any>
@@ -82,9 +83,30 @@ export default class Graph {
     private status: Status
     private transform: Transform
 
-    private nodeRadius: number = 30
+    private nodeRadius: number = 20
 
-    constructor(svgElement: SVGElement, private adapter: Adapter) {
+    private temporaryTransition = {
+        // Node number
+        from: 0,
+        // Position
+        to: <Point> [0, 0],
+        // Being used?
+        active: false,
+    }
+
+    // Contains the id of the node being mouseovered.
+    private nodeHovering: number | undefined
+
+    // Placeholder for the transition being created
+    private temporaryLink: d3.Selection<SVGPathElement, null, null, null>
+
+    // Last known position for the mouse
+    public mousePosition: Point = [0, 0]
+
+    // Can we drag a node right now?
+    private enableNodeDrag: boolean = true
+
+    constructor(svgElement: SVGSVGElement, private adapter: Adapter) {
 
         this.diagram = defaultDiagram()
         this.status = defaultStatus()
@@ -102,16 +124,146 @@ export default class Graph {
         this.setup()
         //this.update()
     }
-    
+
+    /**
+     * Current global mouse position, taking zoom and pan into consideration.
+     */
+    get pointer(): Point {
+        let [x, y] = this.mousePosition
+        return [
+            (x - this.transform.x) / this.transform.k,
+            (y - this.transform.y) / this.transform.k
+        ]
+    }
+
+    /**
+     * Creates a new temporary transition from a node, till the user clicks on another node. 
+     */
+    public newTransition(nodeId: number) {
+
+        this.temporaryTransition = {
+            active: true,
+            from: nodeId,
+            to: this.pointer
+        }
+
+        this.svg.classed("newTransition", true)
+        this.temporaryLink.style("visibility", "visible")
+        this.enableNodeDrag = false
+    }
+
+    /**
+     * Creates a new transition between the node `from` and `to`.
+     */
+    private createTransition(from: number, to: number) {
+        
+        // Is there a link equal to this?
+        if (this.areLinked(from, to)) {
+            console.log("Transition already filled from", from, "to", to)
+            return
+        }
+
+        // Find next available link id
+        let linkIds = this.diagram.linkIds.slice()
+        linkIds.sort()
+
+        let newLinkId = linkIds[linkIds.length - 1] + 1
+        let link = { from, to, label: "Example" }
+        
+        // Add to the diagram
+        this.diagram.linkIds.push(newLinkId)
+        this.diagram.links[newLinkId] = link
+
+        this.update()
+
+        // Notify that a new transition was created
+        this.adapter.editLink(from, to)
+    }
+
+    private finishNewTransition() {
+
+        this.temporaryTransition.active = false
+        this.svg.classed("newTransition", false)
+        this.temporaryLink.style("visibility", "hidden")
+        this.enableNodeDrag = true
+    }
+
+    private setupTemporaryLink() {
+
+        // Create temporary link
+        this.temporaryLink = this.wrapper.append("path")
+            .attr("class", "temporary link")
+
+        this.svg.on("mousemove", () => {
+            // Save last known mouse position. This will prevent errors when accessing the mouse position
+            // when the svg is not being hovered on.
+            this.mousePosition = d3.mouse(this.svg.node())
+            
+            // Update link with pointer position.
+            if (this.temporaryTransition.active) {
+                this.temporaryTransition.to = this.pointer
+                this.temporaryLink.attr("d", this.temporaryLine.bind(this))
+            }
+        })
+
+        this.svg.on("click", () => {
+            // Close temporary link
+            if (this.temporaryTransition.active) {
+                // If a node was selected as a target, a new link was created
+                if (this.nodeHovering !== undefined) {
+                    this.createTransition(this.temporaryTransition.from, this.nodeHovering)
+                }
+
+                this.finishNewTransition()
+            }
+        })
+    }
+
+    private temporaryLine() {
+
+        let source: Vector = this.diagram.nodes[this.temporaryTransition.from]
+
+        if (this.nodeHovering === this.temporaryTransition.from) {
+            // Self
+            let from = add(source, vec(this.nodeRadius, -Math.PI / 2))
+            let to = add(source, vec(this.nodeRadius, 0))
+
+            return `M ${from.x} ${from.y} A ${this.nodeRadius} ${this.nodeRadius} 0 1 1 ${to.x} ${to.y}`
+        
+        } else if (this.nodeHovering === undefined) {
+            // Empty space
+            let [x, y] = this.temporaryTransition.to
+            let diff = sub({ x, y }, source)
+
+            let from = add(source, mul(unit(diff), this.nodeRadius))
+
+            return `M ${from.x} ${from.y} L ${x} ${y}`
+        
+        } else {
+            // Another node
+            let target = this.diagram.nodes[this.nodeHovering]
+            let diff = sub(target, source)
+
+            let to = sub(target, mul(unit(diff), this.nodeRadius))
+            let from = add(source, mul(unit(diff), this.nodeRadius))
+
+            return `M ${from.x} ${from.y} L ${to.x} ${to.y}`
+        }
+    }
+
     public setTransform(transform: Transform) {
         this.transform = transform
         this.zoom.scaleTo(this.svg, transform.k)
     }
 
-    public update(diagram: Diagram) {
-        this.diagram = diagram
+    private update() {
         this.setupNodes()
         this.setupLinks()
+    }
+
+    public setDiagram(diagram: Diagram) {
+        this.diagram = diagram
+        this.update()
     }
 
     private areLinked(a: number, b: number): boolean {
@@ -142,11 +294,17 @@ export default class Graph {
         this.svg.call(this.zoom)
     }
 
-    private addNode(node: Node): void {
-        let nextId = Date.now()
-        this.diagram.nodeIds.push(nextId)
-        this.diagram.nodes[nextId] = node
-        this.setupNodes()
+    /**
+     * Creates a new node at position `(x, y)`, with `label` text.
+     */
+    public addNode(x: number, y: number, label: string, id: number) {
+
+        // Add to the diagram
+        let node = { x, y, label }
+        this.diagram.nodeIds.push(id)
+        this.diagram.nodes[id] = node
+
+        this.update()
     }
 
     private setupTools() {
@@ -166,6 +324,7 @@ export default class Graph {
         this.setupNodes()
         this.setupLinks()
         this.setupTools()
+        this.setupTemporaryLink()
     }
 
     private nodeDragged(id: number, x: number, y: number, el: SVGGElement) {
@@ -190,7 +349,9 @@ export default class Graph {
 
         let nodeDrag = d3.drag<SVGGElement, number>()
             .on("drag", function(d) {
-                self.nodeDragged(d, d3.event.x, d3.event.y, this)
+                if (self.enableNodeDrag) {
+                    self.nodeDragged(d, d3.event.x, d3.event.y, this)
+                }
             })
 
         let nodeSelection = this.nodeGroup
@@ -205,6 +366,12 @@ export default class Graph {
                 .attr("class", "node")
                 .attr("id", id => id)
                 .on("contextmenu", id => this.adapter.nodeRightClick(id))
+                .on("mouseenter", id => {
+                    this.nodeHovering = id
+                })
+                .on("mouseleave", () => {
+                    this.nodeHovering = undefined
+                })
 
         newNodes.append("circle")
                 .attr("class", "circle")

@@ -5,7 +5,8 @@ enum Action {
     EDIT_STATE = "editState",
     EDIT_TRANSITION = "editTransition",
     ADD_STATE = "addState",
-    SET_STATE_POSITION = "setStatePosition"
+    CREATE_TRANSITION = "createTransition",
+    SET_STATE_POSITION = "setStatePosition",
 }
 
 export default Action

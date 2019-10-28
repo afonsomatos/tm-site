@@ -49,8 +49,23 @@ export interface State {
 }
 
 export interface Adapter {
+    /**
+     * A certain node is right clicked (open context menu).
+     */
     nodeRightClick: (id: number) => void,
+
+    /**
+     * Zoom or pan.
+     */
     transformed: (transform: Transform) => void,
-    stateMoved: (id: number, pos: Point) => void
-    //backgroundRightClick: (pos: Point) => void
+
+    /**
+     * Move a certain node.
+     */
+    stateMoved: (id: number, pos: Point) => void,
+
+    /**
+     * A link between nodes is created.
+     */
+    editLink: (from: number, to: number) => void
 }

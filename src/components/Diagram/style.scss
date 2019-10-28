@@ -32,6 +32,20 @@
     &:active .circle { stroke: #000; }
 }
 
+.newTransition {
+    // Node is being selected as a target of a transition.
+    .node {
+        cursor: pointer !important;
+        &:hover, &:active {
+            .circle { stroke: #5A73EF; }
+        }
+    }
+    // No target is getting selected.
+    #background {
+        cursor: default !important;
+    }
+}
+
 .node-label {
     fill: rgba(0, 0, 0, 0.76);
 }
@@ -43,15 +57,25 @@
 }
 
 .link {
-    stroke: #707070;
     stroke-width: 1px;
     fill: transparent;
     marker-end: url(#arrow-head);
 
     &:hover { stroke: red; }
+
+    &.temporary {
+        stroke-width: 3px;
+        marker-end: url(#arrow-head-temporary);
+    }
 }
 
-#arrow-head {
+#arrow-head, .link {
     stroke: #707070;
     fill: none;
+}
+
+#arrow-head-temporary, .link.temporary {
+    stroke: #5A73EF;
+    pointer-events: none;
+    fill: none
 }

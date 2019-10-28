@@ -37,7 +37,6 @@ export default Vue.extend({
 
         addState() {
             this.add()
-            this.$store.state.diagram.update()
             this.setMenu(null)
         }
     }
