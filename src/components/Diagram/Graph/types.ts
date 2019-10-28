@@ -67,5 +67,5 @@ export interface Adapter {
     /**
      * A link between nodes is created.
      */
-    newLink: (from: number, to: number) => void
+    editLink: (from: number, to: number) => void
 }

@@ -20,9 +20,11 @@ interface State {
     // Identifies which context menu is being shown. Null means it's closed. 
     menu: null | string,
     // Current transform on the diagram
-    transform: Transform
+    transform: Transform,
     // Current diagram graph object
-    graph?: Graph
+    graph?: Graph,
+    // Selected link between two nodes
+    link?: [number, number]
 }
 
 const state: State = {
@@ -33,6 +35,7 @@ const state: State = {
     menu: null,
     graph: null,
     transform: { x: 1, y: 1, k: 1 },
+    link: null,
 }
 
 const actions: ActionTree<State, any> = {
@@ -64,7 +67,7 @@ const actions: ActionTree<State, any> = {
         dispatch(Action.SET_STATE_POSITION, { id, pos })
 
         if (state.graph) {
-            state.graph.addNode(x, y, "Hehe")
+            state.graph.addNode(x, y, "Hehe", id)
         }
 
     },
@@ -83,7 +86,11 @@ const actions: ActionTree<State, any> = {
 }
 
 const mutations: MutationTree<State> = {
-    
+
+    [Mutation.SELECT_LINK]: (state, link: [number, number]) => {
+        state.link = link
+    },
+
     [Mutation.SET_TRANSFORM]: (state, transform: Transform) => {
         state.transform = transform
     },

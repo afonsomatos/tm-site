@@ -101,7 +101,7 @@ export default class Graph {
     private temporaryLink: d3.Selection<SVGPathElement, null, null, null>
 
     // Last known position for the mouse
-    private mousePosition: Point = [0, 0]
+    public mousePosition: Point = [0, 0]
 
     // Can we drag a node right now?
     private enableNodeDrag: boolean = true
@@ -167,15 +167,17 @@ export default class Graph {
         let linkIds = this.diagram.linkIds.slice()
         linkIds.sort()
 
-        let nextLinkId = linkIds[linkIds.length - 1] + 1
+        let newLinkId = linkIds[linkIds.length - 1] + 1
         let link = { from, to, label: "Example" }
         
         // Add to the diagram
-        this.diagram.linkIds.push(nextLinkId)
-        this.diagram.links[nextLinkId] = link
+        this.diagram.linkIds.push(newLinkId)
+        this.diagram.links[newLinkId] = link
 
         this.update()
-        this.adapter.newLink(from, to)
+
+        // Notify that a new transition was created
+        this.adapter.editLink(from, to)
     }
 
     private finishNewTransition() {
@@ -293,20 +295,14 @@ export default class Graph {
     }
 
     /**
-     * Creates a new node at `(x, y)`, with `label` text. 
+     * Creates a new node at position `(x, y)`, with `label` text.
      */
-    public addNode(x: number, y: number, label: string) {
+    public addNode(x: number, y: number, label: string, id: number) {
 
-        // Find next available link id
-        let nodeIds = this.diagram.nodeIds.slice()
-        nodeIds.sort()
-
-        let nextNodeId = nodeIds[nodeIds.length - 1] + 1
-        let node = { x, y, label }
-        
         // Add to the diagram
-        this.diagram.nodeIds.push(nextNodeId)
-        this.diagram.nodes[nextNodeId] = node
+        let node = { x, y, label }
+        this.diagram.nodeIds.push(id)
+        this.diagram.nodes[id] = node
 
         this.update()
     }

@@ -49,7 +49,8 @@ export default Vue.extend({
 			setPosition: Mutation.SET_POSITION,
 			setMenu: Mutation.SET_MENU,
 			setTransform: Mutation.SET_TRANSFORM,
-			selectState: Mutation.SELECT_STATE
+			selectState: Mutation.SELECT_STATE,
+			selectLink: Mutation.SELECT_LINK,
 		}),
 
 		update() {
@@ -122,9 +123,10 @@ export default Vue.extend({
 			stateMoved: (id: number, pos: Point) => {
 				this.setStatePosition({ id, pos })
 			},
-
-			newLink: (from: number, to: number) => {
-				console.log(`New transition from ${from} to ${to}.`)
+			editLink: (from: number, to: number) => {
+				this.setPosition(this.graph.mousePosition)
+				this.setMenu("transition")
+				this.selectLink([from, to])
 			}
 		})
 
