@@ -1,67 +1,10 @@
 import * as d3 from "d3"
 import { ZoomBehavior, Selection, } from "d3"
 
-import { Diagram, Status, Transform, Vector, Line, Node, Adapter, Link } from "./types"
+import { Transform, Vector } from "./types"
 import { sub, add, mul, unit, vec, ang, norm } from "./util"
-import { Point } from "@/shared/types"
-
-function defaultDiagram(): Diagram {
-    return {
-        links: {
-            2: {
-                from: 1,
-                to: 2,
-                label: "Hey"
-            },
-            3: {
-                from: 2,
-                to: 1,
-                label: "xoxo"
-            },
-            4: {
-                from: 3,
-                to: 3,
-                label: "hello"
-            },
-            5: {
-                from: 1,
-                to: 3,
-                label: "dude"
-            }
-        },
-        nodes: {
-            1: {
-                x: 100,
-                y: 100,
-                label: "One"
-            },
-            2: {
-                x: 200,
-                y: 200,
-                label: "Two"
-            },
-            3: {
-                x: 300,
-                y: 300,
-                label: "Three"
-            },
-            4: {
-                x: 250,
-                y: 250,
-                label: "Four"
-            }
-        },
-        linkIds: [2, 3, 4, 5],
-        nodeIds: [1, 2, 3, 4],
-    }
-}
-
-function defaultStatus(): Status {
-    return {
-        activeLink: 0,
-        activeNode: 0
-    }
-}
+import { Point, Direction } from "@/shared/types"
+import { Model, State, Transition } from "@/shared/model"
 
 function transformAttr(transform: Transform): string {
     let {x, y, k} = transform
@@ -76,18 +19,19 @@ export default class Graph {
     private zoom: ZoomBehavior<SVGElement, any>
     private zoomLabel: Selection<SVGTextElement, Transform, any, any>
 
-    private nodeGroup: Selection<SVGGElement, number, any, any>
-    private linkGroup: Selection<SVGGElement, number, any, any>
+    private nodeGroup: Selection<SVGGElement, State, any, any>
+    private linkGroup: Selection<SVGGElement, Transition, any, any>
 
-    private diagram: Diagram
-    private status: Status
-    private transform: Transform
+    // Contains all states and transitions
+    public model: Model
+
+    public transform: Transform
 
     private nodeRadius: number = 20
 
     private temporaryTransition = {
-        // Node number
-        from: 0,
+        // Node
+        from: <State> null,
         // Position
         to: <Point> [0, 0],
         // Being used?
@@ -95,7 +39,7 @@ export default class Graph {
     }
 
     // Contains the id of the node being mouseovered.
-    private nodeHovering: number | undefined
+    private stateHovering: State | undefined
 
     // Placeholder for the transition being created
     private temporaryLink: d3.Selection<SVGPathElement, null, null, null>
@@ -103,13 +47,17 @@ export default class Graph {
     // Last known position for the mouse
     public mousePosition: Point = [0, 0]
 
+    // What zoom values are allowed
+    private zoomRange: [number, number] = [0.2, 10] // * 100%
+
     // Can we drag a node right now?
-    private enableNodeDrag: boolean = true
+    private get enableNodeDrag(): boolean {
+        return !this.temporaryTransition.active
+    }
 
-    constructor(svgElement: SVGSVGElement, private adapter: Adapter) {
+    constructor(svgElement: SVGSVGElement) {
 
-        this.diagram = defaultDiagram()
-        this.status = defaultStatus()
+        this.model = new Model()
         this.transform = { x: 0, y: 0, k: 1}
 
         this.svg = d3.select(svgElement)
@@ -122,7 +70,6 @@ export default class Graph {
         this.zoomLabel = this.svg.append("text").attr("class", "zoom-label")
 
         this.setup()
-        //this.update()
     }
 
     /**
@@ -137,55 +84,54 @@ export default class Graph {
     }
 
     /**
+     * Events handlers.
+     */
+    public onStateRightClick: (state: State) => void
+    //public onTransform: (transform: Transform) => void
+
+    /**
      * Creates a new temporary transition from a node, till the user clicks on another node. 
      */
-    public newTransition(nodeId: number) {
+    public newTransition(node: State) {
 
         this.temporaryTransition = {
             active: true,
-            from: nodeId,
+            from: node,
             to: this.pointer
         }
 
         this.svg.classed("newTransition", true)
         this.temporaryLink.style("visibility", "visible")
-        this.enableNodeDrag = false
+    }
+
+    /**
+     * Finishes a temporary transition.
+     */
+    private finishNewTransition() {
+        this.svg.classed("newTransition", false)
+        this.temporaryLink.style("visibility", "hidden")
+        this.temporaryTransition.active = false
     }
 
     /**
      * Creates a new transition between the node `from` and `to`.
      */
-    private createTransition(from: number, to: number) {
+    private createTransition(from: State, to: State) {
         
         // Is there a link equal to this?
-        if (this.areLinked(from, to)) {
-            console.log("Transition already filled from", from, "to", to)
+        if (this.model.areLinked(from, to)) {
+            console.log("Transition already filled from", from.label, "to", to.label)
             return
         }
 
-        // Find next available link id
-        let linkIds = this.diagram.linkIds.slice()
-        linkIds.sort()
-
-        let newLinkId = linkIds[linkIds.length - 1] + 1
-        let link = { from, to, label: "Example" }
-        
-        // Add to the diagram
-        this.diagram.linkIds.push(newLinkId)
-        this.diagram.links[newLinkId] = link
+        this.model.addTransition({
+            from, to,
+            direction: Direction.Right,
+            read: "A",
+            write: "B",
+        })
 
         this.update()
-
-        // Notify that a new transition was created
-        this.adapter.editLink(from, to)
-    }
-
-    private finishNewTransition() {
-
-        this.temporaryTransition.active = false
-        this.svg.classed("newTransition", false)
-        this.temporaryLink.style("visibility", "hidden")
-        this.enableNodeDrag = true
     }
 
     private setupTemporaryLink() {
@@ -210,8 +156,8 @@ export default class Graph {
             // Close temporary link
             if (this.temporaryTransition.active) {
                 // If a node was selected as a target, a new link was created
-                if (this.nodeHovering !== undefined) {
-                    this.createTransition(this.temporaryTransition.from, this.nodeHovering)
+                if (this.stateHovering !== undefined) {
+                    this.createTransition(this.temporaryTransition.from, this.stateHovering)
                 }
 
                 this.finishNewTransition()
@@ -219,29 +165,31 @@ export default class Graph {
         })
     }
 
+    /**
+     * Returns the SVG Path of a temporary transition.
+     */
     private temporaryLine() {
 
-        let source: Vector = this.diagram.nodes[this.temporaryTransition.from]
-
-        if (this.nodeHovering === this.temporaryTransition.from) {
-            // Self
+        let source: Vector = this.temporaryTransition.from.position
+        
+        if (this.stateHovering === this.temporaryTransition.from) {
+            // To self (loop)
             let from = add(source, vec(this.nodeRadius, -Math.PI / 2))
             let to = add(source, vec(this.nodeRadius, 0))
 
             return `M ${from.x} ${from.y} A ${this.nodeRadius} ${this.nodeRadius} 0 1 1 ${to.x} ${to.y}`
         
-        } else if (this.nodeHovering === undefined) {
-            // Empty space
+        } else if (this.stateHovering === undefined) {
+            // Empty space (straight line)
             let [x, y] = this.temporaryTransition.to
             let diff = sub({ x, y }, source)
-
             let from = add(source, mul(unit(diff), this.nodeRadius))
 
             return `M ${from.x} ${from.y} L ${x} ${y}`
         
         } else {
-            // Another node
-            let target = this.diagram.nodes[this.nodeHovering]
+            // Another node (straight line to border of the target node)
+            let target = this.stateHovering.position
             let diff = sub(target, source)
 
             let to = sub(target, mul(unit(diff), this.nodeRadius))
@@ -256,21 +204,14 @@ export default class Graph {
         this.zoom.scaleTo(this.svg, transform.k)
     }
 
-    private update() {
+    public update() {
         this.setupNodes()
         this.setupLinks()
     }
 
-    public setDiagram(diagram: Diagram) {
-        this.diagram = diagram
+    public setModel(model: Model) {
+        this.model = model
         this.update()
-    }
-
-    private areLinked(a: number, b: number): boolean {
-        return this.diagram.linkIds.some(id => {
-            let link = this.diagram.links[id]
-            return link.from == a && link.to == b
-        })
     }
 
     private updateZoomLabel() {
@@ -283,53 +224,39 @@ export default class Graph {
     }
 
     private setupZoom() {
-        this.zoom.scaleExtent([0.2, 10]).on("zoom", () => {
+        this.zoom.scaleExtent(this.zoomRange).on("zoom", () => {
             let { x, y, k } = d3.event.transform
             this.transform = { x, y, k }
             this.wrapper.attr("transform", transformAttr(this.transform))
             this.updateZoomLabel()
-            this.adapter.transformed(this.transform)
+            //this.onTransform(this.transform)
         })
 
         this.svg.call(this.zoom)
     }
 
-    /**
-     * Creates a new node at position `(x, y)`, with `label` text.
-     */
-    public addNode(x: number, y: number, label: string, id: number) {
-
-        // Add to the diagram
-        let node = { x, y, label }
-        this.diagram.nodeIds.push(id)
-        this.diagram.nodes[id] = node
-
-        this.update()
-    }
-
-    private setupTools() {
-        // this.svg.on("contextmenu", () => {
-        //     d3.event.preventDefault()
-        //     this.addNode({
-        //         y: d3.event.y - this.nodeRadius / 2,
-        //         x: d3.event.x - this.nodeRadius / 2,
-        //         label: "State" 
-        //     })
-        // })
-    }
-
     private setup() {
+        this.setupSvg()
         this.setupZoom()
         this.updateZoomLabel()
         this.setupNodes()
         this.setupLinks()
-        this.setupTools()
         this.setupTemporaryLink()
     }
 
-    private nodeDragged(id: number, x: number, y: number, el: SVGGElement) {
-        this.diagram.nodes[id].x = x
-        this.diagram.nodes[id].y = y
+    /**
+     * Basic behaviors of the svg are created here.
+     */
+    private setupSvg() {
+        // Hide default context menu
+		this.svg.on("contextmenu", () => {
+			d3.event.preventDefault()
+		})
+    }
+
+    private nodeDragged(state: State, x: number, y: number, el: SVGGElement) {
+
+        state.position = { x, y }
 
         // Make node visible
         d3.select(el)
@@ -338,16 +265,19 @@ export default class Graph {
         
         // Update links
         d3.selectAll(".link")
-            .data(this.diagram.linkIds)
+            .data(this.model.transitions)
             .attr("d", d => this.line(d))
-
-        // Notify adapter
-        this.adapter.stateMoved(id, [x, y])
     }
 
+    /**
+     * Create all starting nodes and setup their behavior.
+     */
     private setupNodes() {
 
-        let nodeDrag = d3.drag<SVGGElement, number>()
+        let self = this
+
+        // Ability to drag a node around
+        let nodeDrag = d3.drag<SVGGElement, State>()
             .on("drag", function(d) {
                 if (self.enableNodeDrag) {
                     self.nodeDragged(d, d3.event.x, d3.event.y, this)
@@ -355,49 +285,44 @@ export default class Graph {
             })
 
         let nodeSelection = this.nodeGroup
-            .selectAll<SVGGElement, number>(".node")
-            .data(this.diagram.nodeIds)
-
+            .selectAll<SVGGElement, State>(".node")
+            .data(this.model.states)
+        
+        // Remove all unused nodes
         nodeSelection.exit().remove()
 
+        // Setup behavior for new nodes
         let newNodes = nodeSelection
             .enter()
                 .append("g")
                 .attr("class", "node")
-                .attr("id", id => id)
-                .on("contextmenu", id => this.adapter.nodeRightClick(id))
-                .on("mouseenter", id => {
-                    this.nodeHovering = id
-                })
-                .on("mouseleave", () => {
-                    this.nodeHovering = undefined
-                })
+                .on("mouseenter", state => this.stateHovering = state)
+                .on("mouseleave", () => this.stateHovering = undefined)
+                .on("contextmenu", state => this.onStateRightClick(state))
 
         newNodes.append("circle")
                 .attr("class", "circle")
                 .attr("r", this.nodeRadius)
         
         newNodes.append("text")
-
         newNodes.call(nodeDrag)
-        
+            
+        // Let's translate all nodes to their true position
         let allNodes = newNodes.merge(nodeSelection)
 
-        allNodes.attr("transform", id => {
-            let { x, y } = this.diagram.nodes[id]
+        allNodes.attr("transform", state => {
+            let { x, y } = state.position
             return transformAttr({ x, y, k: 1})
         })
 
-        let labelSelection = allNodes
-            .select<SVGTextElement>("text")
-
-        let self = this
-        
-        labelSelection
-                .text(id => this.diagram.nodes[id].label)
-                .attr("text-anchor", "middle")
+        // Let's write the nodes' labels
+        allNodes.select<SVGTextElement>("text")
+                .text(state => state.label)
+                // Make sure the text fits in node without wrapping or overflowing
                 .attr("class", "node-label")
+                .attr("text-anchor", "middle")
                 .attr("alignment-baseline", "middle")
+                // TODO: Can some of this go to scss file?
                 .style("font-size", "24px")
                 .attr("dy", ".1em")
                 .style("font-size", function(d) {
@@ -407,29 +332,30 @@ export default class Graph {
                 })
     }
 
-    private line(linkId: number): string {
+    /**
+     * Create a line for a normal transition.
+     */
+    private line(transition: Transition): string {
 
-        let { nodes, links } = this.diagram
-        let { from, to } = links[linkId]
-        
-        let node2: Vector = nodes[to]
-        let node1: Vector = nodes[from]
+        let { from, to } = transition
 
-        let diff = sub(node2, node1)
+        let diff = sub(to.position, from.position)
 
-        let forward = this.areLinked(from, to)
-        let backward = this.areLinked(to, from)
-
-        if (node1 == node2) {
+        if (from == to) {
             // Loop
-            let source = add(node1, vec(this.nodeRadius, -Math.PI / 2))
-            let target = add(node1, vec(this.nodeRadius, 0))
+            let source = add(from.position, vec(this.nodeRadius, -Math.PI / 2))
+            let target = add(from.position, vec(this.nodeRadius, 0))
 
             return `M ${source.x} ${source.y} A ${this.nodeRadius} ${this.nodeRadius} 0 1 1 ${target.x} ${target.y}`
-        } else if (forward !== backward) {
+        }
+        
+        let forward = this.model.areLinked(from, to)
+        let backward = this.model.areLinked(to, from)
+
+        if (forward !== backward) {
             // Straight
-            let source = add(node1, mul(unit(diff), this.nodeRadius))
-            let target = sub(node2, mul(unit(diff), this.nodeRadius))
+            let source = add(from.position, mul(unit(diff), this.nodeRadius))
+            let target = sub(to.position, mul(unit(diff), this.nodeRadius))
             
             return `M ${source.x} ${source.y} L ${target.x} ${target.y}`
         } else {
@@ -437,28 +363,32 @@ export default class Graph {
             let angle = ang(diff);
             let radius = 1.2 * norm(diff)
             let sep = Math.PI / 4
-            let source = add(node1, vec(this.nodeRadius, angle - sep))
-            let target = add(node2, vec(this.nodeRadius, angle - Math.PI + sep))
+            let source = add(from.position, vec(this.nodeRadius, angle - sep))
+            let target = add(to.position, vec(this.nodeRadius, angle - Math.PI + sep))
 
             return `M ${source.x} ${source.y} A ${radius} ${radius} 0 0 1 ${target.x} ${target.y}`
         }
     }
 
+    /**
+     * Create behaviors for links.
+     */
     private setupLinks() {
 
         let selection = this.linkGroup
-            .selectAll<SVGPathElement, number>(".link")
-            .data(this.diagram.linkIds)
+            .selectAll<SVGPathElement, State>(".link")
+            .data(this.model.transitions)
 
+        // Remove unused links
         selection.exit().remove()
-        
+
+        // Create new lines and update all
         selection
             .enter()
                 .append("path")
                 .attr("class", "link")
             .merge(selection)
-                .attr("d", d => this.line(d))
-                .on("click", d => console.log(d))
+                .attr("d", transition => this.line(transition))
     }
 
 }

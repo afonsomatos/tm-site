@@ -6,7 +6,8 @@ import edit from "./edit.module"
 import run from "./run.module"
 import Mutation from "./mutation"
 
-import { Point } from "@/shared/types"
+import { Point, Direction } from "@/shared/types"
+import { Model, State, Transition } from "@/shared/model"
 
 Vue.use(Vuex)
 
@@ -45,6 +46,32 @@ function getDefaultTransition(model) {
     ]
 }
 
+const exampleNewModel = () => {
+    let model = new Model();
+    let a: State = {
+        label: "a",
+        position: {x: 100, y: 100}
+    }
+
+    let b: State = {
+        label: "b",
+        position: { x: 200, y: 200}
+    }
+
+    let c: Transition = {
+        from: a,
+        to: b,
+        direction: Direction.Right,
+        read: "K",
+        write: "M"
+    }
+
+    model.addState(a)
+    model.addState(b)
+    model.addTransition(c)
+    return model;
+}
+
 export default new Vuex.Store({
     
     modules: {
@@ -56,6 +83,7 @@ export default new Vuex.Store({
     state: {
         currentTab: Tabs.Run,
         model: exampleModel,
+        nextModel: exampleNewModel(),
     },
 
     mutations: {

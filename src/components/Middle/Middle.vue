@@ -2,8 +2,10 @@
     <div class="middle">
         <div class="main">
             <!-- <transition name="fade"> -->
-                <FunctionTable v-if="isGrid()" />
-                <Diagram v-else />
+                <keep-alive> <!-- Keep alive will save the component's state -->
+                    <FunctionTable v-if="isGrid()" />
+                    <Diagram v-else />
+                </keep-alive>
             <!-- </transition> -->
         </div>
         <div class="top">

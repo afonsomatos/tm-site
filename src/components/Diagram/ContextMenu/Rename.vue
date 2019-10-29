@@ -1,22 +1,36 @@
 <template>
     <div class="rename">
-        <icon-btn class="icon" icon="left-arrow-alt" @click="setMenu('state')" :clickable="true" />
-        <input class="input" value="State" />
+        <icon-btn class="icon" icon="left-arrow-alt" @click="goBack" :clickable="true" />
+        <input class="input" v-model="state.label" @input="onRename" />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import IconBtn from "@/components/IconBtn.vue"
-import { mapMutations } from 'vuex'
+
+import { mapMutations, mapGetters } from 'vuex'
 import Mutation from "@/store/modules/diagram/mutation"
+import Getter from "@/store/modules/diagram/getter"
+
+import IconBtn from "@/components/IconBtn.vue"
 
 export default Vue.extend({
     components: { IconBtn },
+    computed: {
+        state() {
+            return this.$store.state.diagram.state
+        }
+    },
     methods: {
         ...mapMutations("diagram", {
             setMenu: Mutation.SET_MENU
-        })
+        }),
+        goBack() {
+            this.setMenu("state")
+        },
+        onRename(e) {
+            this.$store.state.diagram.graph.update()
+        }
     }
 })
 </script>
