@@ -404,6 +404,9 @@ export default class Graph {
                 
         newLinks.append("path")
                 .attr("class", "link")
+        
+        newLinks.append("path")
+                .attr("class", "linkShadow")
 
         selection = newLinks.merge(selection)
         let self = this
@@ -414,11 +417,20 @@ export default class Graph {
             let transitions = self.model.linkToTransitions(link)
 
             let reversed = link.from.position.x > link.to.position.x
-            
-            group.select(".link")
+            let linePath = self.line(link, reversed)
+
+            let linkEl = group.select(".link")
                 .classed("reversed", reversed)
-                .attr("d", self.line(link, reversed))
+                .attr("d", linePath)
                 .attr("id", `link${index}`)
+
+            group.select(".linkShadow")
+                .attr("d", linePath)
+                .on("mouseenter", () => linkEl.classed("active", true))
+                .on("mouseleave", () => linkEl.classed("active", false))
+                .on("contextmenu", () => {
+                    self.onLinkRightClick(link)
+                })
 
             let linkText = group
                 .selectAll<SVGTextElement, Transition>(".linkText")

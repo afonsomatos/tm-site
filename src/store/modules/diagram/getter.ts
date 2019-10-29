@@ -4,7 +4,6 @@ enum Getter {
     SELECT_TRANSITION = "selectTransition",
     STATE_NAME = "stateName",
     TRANSITION = "transition",
-    TRANSITION_GROUP = "transitionGroup",
     POSITION = "position",
     CURRENT_TRANSITION = "currentTransition",
     TRANSFORM = "transform",

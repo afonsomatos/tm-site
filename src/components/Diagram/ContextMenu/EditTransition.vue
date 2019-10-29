@@ -1,14 +1,14 @@
 <template>
     <div class="v-menu">
         <div class="icons">
-            <icon-btn icon="left-arrow" class="icon" @click="goBack" clickable="true" />
+            <icon-btn icon="left-arrow" class="icon" @click="goBack" :clickable="true" />
             <div><!-- --></div>
-            <icon-btn icon="delete" class="icon red" @click="remove" clickable="true" />
+            <icon-btn icon="delete" class="icon red" @click="remove" :clickable="true" />
         </div>
         <div class="read-write">
-            <div>{{ transition.read }}</div>
+            <input v-model="transition.read" @input="update" maxlength="1" @focus="$event.target.select()"/>
             <div>→</div>
-            <div>{{ transition.write }}</div>
+            <input v-model="transition.write" @input="update" maxlength="1" @focus="$event.target.select()"/>
         </div>
         <div class="direction">
             <div @click="setLeft" :class="{ active: left }">L</div>
@@ -19,48 +19,60 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 import IconBtn from "@/components/IconBtn.vue"
 
 import { Transition, Direction } from "@/shared/types"
 
+import Action from "@/store/modules/diagram/action"
 import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
-import { mapMutations, mapGetters } from 'vuex'
 
 export default Vue.extend({
     components: { IconBtn },
     computed: {
-        ...mapGetters("diagram", {
-            transition: Getter.CURRENT_TRANSITION,
-        }),
+
+        transition() {
+            return this.$store.state.diagram.transition
+        },
+
         left() {
             return this.transition.direction === Direction.Left
         },
+
         right() {
             return this.transition.direction === Direction.Right
         }
+
     },
     methods: {
+
+        ...mapActions("diagram", {
+            deleteTransition: Action.DELETE_TRANSITION,
+            update: Action.UPDATE,
+        }),
+
         ...mapMutations("diagram", {
             setMenu: Mutation.SET_MENU,
-            editTransition: Mutation.EDIT_TRANSITION,
-            deleteTransition: Mutation.DELETE_TRANSITION,
         }),
+
         goBack() {
-            this.setMenu("transition")
+            this.setMenu("link")
         },
+
         remove() {
             this.deleteTransition()
             this.goBack()
         },
-        setDirection(direction: Direction) {
-            this.editTransition({ ...this.transition, direction })
-        },
+
         setLeft() {
-            this.setDirection(Direction.Left)
+            this.transition.direction = Direction.Left
+            this.update()
         },
+
         setRight() {
-            this.setDirection(Direction.Right)
+            this.transition.direction = Direction.Right
+            this.update()
         }
     }
 })
@@ -88,6 +100,20 @@ export default Vue.extend({
     grid-auto-flow: column;
     background: #eee;
     padding: 5px;
+}
+
+input {
+    text-align: center;
+    font: inherit;
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    margin: 0;
+    padding: 0;
+    &:focus {
+        outline: 0;
+    }
 }
 
 .direction {

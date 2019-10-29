@@ -7,7 +7,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import StateMenu from "./StateMenu.vue"
-import TransitionMenu from "./TransitionMenu.vue"
+import LinkMenu from "./LinkMenu.vue"
 import EditTransition from "./EditTransition.vue"
 import Rename from "./Rename.vue"
 import AddState from "./AddState.vue"
@@ -19,13 +19,13 @@ export default Vue.extend({
     components: {
         StateMenu,
         Rename,
-        TransitionMenu,
+        LinkMenu,
     },
     data() {
         return {
             menus: {
                 state: StateMenu,
-                transition: TransitionMenu,
+                link: LinkMenu,
                 rename: Rename,
                 editTransition: EditTransition,
                 addState: AddState,

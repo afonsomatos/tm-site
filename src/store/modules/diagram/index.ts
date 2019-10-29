@@ -40,8 +40,9 @@ const state: State = {
 }
 
 const actions: ActionTree<State, any> = {
-    [Action.EDIT_STATE]: (state, obj) => {
-        console.log("Editing state", obj)
+
+    [Action.UPDATE]: ({ state }) => {
+        state.graph.update()
     },
 
     [Action.DELETE_STATE]: ({ state }) => {
@@ -49,14 +50,9 @@ const actions: ActionTree<State, any> = {
         state.graph.update()
     },
 
-    [Action.DELETE_TRANSITION]: (state, id) => {
-        console.log("Deleting transition", id)
-    },
-    [Action.EDIT_TRANSITION]: (state, obj) => {
-        console.log("Editing transition", obj)
-    },
-    [Action.DELETE_TRANSITION]: (state, id) => {
-        console.log("Deleting transition", id)
+    [Action.DELETE_TRANSITION]: ({ state }) => {
+        state.graph.model.removeTransition(state.transition)
+        state.graph.update()
     },
 
     [Action.CREATE_TRANSITION]: ({ state }) => {

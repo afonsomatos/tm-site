@@ -50,6 +50,19 @@
     fill: rgba(0, 0, 0, 0.76);
 }
 
+.link-wrapper {
+    * { pointer-events: none; }
+
+    .linkShadow {
+        stroke: red;
+        opacity: 0;
+        fill: transparent;
+        stroke-width: 70;
+        pointer-events: stroke;
+        cursor: pointer;
+    }
+}
+
 .circle {
     fill: #89cca2;
     paint-order: stroke;
@@ -57,11 +70,14 @@
 }
 
 .link {
+    transition: stroke-width 0.2s ease;
     stroke-width: 1px;
     fill: transparent;
     marker-end: url(#arrow-head);
 
-    &:hover { stroke: red; }
+    &.active {
+        stroke-width: 3px;
+    }
 
     &.temporary {
         stroke-width: 3px;

@@ -51,6 +51,7 @@ export default Vue.extend({
 			setPosition: Mutation.SET_POSITION,
 			setMenu: Mutation.SET_MENU,
 			selectState: Mutation.SELECT_STATE,
+			selectLink: Mutation.SELECT_LINK,
 		}),
 
 	},
@@ -81,19 +82,11 @@ export default Vue.extend({
 		}
 
 		graph.onLinkRightClick = (link: Link) => {
-			console.log(link)
+			// Save position where context men will appear
+			this.setPosition(graph.mousePosition)
+			this.selectLink(link)
+			this.setMenu("link")
 		}
-
-
-		// CONTINUO AQUI: ADICIONAR CAPACIDADE DE EDITAR O ESTADO E CRIAR/EDITAR TRANSICAO
-		// COM NOVA API. ALTERAR A STORE PARA ESTE EFEITO.
-
-		/*
-			editLink: (from: number, to: number) => {
-				this.setPosition(this.graph.mousePosition)
-				this.setMenu("transition")
-				this.selectLink([from, to])
-		})*/
 
 		this.$store.state.diagram.graph = graph
 
