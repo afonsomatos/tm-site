@@ -67,9 +67,14 @@
         stroke-width: 3px;
         marker-end: url(#arrow-head-temporary);
     }
+
+    &.reversed {
+        marker-end: none;
+        marker-start: url(#reversed-arrow-head);
+    }
 }
 
-#arrow-head, .link {
+#reversed-arrow-head, #arrow-head, .link {
     stroke: #707070;
     fill: none;
 }

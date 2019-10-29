@@ -6,7 +6,10 @@
 				<rect id="background" x="0" y="0" width="100%" height="100%" fill="transparent"/>
 				<defs>
 					<marker id="arrow-head" viewBox="-5 -5 10 10" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="10">
-						<path  d="M -5 5, 0 0.3, -5 -5"></path>
+						<path d="M -5 5, 0 0.3, -5 -5"></path>
+					</marker>
+					<marker id="reversed-arrow-head" viewBox="-5 -5 10 10" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="10">
+						<path d="M -5 5, 0 0.3, -5 -5" transform="rotate(180)"></path>
 					</marker>
 					<marker id="arrow-head-temporary" viewBox="-5 -5 10 10" refX="0" refY="0" orient="auto" markerWidth="10" markerHeight="10">
 						<path  d="M -5 5, 0 0.3, -5 -5"></path>

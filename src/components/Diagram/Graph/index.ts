@@ -343,9 +343,13 @@ export default class Graph {
     /**
      * Create a line for a normal link.
      */
-    private line(link: Link): string {
+    private line(link: Link, reversed: boolean = false): string {
 
         let { from, to } = link
+
+        if (reversed)
+            [from, to] = [to, from]
+
         let diff = sub(to.position, from.position)
 
         if (from == to) {
@@ -367,13 +371,16 @@ export default class Graph {
             return `M ${source.x} ${source.y} L ${target.x} ${target.y}`
         } else {
             // Curved
+            let sep = (reversed ? -1 : 1) * Math.PI / 4 
+            // Sweep: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#Arcs
+            let sweep = reversed ? '0' : '1'
+
             let angle = ang(diff);
             let radius = 1.2 * norm(diff)
-            let sep = Math.PI / 4
             let source = add(from.position, vec(this.nodeRadius, angle - sep))
             let target = add(to.position, vec(this.nodeRadius, angle - Math.PI + sep))
-
-            return `M ${source.x} ${source.y} A ${radius} ${radius} 0 0 1 ${target.x} ${target.y}`
+            
+            return `M ${source.x} ${source.y} A ${radius} ${radius} 0 0 ${sweep} ${target.x} ${target.y}`
         }
     }
 
@@ -405,9 +412,12 @@ export default class Graph {
         selection.each(function(link: Link, index: number) {
             let group = d3.select(this)
             let transitions = self.model.linkToTransitions(link)
+
+            let reversed = link.from.position.x > link.to.position.x
             
             group.select(".link")
-                .attr("d", self.line(link))
+                .classed("reversed", reversed)
+                .attr("d", self.line(link, reversed))
                 .attr("id", `link${index}`)
 
             let linkText = group
@@ -434,7 +444,11 @@ export default class Graph {
                         .attr("text-anchor", "middle")
                 
                 newLinkText.merge(linkText)
-                    .attr("dy", (_, i) => -1 - 1.4 * i + "em")
+                    .attr("dy", (_, i) => {
+                        let val = reversed  ? 1.5 + 1.4 * i
+                                            : -1 - 1.4 * i
+                        return val + "em"
+                    })
                     .select("textPath")
                         .attr("xlink:href", `#link${index}`)
                         .html(transitionLabel)
