@@ -6,9 +6,17 @@ import { sub, add, mul, unit, vec, ang, norm } from "./util"
 import { Point, Direction } from "@/shared/types"
 import { Model, State, Transition, Link } from "@/shared/model"
 
+function translateAttr({x, y}: Vector): string {
+    return `translate(${x}, ${y})`
+}
+
 function transformAttr(transform: Transform): string {
     let {x, y, k} = transform
     return `translate(${x}, ${y}) scale(${k})`
+}
+
+function transitionLabel({ read, write, direction }: Transition): string {
+    return `${read} &rarr; ${write}, ${direction}`
 }
 
 export default class Graph {
@@ -405,22 +413,33 @@ export default class Graph {
             let linkText = group
                 .selectAll<SVGTextElement, Transition>(".linkText")
                 .data(transitions)
-            
+
             linkText.exit().remove()
             
             let newLinkText = linkText.enter()
                 .append("text")
                 .attr("class", "linkText")
                 
-            newLinkText.append("textPath")
-                    .attr("startOffset", "50%")
-                    .attr("text-anchor", "middle")
+            // Special design for loops
+            if (link.from === link.to) {
+                newLinkText
+                    .merge(linkText)
+                        .attr("transform", translateAttr(link.from.position))
+                        .attr("dy", (_, i) => -3 - 1.4 * i + "em")
+                        .html(transitionLabel)
+            } else {
+                // Design for straight and arcs
+                newLinkText.append("textPath")
+                        .attr("startOffset", "50%")
+                        .attr("text-anchor", "middle")
+                
+                newLinkText.merge(linkText)
+                    .attr("dy", (_, i) => -1 - 1.4 * i + "em")
+                    .select("textPath")
+                        .attr("xlink:href", `#link${index}`)
+                        .html(transitionLabel)
+            }
             
-            newLinkText.merge(linkText)
-                .attr("dy", (_, i) => -1 - 1.4*i + "em")
-                .select("textPath")
-                    .attr("xlink:href", `#link${index}`)
-                    .html(t => `${t.read} &rarr; ${t.write}, ${t.direction}`)
         })
 
     }

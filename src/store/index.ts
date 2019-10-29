@@ -46,6 +46,7 @@ function getDefaultTransition(model) {
     ]
 }
 
+
 const exampleNewModel = () => {
     let model = new Model();
     let a: State = {
@@ -61,9 +62,9 @@ const exampleNewModel = () => {
     let c: Transition = {
         from: a,
         to: b,
-        direction: Direction.Right,
-        read: "K",
-        write: "M"
+        direction: Direction.Left,
+        read: "M",
+        write: "X"
     }
 
     let d: Transition = {
@@ -74,10 +75,29 @@ const exampleNewModel = () => {
         write: "X"
     }
 
+    let e: Transition = {
+        from: a,
+        to: a,
+        direction: Direction.Left,
+        read: "M",
+        write: "X"
+    }
+
+    let f: Transition = {
+        from: a,
+        to: a,
+        direction: Direction.Left,
+        read: "M",
+        write: "X"
+    }
+
+
     model.addState(a)
     model.addState(b)
-    model.addTransition(d)
     model.addTransition(c)
+    model.addTransition(d)
+    model.addTransition(e)
+    model.addTransition(f)
     return model;
 }
 
