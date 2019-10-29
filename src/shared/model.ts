@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 import { Vector, Direction } from "@/shared/types"
 
 export interface State {
@@ -5,9 +7,12 @@ export interface State {
 	label: string,
 }
 
-export interface Transition {
+export interface Link {
 	from: State,
-	to: State,
+	to: State
+}
+
+export type Transition = Link & {
 	direction: Direction,
 	read: string,
 	write: string,
@@ -32,6 +37,16 @@ export class Model {
 		return Array(...this._transitions)
 	}
 
+	/**
+	 * Returns all links that exist.
+	 */
+	public get links(): Link[] {
+		let links = this.transitions.map(t => {
+			return { from: t.from, to: t.to }
+		})
+		return _.uniqWith(links, _.isEqual)
+	}
+
 	public constructor() {
 		// Initialize structures
 		this._states = new Set()
@@ -42,6 +57,18 @@ export class Model {
 		this._states.add(state)
 	}
 
+	/**
+	 * Returns all transitions with a certain link. 
+	 */
+	public linkToTransitions(link: Link): Transition[] {
+		return this.transitions.filter(x => {
+			return x.from === link.from && x.to === link.to
+		})
+	}
+
+	/**
+	 * Removes a state and all transitions associated with this state. 
+	 */
 	public removeState(state: State): boolean {
 		// Remove all transitions that have this state
 		for (let t of this.transitions) {

@@ -22,7 +22,6 @@
 import * as d3 from "d3"
 import _ from "lodash"
 import Vue from "vue"
-import { Diagram, Node, Link, Adapter } from "./Graph/types"
 import Graph from "./Graph/index"
 import ContextMenu from "./ContextMenu/index.vue"
 import { mapActions, mapMutations } from "vuex"
@@ -30,7 +29,7 @@ import { mapActions, mapMutations } from "vuex"
 import Mutation from "@/store/modules/diagram/mutation"
 import Action from "@/store/modules/diagram/action"
 
-import { State } from "@/shared/model"
+import { State, Link } from "@/shared/model"
 import { Point } from "@/shared/types"
 
 export default Vue.extend({
@@ -76,6 +75,10 @@ export default Vue.extend({
 			this.setPosition(graph.mousePosition)
 			this.selectState(state)
 			this.setMenu("state")
+		}
+
+		graph.onLinkRightClick = (link: Link) => {
+			console.log(link)
 		}
 
 

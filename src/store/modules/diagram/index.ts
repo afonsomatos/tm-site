@@ -1,5 +1,6 @@
+import Vue from "vue"
 import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
-import { Transition, Point } from "@/shared/types"
+import { Point } from "@/shared/types"
 
 import Action from "./action"
 import Mutation from "./mutation"
@@ -7,35 +8,34 @@ import Getter from "./getter"
 
 import { Transform } from "@/components/Diagram/Graph/types"
 
-import Vue from "vue"
 import Graph from "@/components/Diagram/Graph"
 
-import { State as MState } from "@/shared/model"
+import { State as MState, Link, Transition } from "@/shared/model"
 
 interface State {
+    // Coordinates for the context menu
     position: Point,
-    transitionGroup: number[],
-    transition: number,
     // Identifies which context menu is being shown. Null means it's closed. 
     menu: null | string,
     // Current transform on the diagram
     transform: Transform,
     // Current diagram graph object
     graph?: Graph,
-    // Selected link between two nodes
-    link?: [number, number],
+    // Link being edited at the moment
+    link?: Link,
     // State being edited at the moment
     state?: MState
+    // Transition being edited at the moment
+    transition?: Transition
 }
 
 const state: State = {
     position: [0, 0],
-    transitionGroup: [0, 2],
-    transition: 0,
+    transform: { x: 1, y: 1, k: 1 },
+    transition: null,
+    link: null,
     menu: null,
     graph: null,
-    transform: { x: 1, y: 1, k: 1 },
-    link: null,
     state: null
 }
 
@@ -71,7 +71,7 @@ const actions: ActionTree<State, any> = {
 
 const mutations: MutationTree<State> = {
 
-    [Mutation.SELECT_LINK]: (state, link: [number, number]) => {
+    [Mutation.SELECT_LINK]: (state, link: Link) => {
         state.link = link
     },
 
@@ -82,12 +82,11 @@ const mutations: MutationTree<State> = {
     [Mutation.SET_POSITION]: (state, position: Point) => {
         state.position = position
     },
+    
     [Mutation.SELECT_STATE]: (state, mstate: MState) => {
         state.state = mstate
     },
-    [Mutation.SELECT_GROUP]: (state, transitionGroup) => {
-        state.transitionGroup = transitionGroup
-    },
+
     [Mutation.SET_MENU]: (state, menu) => {
         state.menu = menu
     },
@@ -115,14 +114,6 @@ const getters: GetterTree<State, any> = {
         return "State"
     },
 
-    [Getter.TRANSITION]: state => (id: number): Transition => {
-        console.log("Getting transition", id)
-        return {
-            direction: 1,
-            read: 'A',
-            write: 'B'
-        }
-    },
     [Getter.CURRENT_TRANSITION]: (state, getters): Transition => {
         return getters[Getter.TRANSITION](state.transition)
     }

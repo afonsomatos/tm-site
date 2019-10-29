@@ -66,8 +66,17 @@ const exampleNewModel = () => {
         write: "M"
     }
 
+    let d: Transition = {
+        from: a,
+        to: b,
+        direction: Direction.Left,
+        read: "M",
+        write: "X"
+    }
+
     model.addState(a)
     model.addState(b)
+    model.addTransition(d)
     model.addTransition(c)
     return model;
 }

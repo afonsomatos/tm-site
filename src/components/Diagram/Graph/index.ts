@@ -1,10 +1,10 @@
 import * as d3 from "d3"
-import { ZoomBehavior, Selection, } from "d3"
+import { ZoomBehavior, Selection, transition, } from "d3"
 
 import { Transform, Vector } from "./types"
 import { sub, add, mul, unit, vec, ang, norm } from "./util"
 import { Point, Direction } from "@/shared/types"
-import { Model, State, Transition } from "@/shared/model"
+import { Model, State, Transition, Link } from "@/shared/model"
 
 function transformAttr(transform: Transform): string {
     let {x, y, k} = transform
@@ -20,7 +20,7 @@ export default class Graph {
     private zoomLabel: Selection<SVGTextElement, Transform, any, any>
 
     private nodeGroup: Selection<SVGGElement, State, any, any>
-    private linkGroup: Selection<SVGGElement, Transition, any, any>
+    private linkGroup: Selection<SVGGElement, Link, any, any>
 
     // Contains all states and transitions
     public model: Model
@@ -87,6 +87,7 @@ export default class Graph {
      * Events handlers.
      */
     public onStateRightClick: (state: State) => void
+    public onLinkRightClick: (link: Link) => void
     //public onTransform: (transform: Transform) => void
 
     /**
@@ -127,8 +128,8 @@ export default class Graph {
         this.model.addTransition({
             from, to,
             direction: Direction.Right,
-            read: "A",
-            write: "B",
+            read: "#",
+            write: "#",
         })
 
         this.update()
@@ -264,9 +265,8 @@ export default class Graph {
             .raise()
         
         // Update links
-        d3.selectAll(".link")
-            .data(this.model.transitions)
-            .attr("d", d => this.line(d))
+        // TODO: Speed this up? Performance will suffer.
+        this.setupLinks()
     }
 
     /**
@@ -333,12 +333,11 @@ export default class Graph {
     }
 
     /**
-     * Create a line for a normal transition.
+     * Create a line for a normal link.
      */
-    private line(transition: Transition): string {
+    private line(link: Link): string {
 
-        let { from, to } = transition
-
+        let { from, to } = link
         let diff = sub(to.position, from.position)
 
         if (from == to) {
@@ -376,19 +375,54 @@ export default class Graph {
     private setupLinks() {
 
         let selection = this.linkGroup
-            .selectAll<SVGPathElement, State>(".link")
-            .data(this.model.transitions)
+            .selectAll<SVGGElement, Link>(".link-wrapper")
+            .data(this.model.links)
 
         // Remove unused links
         selection.exit().remove()
-
-        // Create new lines and update all
-        selection
+        
+        // Create new links
+        let newLinks = selection
             .enter()
-                .append("path")
+                .append("g")
+                .attr("class", "link-wrapper")
+                
+        newLinks.append("path")
                 .attr("class", "link")
-            .merge(selection)
-                .attr("d", transition => this.line(transition))
+
+        selection = newLinks.merge(selection)
+        let self = this
+
+        // Create labels
+        selection.each(function(link: Link, index: number) {
+            let group = d3.select(this)
+            let transitions = self.model.linkToTransitions(link)
+            
+            group.select(".link")
+                .attr("d", self.line(link))
+                .attr("id", `link${index}`)
+
+            let linkText = group
+                .selectAll<SVGTextElement, Transition>(".linkText")
+                .data(transitions)
+            
+            linkText.exit().remove()
+            
+            let newLinkText = linkText.enter()
+                .append("text")
+                .attr("class", "linkText")
+                
+            newLinkText.append("textPath")
+                    .attr("startOffset", "50%")
+                    .attr("text-anchor", "middle")
+            
+            newLinkText.merge(linkText)
+                .attr("dy", (_, i) => -1 - 1.4*i + "em")
+                .select("textPath")
+                    .attr("xlink:href", `#link${index}`)
+                    .html(t => `${t.read} &rarr; ${t.write}, ${t.direction}`)
+        })
+
     }
 
 }
