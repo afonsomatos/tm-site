@@ -1,50 +1,54 @@
+import Vue from "vue"
 import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
-import { Transition, Point } from "@/shared/types"
+import { Point } from "@/shared/types"
 
 import Action from "./action"
 import Mutation from "./mutation"
 import Getter from "./getter"
 
-import RootMutation from "@/store/mutation"
-import RootAction from "@/store/action"
 import { Transform } from "@/components/Diagram/Graph/types"
 
-import Vue from "vue"
 import Graph from "@/components/Diagram/Graph"
 
+import { State as MState, Link, Transition } from "@/shared/model"
+
 interface State {
+    // Coordinates for the context menu
     position: Point,
-    state: number,
-    transitionGroup: number[],
-    transition: number,
     // Identifies which context menu is being shown. Null means it's closed. 
     menu: null | string,
     // Current transform on the diagram
     transform: Transform,
     // Current diagram graph object
     graph?: Graph,
-    // Selected link between two nodes
-    link?: [number, number]
+    // Link being edited at the moment
+    link?: Link,
+    // State being edited at the moment
+    state?: MState
+    // Transition being edited at the moment
+    transition?: Transition
 }
 
 const state: State = {
     position: [0, 0],
-    state: 0,
-    transitionGroup: [0, 2],
-    transition: 0,
+    transform: { x: 1, y: 1, k: 1 },
+    transition: null,
+    link: null,
     menu: null,
     graph: null,
-    transform: { x: 1, y: 1, k: 1 },
-    link: null,
+    state: null
 }
 
 const actions: ActionTree<State, any> = {
     [Action.EDIT_STATE]: (state, obj) => {
         console.log("Editing state", obj)
     },
-    [Action.DELETE_STATE]: (state) => {
-        console.log("Deleting!")
+
+    [Action.DELETE_STATE]: ({ state }) => {
+        state.graph.model.removeState(state.state)
+        state.graph.update()
     },
+
     [Action.DELETE_TRANSITION]: (state, id) => {
         console.log("Deleting transition", id)
     },
@@ -54,29 +58,9 @@ const actions: ActionTree<State, any> = {
     [Action.DELETE_TRANSITION]: (state, id) => {
         console.log("Deleting transition", id)
     },
-    [Action.ADD_STATE]: ({ commit, dispatch, state, rootState }) => {
 
-        const id = rootState.model.nextStateId
-        commit(RootMutation.ADD_STATE, null, { root: true })
-
-        // Get real position
-        let { transform } = state
-        let [x, y] = state.position
-        let pos = [ (x - transform.x) / transform.k, (y - transform.y) / transform.k ]
-
-        dispatch(Action.SET_STATE_POSITION, { id, pos })
-
-        if (state.graph) {
-            state.graph.addNode(x, y, "Hehe", id)
-        }
-
-    },
-
-    [Action.CREATE_TRANSITION]: () => {
-
-        if (state.graph) {
-            state.graph.newTransition(state.state)
-        }
+    [Action.CREATE_TRANSITION]: ({ state }) => {
+        state.graph.newTransition(state.state)
     },
 
     [Action.SET_STATE_POSITION]: ({ rootState }, { id, pos }) => {
@@ -87,7 +71,7 @@ const actions: ActionTree<State, any> = {
 
 const mutations: MutationTree<State> = {
 
-    [Mutation.SELECT_LINK]: (state, link: [number, number]) => {
+    [Mutation.SELECT_LINK]: (state, link: Link) => {
         state.link = link
     },
 
@@ -98,12 +82,11 @@ const mutations: MutationTree<State> = {
     [Mutation.SET_POSITION]: (state, position: Point) => {
         state.position = position
     },
-    [Mutation.SELECT_STATE]: (state, id) => {
-        state.state = id
+    
+    [Mutation.SELECT_STATE]: (state, mstate: MState) => {
+        state.state = mstate
     },
-    [Mutation.SELECT_GROUP]: (state, transitionGroup) => {
-        state.transitionGroup = transitionGroup
-    },
+
     [Mutation.SET_MENU]: (state, menu) => {
         state.menu = menu
     },
@@ -130,14 +113,7 @@ const getters: GetterTree<State, any> = {
     [Getter.STATE_NAME]: state => {
         return "State"
     },
-    [Getter.TRANSITION]: state => (id: number): Transition => {
-        console.log("Getting transition", id)
-        return {
-            direction: 1,
-            read: 'A',
-            write: 'B'
-        }
-    },
+
     [Getter.CURRENT_TRANSITION]: (state, getters): Transition => {
         return getters[Getter.TRANSITION](state.transition)
     }
