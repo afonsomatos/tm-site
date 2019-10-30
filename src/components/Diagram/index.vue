@@ -1,7 +1,6 @@
 <template>
 	<div id="app">
 		<div class="app-wrapper" ref="wrapper">
-			<context-menu v-if="showContextMenu" />
 			<svg id="svg" ref="svg">
 				<rect id="background" x="0" y="0" width="100%" height="100%" fill="transparent"/>
 				<defs>
@@ -26,7 +25,6 @@ import * as d3 from "d3"
 import _ from "lodash"
 import Vue from "vue"
 import Graph from "./Graph/index"
-import ContextMenu from "./ContextMenu/index.vue"
 import { mapActions, mapMutations } from "vuex"
 
 import Mutation from "@/store/modules/diagram/mutation"
@@ -36,28 +34,23 @@ import { State, Link } from "@/shared/model"
 import { Point } from "@/shared/types"
 
 export default Vue.extend({
-	components: { ContextMenu },
-	data() {
-		return {
-			graph: undefined,
-		}
-	},
 	methods: {
 		...mapActions("diagram", {
 			setStatePosition: Action.SET_STATE_POSITION,
 		}),
 		
 		...mapMutations("diagram", {
-			setPosition: Mutation.SET_POSITION,
+			setContextPosition: Mutation.SET_CONTEXT_POSITION,
 			setMenu: Mutation.SET_MENU,
 			selectState: Mutation.SELECT_STATE,
 			selectLink: Mutation.SELECT_LINK,
+			setGraphPosition: Mutation.SET_GRAPH_POSITION,
 		}),
 
-	},
-	computed: {
-		showContextMenu() {
-			return this.$store.state.diagram.menu !== null
+		openMenu(menu: string) {
+			this.setGraphPosition(d3.mouse(this.$refs.svg))
+			this.setContextPosition(d3.mouse(document.body))
+			this.setMenu(menu)
 		}
 	},
 	mounted() {
@@ -75,17 +68,13 @@ export default Vue.extend({
 		let graph = new Graph(svg)
 
 		graph.onStateRightClick = (state: State) => {
-			// Save position where a new node will be created
-			this.setPosition(graph.mousePosition)
 			this.selectState(state)
-			this.setMenu("state")
+			this.openMenu("state")
 		}
 
 		graph.onLinkRightClick = (link: Link) => {
-			// Save position where context men will appear
-			this.setPosition(graph.mousePosition)
 			this.selectLink(link)
-			this.setMenu("link")
+			this.openMenu("link")
 		}
 
 		this.$store.state.diagram.graph = graph
@@ -95,10 +84,7 @@ export default Vue.extend({
 
         // Add new state
 		d3.select("#background").on("contextmenu", () => {
-			console.log("Background was right-clicked")
-			let pos = d3.mouse(svg)
-			this.setPosition(pos)
-			this.setMenu("addState")
+			this.openMenu("addState")
 		})
 	},
 	

@@ -13,8 +13,10 @@ import Graph from "@/components/Diagram/Graph"
 import { State as MState, Link, Transition } from "@/shared/model"
 
 interface State {
+    // Coordinates relative to the diagram
+    graphPosition: Point,
     // Coordinates for the context menu
-    position: Point,
+    contextMenuPosition: Point,
     // Identifies which context menu is being shown. Null means it's closed. 
     menu: null | string,
     // Current transform on the diagram
@@ -30,7 +32,8 @@ interface State {
 }
 
 const state: State = {
-    position: [0, 0],
+    graphPosition: [0, 0],
+    contextMenuPosition: [0, 0],
     transform: { x: 1, y: 1, k: 1 },
     transition: null,
     link: null,
@@ -42,6 +45,22 @@ const state: State = {
 const actions: ActionTree<State, any> = {
 
     [Action.UPDATE]: ({ state }) => {
+        state.graph.update()
+    },
+
+    [Action.ADD_STATE]: ({ state: { transform } }) => {
+        // Go from absolute to relative graph positions
+        let [x, y] = state.graphPosition
+        let statePosition = {
+            x: (x - transform.x) / transform.k,
+            y: (y - transform.y) / transform.k
+        }
+
+        state.graph.model.addState({
+            position: statePosition,
+            label: "X"
+        })
+
         state.graph.update()
     },
 
@@ -67,6 +86,10 @@ const actions: ActionTree<State, any> = {
 
 const mutations: MutationTree<State> = {
 
+    [Mutation.SET_GRAPH_POSITION]: (state, position: Point) => {
+        state.graphPosition = position
+    },
+
     [Mutation.SELECT_LINK]: (state, link: Link) => {
         state.link = link
     },
@@ -75,8 +98,8 @@ const mutations: MutationTree<State> = {
         state.transform = transform
     },
 
-    [Mutation.SET_POSITION]: (state, position: Point) => {
-        state.position = position
+    [Mutation.SET_CONTEXT_POSITION]: (state, position: Point) => {
+        state.contextMenuPosition = position
     },
     
     [Mutation.SELECT_STATE]: (state, mstate: MState) => {
@@ -104,7 +127,7 @@ const getters: GetterTree<State, any> = {
     
     [Getter.TRANSFORM]: state => state.transform,
 
-    [Getter.POSITION]: state => state.position,
+    [Getter.POSITION]: state => state.contextMenuPosition,
     
     [Getter.STATE_NAME]: state => {
         return "State"
@@ -113,6 +136,7 @@ const getters: GetterTree<State, any> = {
     [Getter.CURRENT_TRANSITION]: (state, getters): Transition => {
         return getters[Getter.TRANSITION](state.transition)
     }
+
 }
 
 const mod: Module<State, any> = {

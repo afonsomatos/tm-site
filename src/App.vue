@@ -8,6 +8,8 @@
                 <component v-bind:is="sidebar"></component>
             </transition>
         </SideBar>
+
+		<context-menu v-if="showContextMenu" />
     </div>
 </template>
 
@@ -49,13 +51,18 @@ import ActionBar    from "@/components/ActionBar/ActionBar.vue"
 import SideBar      from "@/components/SideBar/SideBar.vue"
 import Middle       from "@/components/Middle/Middle.vue"
 
+import ContextMenu from "@/components/Diagram/ContextMenu/index.vue"
+
 export default Vue.extend({
     computed: {
+		showContextMenu() {
+			return this.$store.state.diagram.menu !== null
+		},
         sidebar() {
             return this.$store.state.currentTab.sideBar
         }
     },
-    components: { ActionBar, SideBar, Middle }
+    components: { ActionBar, SideBar, Middle, ContextMenu }
 })
 
 </script>

@@ -1,42 +1,31 @@
 <template>
     <div class="v-menu">
-        <icon-btn icon="circle-add" @click="addState" :clickable="true" />
+        <icon-btn icon="circle-add" @click="add" :clickable="true" />
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 
 import IconBtn from "@/components/IconBtn.vue"
+
+import Action from "@/store/modules/diagram/action"
 import Mutation from "@/store/modules/diagram/mutation"
+
 import { Model, State } from "@/shared/model"
 
 export default Vue.extend({
     components: { IconBtn },
     methods: {
+        ...mapActions("diagram", {
+            addState: Action.ADD_STATE
+        }),
         ...mapMutations("diagram", {
             setMenu: Mutation.SET_MENU
         }),
-        addState() {
-
-            let graph = this.$store.state.diagram.graph
-
-            let transform = graph.transform
-            let [x, y] = this.$store.state.diagram.position
-
-            let position = {
-                x: (x - transform.x) / transform.k,
-                y: (y - transform.y) / transform.k
-            }
-
-            graph.model.addState({
-                position,
-                label: "X"
-            })
-
-            graph.update()
-
+        add() {
+            this.addState()
             this.setMenu(null)
         }
     }
