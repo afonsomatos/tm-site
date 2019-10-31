@@ -59,6 +59,16 @@ const exampleNewModel = () => {
         position: { x: 200, y: 200}
     }
 
+    let x: State = {
+        label: "x",
+        position: { x: 230, y: 200}
+    }
+    
+    let y: State = {
+        label: "y",
+        position: { x: 250, y: 200}
+    }
+
     let c: Transition = {
         from: a,
         to: b,
@@ -91,9 +101,15 @@ const exampleNewModel = () => {
         write: "X"
     }
 
-
     model.addState(a)
     model.addState(b)
+    model.addState(x)
+    model.addState(y)
+    
+    model.start = a
+    model.reject.add(b)
+    model.accept.add(x)
+
     model.addTransition(c)
     model.addTransition(d)
     model.addTransition(e)

@@ -20,8 +20,12 @@ export type Transition = Link & {
 
 export class Model {
 
-	_states: Set<State>
-	_transitions: Set<Transition>
+	private _states: Set<State>
+	private _transitions: Set<Transition>
+	private _start: State
+	
+	accept: Set<State>
+	reject: Set<State>
 
 	/**
 	 * Returns a copy of the original states.
@@ -29,6 +33,20 @@ export class Model {
 	public get states() {
 		return Array(...this._states)
 	} 
+
+	/**
+	 * Returns which node is the entry point.
+	 */
+	public get start() {
+		return this._start
+	}
+
+	/**
+	 * Sets a new start node.
+	 */
+	public set start(state: State) {
+		this._start = state
+	}
 
 	/**
 	 * Returns a copy of the original transitions.
@@ -51,6 +69,9 @@ export class Model {
 		// Initialize structures
 		this._states = new Set()
 		this._transitions = new Set()
+		
+		this.reject = new Set()
+		this.accept = new Set()
 	}
 
 	public addState(state: State) {
