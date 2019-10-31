@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { ZoomBehavior, Selection, transition, } from "d3"
+import { ZoomBehavior, Selection } from "d3"
 
 import { Transform, Vector } from "./types"
 import { sub, add, mul, unit, vec, ang, norm } from "./util"
@@ -278,6 +278,23 @@ export default class Graph {
     }
 
     /**
+     * Returns a class to add to the node that represents a certain state.
+     */
+    private nodeClass(state: State) {
+
+        let className = "node"
+        if (this.model.start == state) {
+            className += " start"
+        } else if (this.model.accept.has(state)) {
+            className += " accept"
+        } else if (this.model.reject.has(state)) {
+            className += " reject"
+        }
+
+        return className
+    }
+
+    /**
      * Create all starting nodes and setup their behavior.
      */
     private setupNodes() {
@@ -303,7 +320,6 @@ export default class Graph {
         let newNodes = nodeSelection
             .enter()
                 .append("g")
-                .attr("class", "node")
                 .on("mouseenter", state => this.stateHovering = state)
                 .on("mouseleave", () => this.stateHovering = undefined)
                 .on("contextmenu", state => this.onStateRightClick(state))
@@ -318,10 +334,12 @@ export default class Graph {
         // Let's translate all nodes to their true position
         let allNodes = newNodes.merge(nodeSelection)
 
-        allNodes.attr("transform", state => {
-            let { x, y } = state.position
-            return transformAttr({ x, y, k: 1})
-        })
+        allNodes
+            .attr("class", state => this.nodeClass(state))
+            .attr("transform", state => {
+                let { x, y } = state.position
+                return transformAttr({ x, y, k: 1})
+            })
 
         // Let's write the nodes' labels
         allNodes.select<SVGTextElement>("text")
