@@ -63,12 +63,18 @@
     }
 }
 
-.circle {
-    fill: #89cca2;
-    paint-order: stroke;
-    stroke-width: 3px;
-}
+.node {
+    .circle {
+        fill: #A3C4BF;
+        paint-order: stroke;
+        stroke-width: 3px;
+    }
 
+    &.start .circle { fill: #6DB4EB; }
+    &.accept .circle { fill:#6DEB7A; }
+    &.reject .circle { fill: #E46A6A; }
+}
+    
 .link {
     transition: stroke-width 0.2s ease;
     stroke-width: 1px;
