@@ -320,7 +320,6 @@ export default class Graph {
         let newNodes = nodeSelection
             .enter()
                 .append("g")
-                .attr("class", state => this.nodeClass(state))
                 .on("mouseenter", state => this.stateHovering = state)
                 .on("mouseleave", () => this.stateHovering = undefined)
                 .on("contextmenu", state => this.onStateRightClick(state))
@@ -335,10 +334,12 @@ export default class Graph {
         // Let's translate all nodes to their true position
         let allNodes = newNodes.merge(nodeSelection)
 
-        allNodes.attr("transform", state => {
-            let { x, y } = state.position
-            return transformAttr({ x, y, k: 1})
-        })
+        allNodes
+            .attr("class", state => this.nodeClass(state))
+            .attr("transform", state => {
+                let { x, y } = state.position
+                return transformAttr({ x, y, k: 1})
+            })
 
         // Let's write the nodes' labels
         allNodes.select<SVGTextElement>("text")
