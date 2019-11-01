@@ -58,9 +58,11 @@ const actions: ActionTree<State, any> = {
         state.graph.update()
     },
 
-    [Action.ADD_STATE]: ({ state: { transform } }) => {
+    [Action.ADD_STATE]: ({ state }) => {
         // Go from absolute to relative graph positions
         let [x, y] = state.graphPosition
+        let transform = state.graph.transform
+        
         let statePosition = {
             x: (x - transform.x) / transform.k,
             y: (y - transform.y) / transform.k
@@ -102,10 +104,6 @@ const mutations: MutationTree<State> = {
 
     [Mutation.SELECT_LINK]: (state, link: Link) => {
         state.link = link
-    },
-
-    [Mutation.SET_TRANSFORM]: (state, transform: Transform) => {
-        state.transform = transform
     },
 
     [Mutation.SET_CONTEXT_POSITION]: (state, position: Point) => {
