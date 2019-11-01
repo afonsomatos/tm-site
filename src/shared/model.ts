@@ -18,6 +18,13 @@ export type Transition = Link & {
 	write: string,
 }
 
+export enum Type {
+	Start = "start",
+	Normal = "normal",
+	Accept = "accept",
+	Reject = "reject"
+}
+
 export class Model {
 
 	private _states: Set<State>
@@ -72,6 +79,47 @@ export class Model {
 		
 		this.reject = new Set()
 		this.accept = new Set()
+	}
+
+
+	/**
+	 * Configures the current model, so that the given state has a certain type. 
+	 */
+	public setType(state: State, type: Type) {
+		// Make state normal
+		this.reject.delete(state)
+		this.accept.delete(state)
+
+		if (this.start === state) {
+			this.start = null
+		}
+
+		switch (type) {
+			case Type.Accept:
+				this.accept.add(state)
+				break
+			case Type.Reject:
+				this.reject.add(state)
+				break
+			case Type.Start:
+				this.start = state
+				break
+		}
+	}
+
+	/**
+	 * Given a state returns the type of the state, given the current model. 
+	 */
+	public getType(state: State): Type {
+		
+		if (this._start === state) {
+			return Type.Start
+		} else if (this.reject.has(state)) {
+			return Type.Reject
+		} else if (this.accept.has(state)) {
+			return Type.Accept
+		}
+		return Type.Normal
 	}
 
 	public addState(state: State) {

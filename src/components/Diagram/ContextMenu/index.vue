@@ -11,6 +11,7 @@ import LinkMenu from "./LinkMenu.vue"
 import EditTransition from "./EditTransition.vue"
 import Rename from "./Rename.vue"
 import AddState from "./AddState.vue"
+import Swatch from "./Swatch.vue"
 
 import { mapGetters } from "vuex"
 import Getter from "@/store/modules/diagram/getter"
@@ -26,6 +27,7 @@ export default Vue.extend({
             menus: {
                 state: StateMenu,
                 link: LinkMenu,
+                swatch: Swatch,
                 rename: Rename,
                 editTransition: EditTransition,
                 addState: AddState,

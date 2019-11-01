@@ -6,6 +6,7 @@ enum Getter {
     TRANSITION = "transition",
     POSITION = "position",
     CURRENT_TRANSITION = "currentTransition",
+    STATE_TYPE = "stateType",
     TRANSFORM = "transform",
 }
 
