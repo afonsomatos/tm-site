@@ -1,7 +1,11 @@
 <template>
     <div class="v-menu">
-        <icon-btn icon="add" @click="createTransition" :clickable="true" />
+        <icon-btn icon="right-arrow-alt" @click="createTransition" :clickable="true" />
         <icon-btn icon="edit" @click="edit" :clickable="true" />
+
+        <!-- Show dot that represents current state type -->
+        <icon-btn :icon="stateIcon" :class="type" :clickable="true" @click="swatch" />
+        
         <icon-btn icon="delete" class="red" @click="remove" :clickable="true" />
     </div>
 </template>
@@ -9,13 +13,25 @@
 <script lang="ts">
 import Vue from 'vue'
 import IconBtn from "@/components/IconBtn.vue"
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 
 import Action from "@/store/modules/diagram/action"
+import Getter from "@/store/modules/diagram/getter"
 import Mutation from '@/store/modules/diagram/mutation'
+
+import { State, Model, Type } from "@/shared/model"
 
 export default Vue.extend({
     components: { IconBtn },
+    computed: {
+        ...mapGetters("diagram", {
+            type: Getter.STATE_TYPE  
+        }),
+
+        stateIcon() {
+            return this.type === Type.Normal ? "dot-stroke" : "dot-fill"
+        },
+    },
     methods: {
 
         ...mapMutations("diagram", {
@@ -27,6 +43,10 @@ export default Vue.extend({
             delete: Action.DELETE_STATE
         }),
 
+        swatch() {
+            this.setMenu("swatch")
+        },
+        
         edit() {
             this.setMenu('rename')
         },
@@ -54,6 +74,19 @@ export default Vue.extend({
     display: grid;
     grid-gap: 20px;
     padding: 20px 15px;
+}
+
+
+.start {
+    color: #6DB4EB;
+}
+
+.reject {
+    color: #E46A6A;
+}
+
+.accept {
+    color: #6DEB7A;
 }
 
 .red {

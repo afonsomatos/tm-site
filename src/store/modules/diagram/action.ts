@@ -7,7 +7,7 @@ enum Action {
     ADD_STATE = "addState",
     CREATE_TRANSITION = "createTransition",
     SET_STATE_POSITION = "setStatePosition",
-
+    SET_STATE_TYPE = "setStateType",
     UPDATE = "update"
 }
 

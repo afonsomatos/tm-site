@@ -10,7 +10,7 @@ import { Transform } from "@/components/Diagram/Graph/types"
 
 import Graph from "@/components/Diagram/Graph"
 
-import { State as MState, Link, Transition } from "@/shared/model"
+import { State as MState, Link, Transition, Type } from "@/shared/model"
 
 interface State {
     // Coordinates relative to the diagram
@@ -26,9 +26,11 @@ interface State {
     // Link being edited at the moment
     link?: Link,
     // State being edited at the moment
-    state?: MState
+    state?: MState,
     // Transition being edited at the moment
-    transition?: Transition
+    transition?: Transition,
+    // Last obtained state type
+    type?: Type
 }
 
 const state: State = {
@@ -39,10 +41,18 @@ const state: State = {
     link: null,
     menu: null,
     graph: null,
-    state: null
+    state: null,
+    type: null
 }
 
 const actions: ActionTree<State, any> = {
+
+    [Action.SET_STATE_TYPE]: ({ state }, type) => {
+        state.graph.model.setType(state.state, type)
+        state.graph.update()
+
+        state.type = type
+    },
 
     [Action.UPDATE]: ({ state }) => {
         state.graph.update()
@@ -104,6 +114,7 @@ const mutations: MutationTree<State> = {
     
     [Mutation.SELECT_STATE]: (state, mstate: MState) => {
         state.state = mstate
+        state.type = state.graph.model.getType(mstate)
     },
 
     [Mutation.SET_MENU]: (state, menu) => {
@@ -125,6 +136,8 @@ const mutations: MutationTree<State> = {
 
 const getters: GetterTree<State, any> = {
     
+    [Getter.STATE_TYPE]: state => state.type,
+
     [Getter.TRANSFORM]: state => state.transform,
 
     [Getter.POSITION]: state => state.contextMenuPosition,
