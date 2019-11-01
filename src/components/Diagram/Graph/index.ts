@@ -125,22 +125,19 @@ export default class Graph {
     /**
      * Creates a new transition between the node `from` and `to`.
      */
-    private createTransition(from: State, to: State) {
+    public createTransition(from: State, to: State): Transition {
         
-        // Is there a link equal to this?
-        if (this.model.areLinked(from, to)) {
-            console.log("Transition already filled from", from.label, "to", to.label)
-            return
-        }
-
-        this.model.addTransition({
+        let newTransition = {
             from, to,
             direction: Direction.Right,
             read: "#",
             write: "#",
-        })
+        }
 
+        this.model.addTransition(newTransition)
         this.update()
+
+        return newTransition
     }
 
     private setupTemporaryLink() {
@@ -166,7 +163,15 @@ export default class Graph {
             if (this.temporaryTransition.active) {
                 // If a node was selected as a target, a new link was created
                 if (this.stateHovering !== undefined) {
-                    this.createTransition(this.temporaryTransition.from, this.stateHovering)
+                    // Link endpoints
+                    let { from } = this.temporaryTransition
+                    let to = this.stateHovering
+                    // Is there a link equal to this?
+                    if (this.model.areLinked(from, to)) {
+                        console.log("Link already created from", from.label, "to", to.label)
+                    } else {
+                        this.createTransition(this.temporaryTransition.from, this.stateHovering)
+                    }
                 }
 
                 this.finishNewTransition()

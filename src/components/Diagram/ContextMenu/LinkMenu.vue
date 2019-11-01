@@ -15,6 +15,9 @@ import { mapGetters, mapMutations } from 'vuex'
 
 import IconBtn from "@/components/IconBtn.vue"
 import { Transition, Direction } from "@/shared/types"
+import { Link } from "@/shared/model"
+
+import Graph from "@/components/Diagram/Graph/index"
 
 import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
@@ -45,7 +48,12 @@ export default Vue.extend({
         },
 
         add() {
-            console.log("New transition was added!")
+            let diagram = this.$store.state.diagram
+            let link: Link = diagram.link
+            let graph: Graph = diagram.graph
+
+            let transition = graph.createTransition(link.from, link.to)
+            this.clickTransition(transition)
         },
 
         clickTransition(transition: Transition) {
