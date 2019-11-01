@@ -149,7 +149,7 @@ export default class Graph {
         this.temporaryLink = this.wrapper.append("path")
             .attr("class", "temporary link")
 
-        this.svg.on("mousemove", () => {
+        this.svg.on("mousemove mouseover", () => {
             // Save last known mouse position. This will prevent errors when accessing the mouse position
             // when the svg is not being hovered on.
             this.mousePosition = d3.mouse(this.svg.node())
