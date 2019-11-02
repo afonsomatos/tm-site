@@ -1,11 +1,16 @@
 import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
 
-export interface State {
+import Table from "@/shared/Table"
 
+export interface State {
+	/**
+	 * Current table object.
+	 */
+	table: Table,
 }
 
 const state: State = {
-	
+	table: null
 }
 
 export enum Getter {
@@ -32,12 +37,12 @@ const actions: ActionTree<State, any> = {
 
 }
 
-const module: Module<State, any> = {
+export default {
+	
 	namespaced: true,
 	state,
 	actions,
 	getters,
 	mutations
-}
 
-export default module
+} as Module<State, any>
