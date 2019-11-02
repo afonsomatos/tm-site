@@ -3,7 +3,7 @@
         <div class="main">
             <!-- <transition name="fade"> -->
                 <keep-alive> <!-- Keep alive will save the component's state -->
-                    <FunctionTable v-if="isGrid()" />
+                    <Table v-if="isGrid()" />
                     <Diagram v-else />
                 </keep-alive>
             <!-- </transition> -->
@@ -22,10 +22,10 @@
 
 <script lang="ts">
 
-import Vue           from "vue"
-import Icon          from "@/components/Icon.vue"
-import FunctionTable from "@/components/FunctionTable/FunctionTable.vue"
-import Diagram       from "@/components/Diagram/index.vue"
+import Vue      from "vue"
+import Icon     from "@/components/Icon.vue"
+import Table    from "@/components/FunctionTable/Table.vue"
+import Diagram  from "@/components/Diagram/index.vue"
 
 enum Mode { Diagram, Grid }
 
@@ -52,7 +52,7 @@ export default Vue.extend({
             mode: Mode.Diagram,
         }
     },
-    components: { Icon, FunctionTable, Diagram }
+    components: { Icon, Table, Diagram }
 })
 
 </script>
