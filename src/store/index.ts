@@ -1,6 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import Tab, { Tabs } from "@/components/Tab"
+import table from "./modules/table"
 import diagram from "./modules/diagram"
 import edit from "./edit.module"
 import run from "./run.module"
@@ -51,22 +52,22 @@ const exampleNewModel = () => {
     let model = new Model();
     let a: State = {
         label: "a",
-        position: {x: 100, y: 100}
+        position: {x: 100, y: 200}
     }
 
     let b: State = {
         label: "b",
-        position: { x: 200, y: 200}
+        position: { x: 400, y: 200}
     }
 
     let x: State = {
         label: "x",
-        position: { x: 230, y: 200}
+        position: { x: 600, y: 200}
     }
     
     let y: State = {
         label: "y",
-        position: { x: 250, y: 200}
+        position: { x: 800, y: 200}
     }
 
     let c: Transition = {
@@ -89,15 +90,15 @@ const exampleNewModel = () => {
         from: a,
         to: a,
         direction: Direction.Left,
-        read: "M",
-        write: "X"
+        read: "C",
+        write: "D"
     }
 
     let f: Transition = {
-        from: a,
-        to: a,
-        direction: Direction.Left,
-        read: "M",
+        from: x,
+        to: y,
+        direction: Direction.Right,
+        read: "O",
         write: "X"
     }
 
@@ -122,7 +123,8 @@ export default new Vuex.Store({
     modules: {
         edit,
         run,
-        diagram
+        diagram,
+        table
     },
     
     state: {

@@ -24,7 +24,7 @@
 
 import Vue      from "vue"
 import Icon     from "@/components/Icon.vue"
-import Table    from "@/components/FunctionTable/Table.vue"
+import Table    from "@/components/Table/index.vue"
 import Diagram  from "@/components/Diagram/index.vue"
 
 enum Mode { Diagram, Grid }
@@ -49,7 +49,7 @@ export default Vue.extend({
     },
     data() {
         return {
-            mode: Mode.Diagram,
+            mode: Mode.Grid,
         }
     },
     components: { Icon, Table, Diagram }
