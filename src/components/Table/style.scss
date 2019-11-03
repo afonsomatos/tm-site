@@ -1,7 +1,4 @@
-$color-start: #5471E6;
-$color-accept: #54E671;
-$color-reject: #E65454;
-
+$colors: ("reject": #E65454, "start": #5471E6, "accept": #54E671);
 $border-thickness: 2px;
 
 table {
@@ -11,8 +8,7 @@ table {
 td {
 	color: #585858;
 	border: $border-thickness solid #D1D1D1;
-
-	border-right: 1px;
+	border-right: $border-thickness / 2;
 
 	padding: 20px;
 	text-align: center;
@@ -58,23 +54,13 @@ td {
 	}
 }
 
-.reject {
-
-	.divider {
-		background: $color-reject;
-	}
-
-	.state {
-		border-left: $border-thickness solid $color-reject;
-	}
-}
-
-.start .divider {
-	background: $color-start;
-}
-
-.accept .divider {
-	background: $color-accept;
+@each $type, $color in $colors {
+	.#{$type} {
+		.divider { background: $color; }
+		.state {
+			border-left: $border-thickness solid $color;
+		}
+	}	
 }
 
 tr {
