@@ -34,11 +34,20 @@ import IconBtn from "@/components/IconBtn.vue"
 export default Vue.extend({
     methods: { },
 	computed: { },
+	data() {
+		return {
+			table: null
+		}
+	},
+	activated() {
+		this.table.update()
+	},
 	mounted() {
 
 		let wrapper = this.$refs.table as HTMLTableElement
 		let table = new Table(wrapper)
 
+		this.table = table
 		table.model = this.$store.state.nextModel
 		this.$store.state.table.table = table
 	},

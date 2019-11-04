@@ -87,7 +87,8 @@ export default class Table {
 		let newDividers = newRowWrappers
 			.append("td")
 			.classed("divider", true)
-			.attr("colspan", readCharacters.length + 2)
+
+		d3.selectAll(".divider").attr("colspan", readCharacters.length + 2)
 
 		let newRows = newRowWrappers.append("tr").classed("row", true)
 		newRows.append("td").classed("state", true)
@@ -142,7 +143,7 @@ export default class Table {
 				if (transition === undefined) {
 					cell.text("undefined")
 				} else {
-					let { write, direction, from: state } = transition
+					let { write, direction, to: state } = transition
 					cell.text(`(${state.label}, ${write}, ${direction})`)
 				}
 			})
