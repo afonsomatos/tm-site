@@ -2,6 +2,12 @@ import * as d3 from "d3"
 import _ from "lodash"
 
 import { Model, State, Transition } from "@/shared/model"
+import { Direction } from "../types"
+
+/**
+ * New columns will have this char.
+ */
+export const NEW_COLUMN_CHAR = '\0'
 
 export default class Table {
 
@@ -54,16 +60,22 @@ export default class Table {
 	}
 
 	private transitionsFrom(state: State) {
-		return this._model.transitions.filter(transition => {
+		return this._model.allTransitions.filter(transition => {
 			return transition.from === state
 		})
 	}
 
+	public onTransitionClick: (transition: Transition) => void
+	public onStateClick: (state: State) => void
+	public onCharClick: (char: String) => void
+
 	public update() {
 		
 		// All characters to read from will be represented as columns 
-		let readCharacters = _.uniq(this._model.transitions.map(a => a.read))
-		
+		let readCharacters = _.uniq(this._model.allTransitions.map(a => {
+			return a.read === NEW_COLUMN_CHAR ? "?" : a.read
+		}))
+
 		// Bind characters to headers
 		let headers = d3.select(this._headerRow)
 			.selectAll<HTMLTableCellElement, String>("td.header")
@@ -73,8 +85,10 @@ export default class Table {
 		let newHeaders = headers.enter().append("td").classed("header", true)
 
 		// Update all headers
-		headers = newHeaders.merge(headers)
-		headers.text(label => label)
+		headers = newHeaders
+			.merge(headers)
+				.on("click", char => this.onCharClick(char))
+				.text(label => label)
 
 		// Bind states to rows
 		let rowWrappers = d3.select(this._table)
@@ -99,7 +113,9 @@ export default class Table {
 
 		// Update All rows
 		rowWrappers = newRowWrappers.merge(rowWrappers)
-		rowWrappers.select("td.state").text(state => state.label)
+		rowWrappers.select("td.state")
+			.text(state => state.label)
+			.on("click", state => this.onStateClick(state))
 		
 		let self = this
 
@@ -116,14 +132,26 @@ export default class Table {
 		rows.each(function (state: State) {
 			let row = d3.select(this)
 
-			// Find transitions from this state
-			let transitions = Array<Transition | undefined>(readCharacters.length).fill(undefined)
-			
-			// Fill in defined transitions
-			self.transitionsFrom(state).forEach(t => {
-				transitions[ readCharacters.indexOf(t.read) ] = t
+			// Find or create undefined transitions to fill missing gaps
+			let transitions = readCharacters.map<Transition>(char => {
+				let transition: Transition = self.transitionsFrom(state).find(t => t.read === char)
+				if (transition === undefined) {
+					// Create missing undefined transition
+					transition = {
+						from: state,
+						to: state,
+						direction: Direction.Right,
+						read: char,
+						write: char,
+						undefined: true
+					}
+
+					self.model.addTransition(transition)
+				}
+
+				return transition
 			})
-			
+
 			// Bind cells to transitions
 			let transitionCells = row.selectAll<HTMLTableCellElement, Transition>("td.transition").data(transitions)
 			
@@ -133,14 +161,16 @@ export default class Table {
 					.append("td")
 					.classed("transition", true)
 				.merge(transitionCells)
+				.on("click", transition => self.onTransitionClick(transition))
 
 			// Edit and fill defined & undefined cells
-			transitionCells.each(function (transition: Transition | undefined) {
+			transitionCells.each(function (transition: Transition) {
 				let cell = d3.select(this)
+				
+				// Toggle undefined
+				cell.classed("undefined", transition.undefined)
 
-				cell.classed("undefined", transition === undefined)
-
-				if (transition === undefined) {
+				if (transition.undefined) {
 					cell.text("undefined")
 				} else {
 					let { write, direction, to: state } = transition

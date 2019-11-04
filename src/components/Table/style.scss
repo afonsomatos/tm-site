@@ -6,6 +6,8 @@ table {
 }
 
 td {
+	transition: background-color 0.2s ease;
+
 	color: #585858;
 	border: $border-thickness solid #D1D1D1;
 	border-right: $border-thickness / 2;
@@ -61,6 +63,15 @@ td {
 			border-left: $border-thickness solid $color;
 		}
 	}	
+}
+
+.state, .header, .transition {
+	&:hover {
+		outline: 1px dashed black;
+	}
+	&.active {
+		outline: 1px solid black;
+	}
 }
 
 tr {

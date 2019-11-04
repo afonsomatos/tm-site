@@ -16,6 +16,7 @@ export type Transition = Link & {
 	direction: Direction,
 	read: string,
 	write: string,
+	undefined?: boolean,
 }
 
 export enum Type {
@@ -59,6 +60,14 @@ export class Model {
 	 * Returns a copy of the original transitions.
 	 */
 	public get transitions() {
+		// Only give away defined transitions
+		return this.allTransitions.filter(t => !t.undefined)
+	}
+
+	/**
+	 * Returns a copy of all (including undefined) transitions.
+	 */
+	public get allTransitions() {
 		return Array(...this._transitions)
 	}
 
