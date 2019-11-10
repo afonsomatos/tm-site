@@ -53,6 +53,7 @@ export enum Mutation {
 	SET_TRANSITION = "setTransition",
 	SET_STATE = "setState",
 	SET_CHAR = "setChar",
+	SET_MODE = "setMode"
 }
 
 const mutations: MutationTree<State> = {
@@ -70,6 +71,10 @@ const mutations: MutationTree<State> = {
 	[Mutation.SET_CHAR]: (state, char: string) => {
 		state.char = char
 		state.mode = Mode.Char
+	},
+
+	[Mutation.SET_MODE]: (state, mode: Mode) => {
+		state.mode = mode
 	}
 
 }
@@ -77,9 +82,15 @@ const mutations: MutationTree<State> = {
 export enum Action {
 	ADD_STATE = "addState",
 	ADD_CHARACTER = "addCharacter",
+	DELETE_STATE = "deleteState"
 }
 
 const actions: ActionTree<State, any> = {
+
+	[Action.DELETE_STATE]: ({ state }) => {
+		state.table.model.removeState(state.state)
+		state.table.update()
+	},
 
 	[Action.ADD_STATE]: ({ state }) => {
 		

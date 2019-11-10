@@ -80,6 +80,9 @@ export default class Table {
 		let headers = d3.select(this._headerRow)
 			.selectAll<HTMLTableCellElement, String>("td.header")
 			.data(readCharacters)
+
+		// Remove old headers
+		headers.exit().remove()
 		
 		// Create and setup missing headers
 		let newHeaders = headers.enter().append("td").classed("header", true)
@@ -94,6 +97,9 @@ export default class Table {
 		let rowWrappers = d3.select(this._table)
 			.selectAll<HTMLTableSectionElement, State>("tbody.row-wrapper")
 			.data(this._model.states)
+
+		// Remove old row wrappers
+		rowWrappers.exit().remove()
 
 		// Create and setup missing rows
 		let newRowWrappers = rowWrappers.enter().append("tbody").classed("row-wrapper", true)
@@ -154,6 +160,9 @@ export default class Table {
 
 			// Bind cells to transitions
 			let transitionCells = row.selectAll<HTMLTableCellElement, Transition>("td.transition").data(transitions)
+			
+			// Remove unused transition cells
+			transitionCells.exit().remove()
 			
 			// Create remaining cells
 			transitionCells = transitionCells

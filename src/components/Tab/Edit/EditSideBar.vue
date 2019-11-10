@@ -7,26 +7,25 @@
 <script lang="ts">
 
 import Vue from "vue"
-import TransitionEditor from "./TransitionEditor.vue"
-import CharEditor from "./CharEditor.vue"
-import StateEditor from "./StateEditor.vue"
+import Transition from "./Transition.vue"
+import Char from "./Char.vue"
+import State from "./State.vue"
 
 import { Mode } from "@/store/modules/table"
 
 export default Vue.extend({
-    components: { TransitionEditor, StateEditor, CharEditor },
+    components: { Transition, State, Char },
     data() {
         return {
             editor: {
-                [Mode.Transition]: TransitionEditor,
-                [Mode.Char]: CharEditor,
-                [Mode.State]: StateEditor
+                [Mode.Transition]: Transition,
+                [Mode.Char]: Char,
+                [Mode.State]: State
             }
         }
     },
     computed: {
         currentEditor() {
-            console.log(this.$store.state.table.mode)
             return this.$store.state.table.mode
         }
     },
