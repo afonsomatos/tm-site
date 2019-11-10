@@ -1,7 +1,7 @@
 import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
 
 import Table, { NEW_COLUMN_CHAR } from "@/shared/Table"
-import { Transition, State as MState, Type } from "@/shared/model"
+import { Transition, State as MState, Type, Model } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
 export enum Mode {
@@ -91,7 +91,9 @@ export enum Action {
 	ADD_STATE = "addState",
 	ADD_CHARACTER = "addCharacter",
 	DELETE_STATE = "deleteState",
-	SET_STATE_TYPE = "setStateType"
+	RENAME_CHARACTER = "deleteChracter",
+	SET_STATE_TYPE = "setStateType",
+	DELETE_CHARACTER = "deleteCharacter"
 }
 
 const actions: ActionTree<State, any> = {
@@ -114,6 +116,38 @@ const actions: ActionTree<State, any> = {
 			label: "New State"
 		})
 
+		state.table.update()
+	},
+
+	/**
+	 * Deletes a column in the table.
+	 */
+	[Action.DELETE_CHARACTER]: ({ state }) => {
+
+		let model = state.table.model
+		
+		model.allTransitions
+			.filter(t => t.read === state.char)
+			.forEach(t => model.removeTransition(t))
+
+		state.mode = null
+		state.table.update()
+	},
+
+	/**
+	 * Renames a column in the table.
+	 */
+	[Action.RENAME_CHARACTER]: ({ state }, newChar: string) => {
+
+		let model = state.table.model
+
+		for (let transition of model.allTransitions) {
+			if (transition.read === state.char) {
+				transition.read = newChar
+			}
+		}
+
+		state.char = newChar
 		state.table.update()
 	},
 

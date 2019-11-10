@@ -1,54 +1,63 @@
 <template>
-    <Section title="Edit Char">
-        <Input v-focus :value="char" :key="char" @input.native="setChar" maxlength="1" @focus.native="$event.target.select()"/>
-        <br><br>
-        <Button class="danger" value="Delete column" @click.native="deleteReadChar()"/>
-    </Section>
+    <div>
+        <!-- The actual character -->
+        <Section>
+            <Field name="Character">
+                <Input
+                    class="char-input"
+                    maxlength="1"
+                    :value="char"
+                    @input="rename($event)"
+                    @focus.native="$event.target.select()" />
+            </Field>
+        </Section>
+        <!-- Delete all transitions that come from this character -->
+        <Section>
+            <Field name="Delete">
+                <icon-btn icon="delete" class="delete" @click="remove" />
+            </Field>
+        </Section>
+    </div>
 </template>
 
 <script lang="ts">
 
 import Vue      from 'vue'
 import Section  from "@/components/SideBar/Section.vue"
+import Field    from "@/components/SideBar/Field.vue"
+import IconBtn  from "@/components/IconBtn.vue"
 import Input    from "@/components/Input.vue"
-import Button   from "@/components/Button.vue"
 
-import Mutation from "@/store/mutation"
+import { Action } from "@/store/modules/table"
+import { mapActions } from 'vuex'
 
 export default Vue.extend({
-    
     computed: {
-
-        charId() {
-            return this.$store.state.edit.char
-        },
-
         char() {
-            return this.$store.state.model.readChars[this.charId]
-        },
-
-    },
-
-    methods: {
-
-        deleteReadChar() {
-            this.$store.commit(Mutation.DELETE_READ_CHAR, this.$store.state.edit.char)
-            this.$store.commit(Mutation.SET_NO_EDITING)
-        },
-
-        setChar(e) {
-            this.$store.commit(Mutation.SET_READ_CHAR, {
-                charId: this.charId,
-                char: e.target.value
-            })
+            return this.$store.state.table.char
         }
-
     },
-    
-    components: { Section, Input, Button }
+    methods: {
+        ...mapActions("table", {
+            rename: Action.RENAME_CHARACTER,
+            remove: Action.DELETE_CHARACTER
+        }),
+    },
+    components: { Section, Input, Field, IconBtn }
 })
 
 </script>
 
 <style lang="scss" scoped>
+
+.icon {
+    font-size: 23px;
+}
+
+.char-input {
+    box-sizing: content-box;
+    text-align: center;
+    width: 1em;
+}
+
 </style>
