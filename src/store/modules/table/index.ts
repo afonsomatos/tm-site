@@ -1,7 +1,7 @@
 import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
 
 import Table, { NEW_COLUMN_CHAR } from "@/shared/Table"
-import { Transition, State as MState } from "@/shared/model"
+import { Transition, State as MState, Type } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
 export enum Mode {
@@ -30,7 +30,11 @@ export interface State {
 	/**
 	 * Current mode of editing. Null means nothing is being edited.
 	 */
-	mode: Mode | null
+	mode: Mode | null,
+	/**
+	 * Last obtained state type.
+	 */
+	type: Type | null,
 }
 
 const state: State = {
@@ -39,13 +43,16 @@ const state: State = {
 	char: null,
 	state: null,
 	mode: null,
+	type: null
 }
 
 export enum Getter {
-
+	STATE_TYPE = "stateType"
 }
 
 const getters: GetterTree<State, any> = {
+
+	[Getter.STATE_TYPE]: state => state.type
 
 }
 
@@ -66,6 +73,7 @@ const mutations: MutationTree<State> = {
 	[Mutation.SET_STATE]: (state, mstate: MState) => {
 		state.state = mstate
 		state.mode = Mode.State
+		state.type = state.table.model.getType(mstate)
 	},
 
 	[Mutation.SET_CHAR]: (state, char: string) => {
@@ -82,11 +90,18 @@ const mutations: MutationTree<State> = {
 export enum Action {
 	ADD_STATE = "addState",
 	ADD_CHARACTER = "addCharacter",
-	DELETE_STATE = "deleteState"
+	DELETE_STATE = "deleteState",
+	SET_STATE_TYPE = "setStateType"
 }
 
 const actions: ActionTree<State, any> = {
 
+	[Action.SET_STATE_TYPE]: ({ state }, type) => {
+        state.table.model.setType(state.state, type)
+        state.table.update()
+        state.type = type
+	},
+	
 	[Action.DELETE_STATE]: ({ state }) => {
 		state.table.model.removeState(state.state)
 		state.table.update()

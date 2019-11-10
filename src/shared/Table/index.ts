@@ -131,7 +131,8 @@ export default class Table {
 
 			// Classify reject/accept/start states
 			let type = self.model.getType(state)
-			rowWrapper.classed(type, true)
+			rowWrapper.attr("class", "row-wrapper " + type)
+			// rowWrapper.classed(type, true)
 		})
 
 		// For each state, bind transitions to table cells

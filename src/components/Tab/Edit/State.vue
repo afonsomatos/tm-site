@@ -3,16 +3,20 @@
         <Section>
             <!-- Renaming -->
             <Field name="Name">
-                <Input v-model="state.label" class="nameInput" />
+                <Input v-model="state.label" class="nameInput"  @input="onRename" />
             </Field>
         </Section>
         <Section>
             <!-- Type setting -->
             <Field name="Type">
                 <div class="types">
-                    <icon-btn icon="right-arrow-alt" class="start" />
-                    <icon-btn icon="done" class="accept" />
-                    <icon-btn icon="clear" class="reject" />
+                    <icon-btn
+                        v-for="(icon, type) in icons"
+                        :key="type"
+                        :icon="icon"
+                        :class="{[type]: true, selected: stateType === type}"
+                        @click="setType(type)"
+                        />
                 </div>
             </Field>
         </Section>
@@ -28,7 +32,7 @@
 <script lang="ts">
 
 import Vue from "vue"
-import { mapActions, mapMutations } from "vuex"
+import { mapActions, mapMutations, mapGetters } from "vuex"
 
 import Section from "@/components/SideBar/Section.vue"
 import Input from "@/components/Input.vue"
@@ -36,10 +40,25 @@ import Button from "@/components/Button.vue"
 import IconBtn from "@/components/IconBtn.vue"
 import Field from "@/components/SideBar/Field.vue"
 
-import { Action, Mutation } from "@/store/modules/table"
+import { Action, Mutation, Getter } from "@/store/modules/table"
+import { Type } from "@/shared/model"
 
 export default Vue.extend({
+    data() {
+        return {
+            icons: {
+                [Type.Start]: "right-arrow-alt",
+                [Type.Accept]: "done",
+                [Type.Reject]: "clear"
+            }
+        }
+    },
     computed: {
+ 
+        ...mapGetters("table", {
+            stateType: Getter.STATE_TYPE
+        }),
+
         state() {
             return this.$store.state.table.state
         }
@@ -51,12 +70,25 @@ export default Vue.extend({
         }),
 
         ...mapActions("table", {
-            delete: Action.DELETE_STATE
+            delete: Action.DELETE_STATE,
+            setStateType: Action.SET_STATE_TYPE
         }),
+
+        setType(type: Type) {
+            if (this.stateType === type) {
+                this.setStateType(Type.Normal)
+            } else {
+                this.setStateType(type)
+            }
+        },
         
         handleDelete() {
             this.delete()
             this.setMode(null)
+        },
+
+        onRename() {
+            this.$store.state.table.table.update()
         }
     },
     components: { Section, Input, Button, Field, IconBtn }
@@ -86,6 +118,9 @@ $colors: ("start": #5471E6, "accept": #54E671, "reject": #E65454);
 @each $type, $color in $colors {
 	.#{$type} {
 		color: $color;
+        opacity: 0.4;
+
+        &.selected { opacity: 1; }
 	}	
 }
 
