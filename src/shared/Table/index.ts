@@ -4,11 +4,6 @@ import _ from "lodash"
 import { Model, State, Transition } from "@/shared/model"
 import { Direction } from "../types"
 
-/**
- * New columns will have this char.
- */
-export const NEW_COLUMN_CHAR = '\0'
-
 export default class Table {
 
 	/**
@@ -72,9 +67,7 @@ export default class Table {
 	public update() {
 		
 		// All characters to read from will be represented as columns 
-		let readCharacters = _.uniq(this._model.allTransitions.map(a => {
-			return a.read === NEW_COLUMN_CHAR ? "?" : a.read
-		}))
+		let readCharacters = _.uniq(this._model.allTransitions.map(t => t.read))
 
 		// Bind characters to headers
 		let headers = d3.select(this._headerRow)

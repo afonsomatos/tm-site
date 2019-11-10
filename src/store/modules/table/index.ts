@@ -1,6 +1,6 @@
 import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
 
-import Table, { NEW_COLUMN_CHAR } from "@/shared/Table"
+import Table from "@/shared/Table"
 import { Transition, State as MState, Type, Model } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
@@ -154,9 +154,16 @@ const actions: ActionTree<State, any> = {
 	/**
 	 * The column in the turing table.
 	 */
-	[Action.ADD_CHARACTER]: ({ state }, char: string = NEW_COLUMN_CHAR) => {
+	[Action.ADD_CHARACTER]: ({ state }) => {
 		
 		let model = state.table.model
+
+		// Find next available character
+		let characters = new Set(model.allTransitions.map(t => t.read))
+		let i = 60;
+		while (characters.has(String.fromCharCode(++i)));
+
+		let char = String.fromCharCode(i)
 
 		/**	
 		 * Add transition (column cell) to each state.
