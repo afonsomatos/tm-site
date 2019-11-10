@@ -1,82 +1,102 @@
 <template>
-    <Section title="Edit Transition">
-        <div class="form">
-            <div>Undefined</div> <Toggle :checked="isUndefined" @change="setUndefined($event)" />
-            <template v-if="!isUndefined">
-                <div>Next State</div>
-                <select @change="setState">
-                    <option v-for="(state, i) in $store.state.model.states" :key="i" :selected="hasNextState(i)">{{ state }}</option> 
+    <div>
+        <!-- Toggle transition undefined -->
+        <Section>
+            <Field name="Undefined">
+                <Toggle v-model="transition.undefined" @change="setUndefined($event)" />
+            </Field>
+        </Section>
+        <Section v-if="!transition.undefined">
+            <!-- Select next state -->
+            <Field name="To">
+                <select @change="changeState">
+                    <option
+                        v-for="(state, i) in states"
+                        :key="i"
+                        :selected="state === transition.to">
+                        {{ state.label }}
+                    </option> 
                 </select>
-                <div>Direction</div>
+            </Field>
+            <!-- What to write on the tape -->
+            <Field name="Write">
+                <Input
+                    v-model="transition.write"
+                    class="char-input"
+                    maxlength="1"
+                    @input="onWriteChange"
+                    @focus.native="$event.target.select()" />
+            </Field>
+            <!-- What direction to go -->
+            <Field name="Direction">
                 <div class="direction">
-                    <div class="box" @click="setDirection(0)" :class="{ selected: hasDirection(0) }">
-                        <Icon class="small" icon="arrow_back"/>
-                    </div>
-                    <div class="box" @click="setDirection(1)" :class="{ selected: hasDirection(1) }">
-                        <Icon class="small" icon="arrow_forward" />
+                    <div v-for="(icon, dir) in directions"
+                        :key="dir"
+                        :class="{ selected: dir === transition.direction }"
+                        @click="setDirection(dir)">
+                        <Icon :icon="icon" />
                     </div>
                 </div>
-                <div>Write</div>
-                <Input class="small char-input" :value="char" @input.native="setWriteChar" maxlength="1" @focus.native="$event.target.select()"/>
-            </template>
-        </div>
-    </Section>
+            </Field>
+        </Section>
+    </div>
 </template>
 
 <script lang="ts">
-import _        from "lodash"
+import Vue      from 'vue'
 import Mutation from "@/store/mutation"
 import Action   from "@/store/action"
 
-import Vue      from 'vue'
+import Field    from "@/components/SideBar/Field.vue"
 import Section  from "@/components/SideBar/Section.vue"
 import Icon     from "@/components/Icon.vue"
 import Toggle   from "@/components/Toggle.vue"
 import Input    from "@/components/Input.vue"
 
+import { Transition, State } from "@/shared/model"
+import { Direction } from "@/shared/types"
+
 export default Vue.extend({
-    
-    computed: {
-        
-        char() {
-            return this.$store.state.edit.transition[1]
-        },
-
-        isUndefined() {
-            return this.$store.state.edit.transition[3] == true  
+    data() {
+        return {
+            directions: {
+                [Direction.Left]: "left-arrow-alt",
+                [Direction.Right]: "right-arrow-alt"
+            }
         }
-
     },
-
+    computed: {
+        states(): State[] {
+            return this.$store.state.nextModel.states
+        },
+        transition(): Transition {
+            return this.$store.state.table.transition
+        }
+    },
     methods: {
-        
-        setUndefined(isUndefined) {
-            Vue.set(this.$store.state.edit.transition, 3, isUndefined)
+        changeState(e) {
+            let index = e.target.selectedIndex
+            this.transition.to = this.states[index]
+            this.update()
         },
-
-        setState(e) {
-            let x = e.target.selectedIndex
-            Vue.set(this.$store.state.edit.transition, 0, x)
+        update() {
+            this.$store.state.table.table.update()
         },
-
-        setWriteChar(e) {
-            Vue.set(this.$store.state.edit.transition, 1, e.target.value)
+        onWriteChange() {
+            if (this.transition.write.length === 0) {
+                this.transition.write = '#'
+            }
+            this.update()
         },
-        
-        setDirection(x) {
-            Vue.set(this.$store.state.edit.transition, 2, x)
+        setDirection(dir: Direction) {
+            this.transition.direction = dir
+            this.update()
         },
-
-        hasNextState(x) {
-            return this.$store.state.edit.transition[0] == x
-        },
-
-        hasDirection(x) {
-            return this.$store.state.edit.transition[2] === x
-        },
-
+        setUndefined(event) {
+            this.update()
+        }
     },
-    components: { Section, Icon, Input, Toggle }
+    components: { Section, Icon, Input, Toggle, Field }
 })
 </script>
 
@@ -93,27 +113,24 @@ select {
     padding: 3px 20px;
 }
 
-$size: 32px;
-
-.box {
-    display: inline-grid;
-    place-content: center;
-    place-items: center;
-    width: $size;
-    height: $size;
-    cursor: pointer;
-    background: #CECECE;
-    
-    &.selected {
-        border: 2px solid #7D7D7D;
-    }
-}
-
-.form {
+.direction {
     display: grid;
-    grid-template-columns: 100px min-content;
-    grid-gap: 20px;
-    align-items: center;
+    grid-auto-flow: column;
+    grid-gap: 10px;
+    
+    > div {
+        display: inline-grid;
+        place-content: center;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        background: #CECECE;
+        
+        &.selected {
+            border: 2px solid #7D7D7D;
+        }
+    }
 }
 
 </style>

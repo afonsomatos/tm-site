@@ -18,7 +18,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 
 .section {
-    padding: 20px;
     border-bottom: 1px solid #D9D9D9;
 
     &:nth-last-child() {

@@ -30,6 +30,12 @@ export default Vue.extend({
     align-items: center;
     display: grid;
     grid-template-columns: auto min-content;
+    padding: 20px;
+    padding-bottom: 0px;
+    
+    &:last-child {
+        padding-bottom: 20px !important;
+    }
 }
 
 </style>
