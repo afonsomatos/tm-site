@@ -1,23 +1,34 @@
 <template>
     <div>
-        <StateEditor        v-if="$store.getters.isEditingState" />
-        <CharEditor         v-else-if="$store.getters.isEditingChar" />
-        <TransitionEditor   v-else-if="$store.getters.isEditingTransition" />
+        <component :is="editor[currentEditor]" />
     </div>
 </template>
 
 <script lang="ts">
 
 import Vue from "vue"
-import TransitionEditor from "./TransitionEditor.vue"
-import CharEditor from "./CharEditor.vue"
-import StateEditor from "./StateEditor.vue"
+import Transition from "./Transition.vue"
+import Char from "./Char.vue"
+import State from "./State.vue"
+
+import { Mode } from "@/store/modules/table"
 
 export default Vue.extend({
-    components: { TransitionEditor, StateEditor, CharEditor }
+    components: { Transition, State, Char },
+    data() {
+        return {
+            editor: {
+                [Mode.Transition]: Transition,
+                [Mode.Char]: Char,
+                [Mode.State]: State
+            }
+        }
+    },
+    computed: {
+        currentEditor() {
+            return this.$store.state.table.mode
+        }
+    },
 })
 
 </script>
-
-<style lang="scss" scoped>
-</style>

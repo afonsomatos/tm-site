@@ -23,8 +23,8 @@ export default Vue.extend({
 
 @import "src/style/Lib";
 
-$height: 26px;
-$width: 60px;
+$height: 20px;
+$width: 40px;
 $padding: 6px;
 $diameter: $height - $padding * 2;
 

@@ -23,15 +23,10 @@ export default Vue.extend({
 @import "src/style/Lib";
 
 input {
-	font: $font-normal;
-	display: inline-block;
-	padding: 10px 20px;
-	border: 1px solid #D2D2D2;
-	
-	&.small {
-		padding: 5px 10px;
-		font: $font-small;
-	}
+	background: #FAFAFA;
+	padding: 5px 10px;
+	font-size: 15px;
+	border: none;
 }
 
 </style>
