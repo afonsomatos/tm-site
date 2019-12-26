@@ -53,6 +53,9 @@ export default Vue.extend({
 			this.setMenu(menu)
 		}
 	},
+	activated() {
+		this.graph.update()
+	},
 	mounted() {
 
 		let svg = this.$refs.svg as SVGSVGElement
@@ -81,6 +84,8 @@ export default Vue.extend({
 
 		graph.setModel(this.$store.state.nextModel)
 		graph.setTransform(this.$store.state.diagram.transform)
+
+		this.graph = graph
 
         // Add new state
 		d3.select("#background").on("contextmenu", () => {
