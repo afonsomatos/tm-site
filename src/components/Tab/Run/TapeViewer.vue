@@ -1,6 +1,6 @@
 <template>
     <div class="tape-viewer">
-        <svg id="tape" ref="tape">
+        <svg id="tape" ref="tape" :class="status">
 
         </svg>
         <div class="controllers">
@@ -46,6 +46,9 @@ export default Vue.extend({
         ...mapState("run", {
             playing: "playing"
         }),
+        status() {
+            return this.$store.state.run.status
+        },
         stepThrottle() {
             return _.throttle(
                 () => this.step(),
@@ -149,7 +152,7 @@ $cell-size: 60px;
     border-right: none;
     width: 100%;
 
-    &.rejected { border-color: $color-negative; }
+    &.rejected, &.undefined { border-color: $color-negative; }
     &.accepted { border-color: $color-positive; }
     &.idle { border-color: $color-normal; }
 

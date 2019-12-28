@@ -3,10 +3,10 @@ import { Module, ActionTree, GetterTree, MutationTree } from "vuex"
 import simulator from "@/shared/simulator"
 
 export enum Status {
-	Accepted,
-	Rejected,
-	Normal,
-	Undefined
+	Accepted = "accepted",
+	Rejected = "rejected",
+	Normal = "normal",
+	Undefined = "undefined"
 }
 
 interface Info {
@@ -56,10 +56,15 @@ const getters: GetterTree<State, any> = {
 
 export enum Mutation {
 	SET_INFO = "setInfo",
-	SET_PLAYING = "setPlaying"
+	SET_PLAYING = "setPlaying",
+	SET_STATUS = "setStatus"
 }
 
 const mutations: MutationTree<State> = {
+
+	[Mutation.SET_STATUS]: (state, status: Status) => {
+		state.status = status
+	},
 
 	[Mutation.SET_INFO]: (state, info) => {
 		state.info = info
@@ -94,6 +99,17 @@ const actions: ActionTree<State, any> = {
 			space: 	snapshot.space,
 			state: 	simulator.converter.state(snapshot.state).label
 		} as Info)
+
+		let status = Status.Normal
+		if (simulator.turing.rejected) {
+			status = Status.Rejected
+		} else if (simulator.turing.accepted) {
+			status = Status.Accepted
+		} else if (simulator.turing.undefined) {
+			status = Status.Undefined
+		}
+		
+		commit(Mutation.SET_STATUS, status)
 	},
 
 	[Action.RESET]: ({ commit }) => {
