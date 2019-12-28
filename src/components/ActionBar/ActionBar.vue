@@ -32,10 +32,9 @@
 <script lang="ts">
 
 import Vue from 'vue'
-import { mapMutations } from "vuex"
+import { mapMutations, mapActions } from "vuex"
 import Action from "./Action.vue"
 
-import StoreAction from "@/store/action"
 import Mutation from "@/store/mutation"
 import Tab, { ALL_TABS, Tabs } from "@/components/Tab"
 
@@ -51,10 +50,6 @@ export default Vue.extend({
         },
         setTab(tab: Tab) {
             if (this.isTab(tab)) return
-            if (this.$store.state.currentTab === Tabs.Run) {
-                this.$store.dispatch(StoreAction.PAUSE)
-            }
-
             this.$store.commit(Mutation.SET_TAB, tab)
         }
     },

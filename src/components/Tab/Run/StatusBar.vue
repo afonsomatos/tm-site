@@ -9,16 +9,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Getter from "@/store/getter"
 
 export default Vue.extend({
     computed: {
         status() {
-            let state = this.$store.getters[Getter.STATE]
+            let info = this.$store.state.run.info
             return [
-                ["Time", state.time],
-                ["Space", state.space],
-                ["State", state.state]
+                ["Time", info.time],
+                ["Space", info.space],
+                ["State", info.state]
             ]
         }
     },     
