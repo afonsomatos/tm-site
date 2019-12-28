@@ -9,20 +9,25 @@
 
 <script lang="ts">
 import Vue      from 'vue'
-import Section  from "@/components/SideBar/Section.vue"
-import Input    from "@/components/Input.vue"
-import Button   from "@/components/Button.vue"
-import Action   from "@/store/action"
+import { mapActions } from 'vuex'
+
+import Section from "@/components/SideBar/Section.vue"
+import Input from "@/components/Input.vue"
+import Button from "@/components/Button.vue"
+import { Action } from "@/store/modules/run"
 
 export default Vue.extend({
     data() {
         return {
-            input: "11101"
+            input: "example"
         }
     },
     methods: {
+        ...mapActions("run", {
+            loadTape: Action.LOAD
+        }),
         load() {
-            this.$store.dispatch(Action.LOAD, this.input)
+            this.loadTape(this.input)
         }
     },
     components: { Section, Input, Button }
@@ -40,10 +45,7 @@ export default Vue.extend({
 
 .tape-input {
     letter-spacing: 15px;
-    text-align: center;
-    font: $tape-font-normal;
-    width: 100%;
-    vertical-align: center;
+    font: $tape-font-small;
 }
 
 </style>

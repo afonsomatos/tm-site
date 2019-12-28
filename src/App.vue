@@ -50,8 +50,11 @@ import VueRouter    from "vue-router"
 import ActionBar    from "@/components/ActionBar/ActionBar.vue"
 import SideBar      from "@/components/SideBar/SideBar.vue"
 import Middle       from "@/components/Middle/Middle.vue"
+import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 
-import ContextMenu from "@/components/Diagram/ContextMenu/index.vue"
+import simulator, { Event } from "@/shared/simulator"
+import { Action, Mutation } from "@/store/modules/run"
+import { mapActions, mapMutations } from "vuex"
 
 export default Vue.extend({
     computed: {
@@ -61,6 +64,19 @@ export default Vue.extend({
         sidebar() {
             return this.$store.state.currentTab.sideBar
         }
+	},
+	methods: {
+		...mapActions("run", {
+			sync: Action.SYNC
+		})
+	},
+    created() {
+		// Set model of simulator
+		simulator.setModel(this.$store.state.nextModel) 
+		// Detect when simulator changes
+		simulator.bus.$on(Event.UPDATE, () => {
+			this.sync()
+		})
     },
     components: { ActionBar, SideBar, Middle, ContextMenu }
 })
