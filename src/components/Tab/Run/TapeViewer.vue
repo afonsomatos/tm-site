@@ -69,7 +69,11 @@ export default Vue.extend({
         this.tape = new Tape(this.$refs.tape as SVGSVGElement)
         
         // Sync when resetting
-        this.resetTape = () => this.tape.reset()
+        this.resetTape = () => {
+            console.log("resize")
+            this.tape.reset()
+        }
+        
         simulator.bus.$on([Event.BACK, Event.RESET], this.resetTape)
 
         // Animate transition

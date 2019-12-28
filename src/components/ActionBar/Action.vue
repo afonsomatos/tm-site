@@ -20,10 +20,10 @@ export default Vue.extend({
 
 @import "src/style/Lib.scss";
 
-$side: 73px;
+$side: 60px;
 
 .action {
-    font-size: 38px;
+    font-size: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
