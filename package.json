@@ -17,7 +17,7 @@
     "@vue/cli": "^3.9.2",
     "css-loader": "^3.0.0",
     "d3": "^5.9.7",
-    "turing": "file:../tm",
+    "tm-simple": "file:../tm-simple",
     "vue": "^2.6.10",
     "vue-style-loader": "^4.1.2"
   },
