@@ -117,7 +117,7 @@ export default class Tape {
 		
 		let triangle = d3.symbol().type(d3.symbolTriangle)
 			
-		let xPos = (Math.floor((this._width / this._height) / 2) + 0.5) * this.cellSize
+		let xPos = (Math.ceil(this.cells / 2) - 0.5) * this.cellSize
 		
 		cursor.enter()
 				.append("path")
@@ -190,6 +190,9 @@ export default class Tape {
 		
 		this._head = head
 		this._tape = tape
+		
+		// Checks for the available width.
+		this._width = this._svg.clientWidth
 
 		this._visible = Array(this.cells).fill(" ").map((_, i) => {
 			return this._head - Math.ceil(this.cells / 2) + i + 1
@@ -200,9 +203,6 @@ export default class Tape {
 
 	public update() {
 
-		// Checks for the available width.
-		this._width = this._svg.clientWidth
-		
 		// Updates the SVG dimensions.
 		d3.select(this._svg)
 			.attr("width", this._width)

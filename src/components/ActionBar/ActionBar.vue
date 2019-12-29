@@ -7,7 +7,7 @@
                 :icon="tab.tabIcon"
                 :selected="isTab(tab)"
             
-                @click.native="setTab(tab)"
+                @click.native="switchTab(tab)"
                 />
         </div>
 
@@ -32,10 +32,10 @@
 <script lang="ts">
 
 import Vue from 'vue'
-import { mapMutations, mapActions } from "vuex"
+import { mapMutations } from "vuex"
 import Action from "./Action.vue"
 
-import Mutation from "@/store/mutation"
+import { Mutation } from "@/store"
 import Tab, { ALL_TABS, Tabs } from "@/components/Tab"
 
 export default Vue.extend({
@@ -45,12 +45,15 @@ export default Vue.extend({
         }
     },
     methods: {
+        ...mapMutations({
+            setTab: Mutation.SET_TAB
+        }),
         isTab(tab: Tab) {
             return this.$store.state.currentTab === tab
         },
-        setTab(tab: Tab) {
+        switchTab(tab: Tab) {
             if (this.isTab(tab)) return
-            this.$store.commit(Mutation.SET_TAB, tab)
+            this.setTab(tab)
         }
     },
     components: { Action },

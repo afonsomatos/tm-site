@@ -4,8 +4,6 @@ import Tab, { Tabs } from "@/components/Tab"
 import table from "./modules/table"
 import diagram from "./modules/diagram"
 import run from "./modules/run"
-import edit from "./edit.module"
-import Mutation from "./mutation"
 
 import { Point, Direction } from "@/shared/types"
 import { Model, State, Transition } from "@/shared/model"
@@ -52,10 +50,13 @@ const exampleNewModel = () => {
     return model;
 }
 
+export enum Mutation {
+    SET_TAB = "setTab"
+}
+
 export default new Vuex.Store({
     
     modules: {
-        edit,
         run,
         diagram,
         table
