@@ -15,20 +15,19 @@ import { mapActions } from 'vuex'
 import Section from "@/components/SideBar/Section.vue"
 import Input from "@/components/Input.vue"
 import Button from "@/components/Button.vue"
-import { Action } from "@/store/modules/run"
+
+import run from "@/store/run"
 
 export default Vue.extend({
     data() {
         return {
-            input: "example"
+            input: "example",
+            run,
         }
     },
     methods: {
-        ...mapActions("run", {
-            loadTape: Action.LOAD
-        }),
         load() {
-            this.loadTape(this.input)
+            run.load(this.input)
         }
     },
     components: { Section, Input, Button }

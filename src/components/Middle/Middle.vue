@@ -3,13 +3,13 @@
         <div class="main">
             <!-- <transition name="fade"> -->
                 <keep-alive> <!-- Keep alive will save the component's state -->
-                    <Table v-if="isGrid()" />
+                    <Table v-if="isGrid" />
                     <Diagram v-else />
                 </keep-alive>
             <!-- </transition> -->
             <div class="view-mode">
-                <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
-                <Icon class="icon" icon="grid" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
+                <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram }"/>
+                <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }"/>
             </div>
         </div>
         <div class="float">
@@ -27,29 +27,31 @@ import Icon     from "@/components/Icon.vue"
 import Table    from "@/components/Table/index.vue"
 import Diagram  from "@/components/Diagram/index.vue"
 
-enum Mode { Diagram, Grid }
+import global, { View } from "@/store/global"
 
 export default Vue.extend({
     methods: {
         getFloat() {
-            return this.$store.state.currentTab.bottomFloat
+            return global.tab.bottomFloat
         },
         showDiagram() {
-            this.mode = Mode.Diagram
+            global.view = View.Diagram
         },
         showGrid() {
-            this.mode = Mode.Grid
-        },
+            global.view = View.Grid
+        }
+    },
+    computed: {
         isDiagram() {
-            return this.mode === Mode.Diagram
+            return global.view === View.Diagram
         },
         isGrid() {
-            return this.mode === Mode.Grid
+            return global.view === View.Grid
         }
     },
     data() {
         return {
-            mode: Mode.Grid,
+            global,
         }
     },
     components: { Icon, Table, Diagram }

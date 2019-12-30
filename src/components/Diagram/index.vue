@@ -33,7 +33,14 @@ import Action from "@/store/modules/diagram/action"
 import { State, Link } from "@/shared/model"
 import { Point } from "@/shared/types"
 
+import global from "@/store/global"
+
 export default Vue.extend({
+	data() {
+		return {
+			global,
+		}
+	},
 	methods: {
 		...mapActions("diagram", {
 			setStatePosition: Action.SET_STATE_POSITION,
@@ -82,7 +89,7 @@ export default Vue.extend({
 
 		this.$store.state.diagram.graph = graph
 
-		graph.setModel(this.$store.state.nextModel)
+		graph.setModel(global.model)
 		graph.setTransform(this.$store.state.diagram.transform)
 
 		this.graph = graph

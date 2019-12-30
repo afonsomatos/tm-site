@@ -53,29 +53,30 @@ import Middle       from "@/components/Middle/Middle.vue"
 import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 
 import simulator, { Event } from "@/shared/simulator"
-import { Action, Mutation } from "@/store/modules/run"
-import { mapActions, mapMutations } from "vuex"
+
+import run from "@/store/run"
+import global from "@/store/global"
 
 export default Vue.extend({
+	data() {
+		return {
+			global, run
+		}
+	},
     computed: {
 		showContextMenu() {
 			return this.$store.state.diagram.menu !== null
 		},
         sidebar() {
-            return this.$store.state.currentTab.sideBar
+            return global.tab.sideBar
         }
-	},
-	methods: {
-		...mapActions("run", {
-			sync: Action.SYNC
-		})
 	},
     created() {
 		// Set model of simulator
-		simulator.setModel(this.$store.state.nextModel) 
+		simulator.setModel(global.model) 
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
-			this.sync()
+			run.sync()
 		})
     },
     components: { ActionBar, SideBar, Middle, ContextMenu }

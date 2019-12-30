@@ -36,6 +36,8 @@ import IconBtn from "@/components/IconBtn.vue"
 
 import { Transition, State } from "@/shared/model"
 
+import global from "@/store/global"
+
 export default Vue.extend({
     methods: {
 		...mapMutations("table", {
@@ -51,6 +53,7 @@ export default Vue.extend({
 	computed: { },
 	data() {
 		return {
+			global,
 			table: null
 		}
 	},
@@ -78,7 +81,7 @@ export default Vue.extend({
 		}
 
 		this.table = table
-		table.model = this.$store.state.nextModel
+		table.model = global.model
 		this.$store.state.table.table = table
 	},
 	components: { IconBtn }
