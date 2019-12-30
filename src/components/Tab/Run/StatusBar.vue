@@ -9,15 +9,34 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Status } from "@/store/modules/run"
 
 export default Vue.extend({
     computed: {
         status() {
-            let info = this.$store.state.run.info
+            let { status, info } = this.$store.state.run
+            let statusLabel;
+
+            switch (status) {
+                case Status.Accepted:
+                    statusLabel = "Accepted"
+                    break
+                case Status.Rejected:
+                    statusLabel = "Rejected"
+                    break
+                case Status.Undefined:
+                    statusLabel = "Undefined"
+                    break
+                case Status.Normal:
+                    statusLabel = this.$store.state.playing ? "Running" : "Waiting"
+                    break
+            }
+
             return [
                 ["Time", info.time],
                 ["Space", info.space],
-                ["State", info.state]
+                ["State", info.state],
+                ["Status", statusLabel]
             ]
         }
     },     

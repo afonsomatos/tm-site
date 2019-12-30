@@ -12,7 +12,9 @@
         </div>
 
         <div class="bottom">
-            <Action icon="github" />
+            <a href="http://github.com/afonsomatos/tm-site.git">
+                <Action icon="github" />
+            </a>
         </div>
     </div>
 </template>

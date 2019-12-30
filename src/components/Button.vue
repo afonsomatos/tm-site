@@ -21,13 +21,14 @@ export default Vue.extend({
 .button {
     display: inline-block;
 	font: $font-small-semibold;
-	color: $color-light;
+    color: $color-light;
 	background-color: $color-normal;
 	border: none;
 	padding: 6px 20px;
 
 	&.danger { background-color: $color-negative; }
     &.green { background-color: $color-positive; }
+    &.blue { background-color: $color-active; }
     
     &:hover { cursor: pointer; }
 }

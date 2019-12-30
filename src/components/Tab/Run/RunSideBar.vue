@@ -1,8 +1,9 @@
 <template>
-    <Section title="Load">
+    <Section title="Load" class="load-section">
+        <div class="name">Load input</div>
         <Input v-model="input" class="tape-input" />
         <div class="button-holder">
-            <Button class="green" value="Load" @click="load"/>
+            <Button class="blue" value="Load" @click="load"/>
         </div>
     </Section>
 </template>
@@ -38,9 +39,21 @@ export default Vue.extend({
 
 @import "src/style/Lib";
 
+.name {
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #707070;
+    margin-bottom: 20px;
+}
+
 .button-holder {
     text-align: right;
     margin-top: 15px;
+}
+
+.load-section {
+    padding: 20px;
 }
 
 .tape-input {

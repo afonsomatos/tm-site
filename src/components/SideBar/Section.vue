@@ -19,10 +19,6 @@ export default Vue.extend({
 
 .section {
     border-bottom: 1px solid #D9D9D9;
-
-    &:nth-last-child() {
-        border-bottom-width: 0px;
-    }
 }
 
 </style>
