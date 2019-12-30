@@ -1,37 +1,37 @@
 <template>
-    <div class="main">
-        <ActionBar />
-        <Middle />
+		<div class="main">
+				<ActionBar />
+				<Middle />
 
-        <SideBar>
-            <transition name="fade" mode="out-in">
-                <component v-bind:is="sidebar"></component>
-            </transition>
-        </SideBar>
+				<SideBar>
+						<transition name="fade" mode="out-in">
+								<component v-bind:is="sidebar"></component>
+						</transition>
+				</SideBar>
 
 		<context-menu v-if="showContextMenu" />
-    </div>
+		</div>
 </template>
 
 <style lang="scss" scoped>
 
 .fade-enter {
-  opacity: 0;
+	opacity: 0;
 }
 
 .fade-enter-active {
-  transition: opacity 0.2s ease;
+	transition: opacity 0.2s ease;
 }
 
 .fade-leave-active {
-  transition: opacity 0.2s ease;
-  opacity: 0;
+	transition: opacity 0.2s ease;
+	opacity: 0;
 }
 
 .main {
-    width: 100%;
-    height: 100%;
-    display: grid;
+		width: 100%;
+		height: 100%;
+		display: grid;
 	grid-template-columns: min-content auto min-content;
 }
 
@@ -55,7 +55,7 @@ import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 import simulator, { Event } from "@/shared/simulator"
 
 import run from "@/store/run"
-import global from "@/store/global"
+import global, { View } from "@/store/global"
 
 export default Vue.extend({
 	data() {
@@ -63,23 +63,23 @@ export default Vue.extend({
 			global, run
 		}
 	},
-    computed: {
+	computed: {
 		showContextMenu() {
-			return this.$store.state.diagram.menu !== null
+			return this.$store.state.diagram.menu !== null && global.view === View.Diagram
 		},
-        sidebar() {
-            return global.tab.sideBar
-        }
+		sidebar() {
+			return global.tab.sideBar
+		}
 	},
-    created() {
+	created() {
 		// Set model of simulator
 		simulator.setModel(global.model) 
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
 			run.sync()
 		})
-    },
-    components: { ActionBar, SideBar, Middle, ContextMenu }
+	},
+	components: { ActionBar, SideBar, Middle, ContextMenu }
 })
 
 </script>
