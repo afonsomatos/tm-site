@@ -38,7 +38,7 @@ import global from "@/store/global"
 export default Vue.extend({
 	data() {
 		return {
-			global: global.state,
+			global,
 		}
 	},
 	methods: {

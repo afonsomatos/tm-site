@@ -28,7 +28,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import _ from "lodash"
 import IconBtn from "@/components/IconBtn.vue"
 import Tape from "@/shared/Tape"
-import { Mutation, Action, Status } from "@/store/modules/run"
+import run from "@/store/run"
 
 import simulator, { Event } from '@/shared/simulator'
 
@@ -36,33 +36,28 @@ export default Vue.extend({
     components: { IconBtn },
     data() {
         return {
+            run,
             tape: null,
             transition: null,
             resetTape: null,
         }
     },
     computed: {
-        ...mapState("run", {
-            playing: "playing"
-        }),
-        status() {
-            return this.$store.state.run.status
-        },
+        status: () => run.status,
+        playing: () => run.playing,
         stepThrottle() {
             return _.throttle(
-                () => this.step(),
+                () => run.step(),
                 simulator.interval,
                 { trailing: false })
         },
     },
     methods: {
-        ...mapActions("run", {
-            step: Action.STEP,
-            pause: Action.PAUSE,
-            play: Action.PLAY,
-            back: Action.BACK,
-            reset: Action.RESET
-        }),
+        play: () => run.play(),
+        pause: () => run.pause(),
+        back: () => run.back(),
+        reset: () => run.reset(),
+        step: () => run.step(),
     },
     mounted() {
         this.tape = new Tape(this.$refs.tape as SVGSVGElement)
@@ -83,7 +78,7 @@ export default Vue.extend({
     },
     destroyed() {
         // Once we close our tape, we can halt the simulator
-        this.pause()
+        run.pause()
         
         // Stop listening for simulator events
         simulator.bus.$off([Event.UPDATE, Event.BACK], this.resetTape)

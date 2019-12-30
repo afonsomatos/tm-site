@@ -53,7 +53,7 @@ export default Vue.extend({
 	computed: { },
 	data() {
 		return {
-			global: global.state,
+			global,
 			table: null
 		}
 	},

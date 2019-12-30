@@ -59,7 +59,7 @@ import global from "@/store/global"
 export default Vue.extend({
     data() {
         return {
-            global: global.state,
+            global,
             directions: {
                 [Direction.Left]: "left-arrow-alt",
                 [Direction.Right]: "right-arrow-alt"

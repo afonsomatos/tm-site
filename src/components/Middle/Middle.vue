@@ -51,7 +51,7 @@ export default Vue.extend({
     },
     data() {
         return {
-            global: global.state
+            global,
         }
     },
     components: { Icon, Table, Diagram }

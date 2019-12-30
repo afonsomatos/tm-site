@@ -44,7 +44,7 @@ export default Vue.extend({
     data() {
         return {
             tabs: ALL_TABS,
-            global: global.state
+            global
         }
     },
     methods: {

@@ -1,10 +1,7 @@
 import Tab from "@/components/Tab"
 import { Model } from "@/shared/model"
 import { Direction } from "@/shared/types"
-
-interface Store<S extends object> {
-	state: S
-}
+import { Store } from "@/store/types"
 
 export enum View {
 	Diagram,
@@ -32,7 +29,7 @@ class Global implements Store<State> {
 	get view() {
 		return this.state.view
 	}
-	
+
 	set tab(tab: Tab) {
 		this.state.currentTab = tab
 	}
