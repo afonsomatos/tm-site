@@ -25,13 +25,6 @@
     &:active { cursor: grabbing; }
 }
 
-.node {
-    cursor: move;
-    &:active { stroke: #000; }
-    
-    &:active .circle { stroke: #000; }
-}
-
 .newTransition {
     // Node is being selected as a target of a transition.
     .node {
@@ -64,10 +57,17 @@
 }
 
 .node {
+    cursor: move;
+    &:active { stroke: #000; }
+    
+    &:hover .circle { stroke-width: 2px; }
+    &:active .circle { stroke-width: 3px; }
+
     .circle {
         fill: #A3C4BF;
         paint-order: stroke;
-        stroke-width: 3px;
+        stroke: #000;
+        stroke-width: 0px;
     }
 
     &.start .circle { fill: #6DB4EB; }

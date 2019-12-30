@@ -1,7 +1,7 @@
 <template>
     <div class="rename">
-        <icon-btn class="icon" icon="left-arrow-alt" @click="goBack" :clickable="true" />
-        <input class="input" v-model="state.label" @input="onRename" />
+        <!-- <icon-btn class="icon" icon="left-arrow-alt" @click="goBack" :clickable="true" /> -->
+        <input ref="input" class="input" v-model="state.label" @input="onRename" @change="goBack" v-focus />
     </div>
 </template>
 
@@ -48,19 +48,13 @@ export default Vue.extend({
     padding: 5px;
     width: 100px;
     text-align: center;
+    border-radius: 6px;
     background: #eee;
     color: #444;
     border: none;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-}
-
-.rename {
-    border-radius: 6px;
-    background: white;
     box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.3);
-    display: grid;
-    grid-template-columns: min-content min-content;
 }
 
 </style>
