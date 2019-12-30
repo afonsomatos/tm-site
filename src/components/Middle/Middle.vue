@@ -7,10 +7,10 @@
                     <Diagram v-else />
                 </keep-alive>
             <!-- </transition> -->
-        </div>
-        <div class="top">
-            <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
-            <Icon class="icon" icon="grid" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
+            <div class="view-mode">
+                <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram() }"/>
+                <Icon class="icon" icon="grid" @click.native="showGrid()"      :class="{ active: isGrid() }"/>
+            </div>
         </div>
         <div class="float">
             <transition name="slide">
@@ -84,8 +84,18 @@ export default Vue.extend({
 .icon {
     cursor: pointer;
     transition: color 0.25s;
+    padding: 10px;
+    color: #444;
+    background-color: #E8E8E8;
 
-    &:active, &.active { color: #000; }
+    &:active, &.active {
+        color: #5A73EF;
+    }
+
+}
+
+.main {
+    position: relative;
 }
 
 .middle {
@@ -100,19 +110,15 @@ export default Vue.extend({
     width: 100%;
 }
 
-.top {
-    height: 73px;
-    font-size: 38px;
-    display: grid;
+.view-mode {
+    font-size: 28px;
+    left: 50%;
+    top: 10px;
+    transform: translate(-50%, 0);
+    display: flex;
     z-index: 1;
+    border: 1px solid #e0e0e0;
     position: absolute;
-    width: 100%;
-    padding-left: 50px;
-    grid-auto-flow: column;
-    grid-gap: 20px;
-    align-items: left;
-    justify-content: left;
-    align-content: center;
 }
 
 </style>
