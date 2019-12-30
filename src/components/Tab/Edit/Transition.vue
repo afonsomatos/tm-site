@@ -54,9 +54,12 @@ import Input    from "@/components/Input.vue"
 import { Transition, State } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
+import global from "@/store/global"
+
 export default Vue.extend({
     data() {
         return {
+            global: global.state,
             directions: {
                 [Direction.Left]: "left-arrow-alt",
                 [Direction.Right]: "right-arrow-alt"
@@ -65,7 +68,7 @@ export default Vue.extend({
     },
     computed: {
         states(): State[] {
-            return this.$store.state.nextModel.states
+            return global.model.states
         },
         transition(): Transition {
             return this.$store.state.table.transition

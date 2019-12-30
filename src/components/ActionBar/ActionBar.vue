@@ -37,26 +37,26 @@ import Vue from 'vue'
 import { mapMutations } from "vuex"
 import Action from "./Action.vue"
 
-import { Mutation } from "@/store"
 import Tab, { ALL_TABS, Tabs } from "@/components/Tab"
+import global from "@/store/global"
 
 export default Vue.extend({
     data() {
         return {
-            tabs: ALL_TABS
+            tabs: ALL_TABS,
+            global: global.state
         }
     },
     methods: {
-        ...mapMutations({
-            setTab: Mutation.SET_TAB
-        }),
         isTab(tab: Tab) {
-            return this.$store.state.currentTab === tab
+            return global.tab === tab
         },
         switchTab(tab: Tab) {
-            if (this.isTab(tab)) return
-            this.setTab(tab)
+            global.tab = tab
         }
+    },
+    created() {
+        global.tab = Tabs.Run
     },
     components: { Action },
 })

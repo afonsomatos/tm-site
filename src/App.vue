@@ -56,13 +56,20 @@ import simulator, { Event } from "@/shared/simulator"
 import { Action, Mutation } from "@/store/modules/run"
 import { mapActions, mapMutations } from "vuex"
 
+import global from "@/store/global"
+
 export default Vue.extend({
+	data() {
+		return {
+			global: global.state
+		}
+	},
     computed: {
 		showContextMenu() {
 			return this.$store.state.diagram.menu !== null
 		},
         sidebar() {
-            return this.$store.state.currentTab.sideBar
+            return global.tab.sideBar
         }
 	},
 	methods: {
@@ -72,7 +79,7 @@ export default Vue.extend({
 	},
     created() {
 		// Set model of simulator
-		simulator.setModel(this.$store.state.nextModel) 
+		simulator.setModel(global.model) 
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
 			this.sync()
