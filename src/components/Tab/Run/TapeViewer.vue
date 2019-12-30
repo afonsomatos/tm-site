@@ -28,7 +28,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import _ from "lodash"
 import IconBtn from "@/components/IconBtn.vue"
 import Tape from "@/shared/Tape"
-import Getter from "@/store/getter"
 import { Mutation, Action, Status } from "@/store/modules/run"
 
 import simulator, { Event } from '@/shared/simulator'

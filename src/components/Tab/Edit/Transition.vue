@@ -44,8 +44,6 @@
 
 <script lang="ts">
 import Vue      from 'vue'
-import Mutation from "@/store/mutation"
-import Action   from "@/store/action"
 
 import Field    from "@/components/SideBar/Field.vue"
 import Section  from "@/components/SideBar/Section.vue"

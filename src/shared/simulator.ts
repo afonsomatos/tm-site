@@ -101,7 +101,7 @@ class Simulator {
 	/**
 	 * The interval identifier for the simulator. 
 	 */
-	timer: NodeJS.Timeout
+	timer: number
 
 	/**
 	 * Backend turing machine.
@@ -197,7 +197,7 @@ class Simulator {
 	 */
 	public play() {
 		this.pause()
-		this.timer = setInterval(() => this.step(), this.interval)
+		this.timer = window.setInterval(() => this.step(), this.interval)
 	}
 
 }
