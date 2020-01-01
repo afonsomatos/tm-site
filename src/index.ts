@@ -8,6 +8,12 @@ Vue.directive('focus', {
     }
 })
 
+Vue.directive("select", {
+    inserted(el: HTMLInputElement) {
+        el.select()
+    }
+})
+
 new Vue({
     store,
     el: '#main',

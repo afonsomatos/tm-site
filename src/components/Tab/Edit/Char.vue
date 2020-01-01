@@ -5,10 +5,12 @@
             <Field name="Character">
                 <Input
                     class="char-input"
+                    :class="{ invalid }"
                     maxlength="1"
-                    :value="char"
                     @input="rename($event)"
-                    @focus.native="$event.target.select()" />
+                    :value="char"
+                    v-select
+                    v-focus />
             </Field>
         </Section>
         <!-- Delete all transitions that come from this character -->
@@ -28,20 +30,43 @@ import Field    from "@/components/SideBar/Field.vue"
 import IconBtn  from "@/components/IconBtn.vue"
 import Input    from "@/components/Input.vue"
 
-import { Action } from "@/store/modules/table"
-import { mapActions } from 'vuex'
+import { Action, Getter } from "@/store/modules/table"
+import { mapActions, mapGetters } from 'vuex'
 
 export default Vue.extend({
+    data() {
+        return {
+            invalid: false
+        }
+    },
+    watch: {
+        char(newChar: string) {
+            this.invalid = false
+        }
+    },
     computed: {
+        ...mapGetters("table", {
+            available: Getter.AVAILABLE_CHAR
+        }),
         char() {
             return this.$store.state.table.char
         }
     },
     methods: {
         ...mapActions("table", {
-            rename: Action.RENAME_CHARACTER,
-            remove: Action.DELETE_CHARACTER
+            renameChar: Action.RENAME_CHARACTER,
+            remove: Action.DELETE_CHARACTER,
         }),
+        rename(newChar: string) {
+            if (this.char === newChar) {
+                return
+            }
+
+            this.invalid = !this.available(newChar)
+            if (!this.invalid)  {
+                this.renameChar(newChar)
+            }
+        }
     },
     components: { Section, Input, Field, IconBtn }
 })
@@ -58,6 +83,10 @@ export default Vue.extend({
     box-sizing: content-box;
     text-align: center;
     width: 1em;
+}
+
+.invalid {
+    color:#D94444;
 }
 
 </style>

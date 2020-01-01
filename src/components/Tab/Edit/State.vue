@@ -50,8 +50,12 @@ export default Vue.extend({
                 [Type.Start]: "right-arrow-alt",
                 [Type.Accept]: "done",
                 [Type.Reject]: "clear"
-            }
+            },
+            label: null
         }
+    },
+    created() {
+        this.label = this.state.label
     },
     computed: {
  

@@ -47,12 +47,18 @@ const state: State = {
 }
 
 export enum Getter {
-	STATE_TYPE = "stateType"
+	STATE_TYPE = "stateType",
+	AVAILABLE_CHAR = "availableChar"
 }
 
 const getters: GetterTree<State, any> = {
 
-	[Getter.STATE_TYPE]: state => state.type
+	[Getter.STATE_TYPE]: state => state.type,
+
+	[Getter.AVAILABLE_CHAR]: state => (char: string) => {
+		return state.table.model.allTransitions
+			.findIndex(t => t.read === char) === -1
+	}
 
 }
 
