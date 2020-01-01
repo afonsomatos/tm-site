@@ -1,20 +1,21 @@
 <template>
     <div class="middle">
         <div class="main">
-            <!-- <transition name="fade"> -->
-                <keep-alive> <!-- Keep alive will save the component's state -->
-                    <Table v-if="isGrid" />
-                    <Diagram v-else />
-                </keep-alive>
-            <!-- </transition> -->
+            <keep-alive> <!-- Keep alive will save the component's state -->
+                <Table v-if="isGrid" />
+                <Diagram v-else />
+            </keep-alive>
             <div class="view-mode">
                 <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram }"/>
                 <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }"/>
             </div>
         </div>
         <div class="float">
-            <transition name="slide">
-                <component v-bind:is="getFloat()"></component>   
+            <transition
+                @leave="leave"
+                @enter="enter"
+            >
+                <component v-bind:is="bottom"></component>   
             </transition>
         </div>
     </div>
@@ -29,19 +30,36 @@ import Diagram  from "@/components/Diagram/index.vue"
 
 import global, { View } from "@/store/global"
 
+import * as d3 from "d3"
+
 export default Vue.extend({
     methods: {
-        getFloat() {
-            return global.tab.bottomFloat
-        },
         showDiagram() {
             global.view = View.Diagram
         },
         showGrid() {
             global.view = View.Grid
-        }
+        },
+        enter(el, done) {
+            d3.select(el)
+                .style("margin-bottom", -el.clientHeight + "px")
+                .transition()
+                .duration(this.floatTransitionDuration)
+                .style("margin-bottom", "0px")
+                .on("end", done)
+        },
+        leave(el, done) {
+            d3.select(el)
+                .transition()
+                .duration(this.floatTransitionDuration)
+                .style("margin-bottom", -el.clientHeight + "px")
+                .on("end", done)
+        },
     },
     computed: {
+        bottom() {
+            return global.tab.bottomFloat
+        },
         isDiagram() {
             return global.view === View.Diagram
         },
@@ -51,6 +69,7 @@ export default Vue.extend({
     },
     data() {
         return {
+            floatTransitionDuration: 800,
             global,
         }
     },
@@ -60,28 +79,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-
-//fade
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
-
-//slide 
-.slide-leave-active,
-.slide-enter-active {
-  transition: 0.8s;
-}
-.slide-enter, .slide-leave-to {
-  transform: translate(0, 100%);
-}
-.slide-enter-to, .slide-leave {
-  transform: translate(0, 0);
-}
-
 
 .icon {
     cursor: pointer;
