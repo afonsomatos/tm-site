@@ -58,6 +58,20 @@ const actions: ActionTree<State, any> = {
         state.graph.update()
     },
 
+    [Action.NORMALIZE]: ({ state }) => {
+        if (state.transition !== null) {
+            let t1 = state.transition
+            // Let's remove all duplicate transitions
+            for (let t2 of state.graph.model.allTransitions) {
+                if (t1 !== t2 && t1.read === t2.read && t1.from === t2.from) {
+                    state.graph.model.removeTransition(t2)                    
+                }
+            }
+        }
+
+        state.graph.update()
+    },
+
     [Action.ADD_STATE]: ({ state }) => {
         // Go from absolute to relative graph positions
         let [x, y] = state.graphPosition

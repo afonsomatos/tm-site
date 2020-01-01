@@ -45,11 +45,15 @@ export default Vue.extend({
         }
 
     },
+    destroyed() {
+        this.normalize()
+    },
     methods: {
 
         ...mapActions("diagram", {
             deleteTransition: Action.DELETE_TRANSITION,
             update: Action.UPDATE,
+            normalize: Action.NORMALIZE
         }),
 
         ...mapMutations("diagram", {

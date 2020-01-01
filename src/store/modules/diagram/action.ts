@@ -8,6 +8,7 @@ enum Action {
     CREATE_TRANSITION = "createTransition",
     SET_STATE_POSITION = "setStatePosition",
     SET_STATE_TYPE = "setStateType",
+    NORMALIZE = "normalize",
     UPDATE = "update"
 }
 
