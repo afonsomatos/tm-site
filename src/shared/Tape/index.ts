@@ -82,7 +82,10 @@ export default class Tape {
 	 * Given a certain index returns the text that is on that cell. 
 	 */
 	private indexToChar(i: number): string {
-		return this._tape[i]
+		if (i in this._tape)
+			return this._tape[i]
+		else
+			return simulator.converter.program.empty
 	}
 
 	private drawRect(selection: d3.Selection<SVGElement, any, any, unknown>) {
