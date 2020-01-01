@@ -77,9 +77,6 @@ export default Vue.extend({
 }
 
 .swatch {
-    border-radius: 6px;
-    background: white;
-    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.3);
     display: grid;
     grid-auto-flow: column;
 	overflow: hidden;

@@ -35,7 +35,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 
 .v-menu {
-    border-radius: 6px;
     display: grid;
     grid-gap: 20px;
     font-size: 30px;

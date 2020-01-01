@@ -68,11 +68,9 @@ export default Vue.extend({
 .v-menu {
     text-align: center;
     overflow: hidden;
-    background-color: white;
     font-size: 20px;
     white-space: nowrap;
     color: #616161;
-    border-radius: 6px;
 }
 
 .add {

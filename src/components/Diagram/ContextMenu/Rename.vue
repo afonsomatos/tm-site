@@ -54,7 +54,6 @@ export default Vue.extend({
     border: none;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.3);
 }
 
 </style>
