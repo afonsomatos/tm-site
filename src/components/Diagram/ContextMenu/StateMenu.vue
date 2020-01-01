@@ -67,10 +67,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 
 .v-menu {
-    background-color: white;
-    border-radius: 6px;
-    box-shadow: 0px 0px 40px 6px rgba(0, 0, 0, 0.3);
-
     display: grid;
     grid-gap: 20px;
     padding: 20px 15px;
@@ -90,6 +86,6 @@ export default Vue.extend({
 }
 
 .red {
-    color: red;
+    color: #D94444;
 }
 </style>
