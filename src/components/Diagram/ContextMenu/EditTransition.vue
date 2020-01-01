@@ -47,6 +47,7 @@ export default Vue.extend({
     },
     destroyed() {
         this.normalize()
+
     },
     methods: {
 
@@ -135,7 +136,7 @@ input {
 
 .icon {
     padding: 10px;
-    &.red { color: red }
+    &.red { color: #D94444; }
 }
 
 </style>

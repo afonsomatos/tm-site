@@ -1,6 +1,8 @@
 <template>
     <div class="v-menu">
-        <icon-btn icon="add" class="add" @click="add" />
+        <div class="add">
+            <icon-btn icon="add" @click="add" />
+        </div>
         <div class="group">
             <div v-for="(t, i) in transitions" :key="i" @click="clickTransition(t)">
                 {{ text(t) }}
@@ -74,7 +76,8 @@ export default Vue.extend({
 }
 
 .add {
-    padding: 12px 0px;
+    font-size: 24px;
+    padding: 4px 0px;
 }
 
 .group {
@@ -83,11 +86,11 @@ export default Vue.extend({
         letter-spacing: 5px;
         cursor: pointer;
         padding: 10px 15px;
-        background: #eee;
+        background: #F3F3F3;
     }
 
     > div:nth-child(2n) {
-        background: #e0e0e0;
+        background: #F9F9F9;
     }
 }
 </style>

@@ -80,6 +80,8 @@ export default Vue.extend({
     display: grid;
     grid-auto-flow: column;
 	overflow: hidden;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 </style>

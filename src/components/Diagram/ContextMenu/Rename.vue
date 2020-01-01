@@ -49,11 +49,15 @@ export default Vue.extend({
     width: 100px;
     text-align: center;
     border-radius: 6px;
-    background: #eee;
+    background: #F9F9F9;
     color: #444;
     border: none;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
+
+    &:focus {
+        outline: 0;
+    }
 }
 
 </style>

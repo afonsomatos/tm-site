@@ -86,6 +86,6 @@ export default Vue.extend({
 }
 
 .red {
-    color: red;
+    color: #D94444;
 }
 </style>
