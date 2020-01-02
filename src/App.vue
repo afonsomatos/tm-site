@@ -56,6 +56,8 @@ import simulator, { Event } from "@/shared/simulator"
 
 import run from "@/store/run"
 import global, { View } from "@/store/global"
+import { mapMutations } from "vuex"
+import Mutation from "./store/modules/diagram/mutation"
 
 export default Vue.extend({
 	data() {
@@ -63,9 +65,22 @@ export default Vue.extend({
 			global, run
 		}
 	},
+	watch: {
+		showContextMenu(show: boolean) {
+			if (!show) {
+				this.setMenu(null)
+			}
+		}
+	},
+	methods: {
+		...mapMutations("diagram", {
+			setMenu: Mutation.SET_MENU
+		})
+	},
 	computed: {
 		showContextMenu() {
-			return this.$store.state.diagram.menu !== null && global.view === View.Diagram
+			return this.$store.state.diagram.menu !== null &&
+					global.view === View.Diagram && global.canEdit
 		},
 		sidebar() {
 			return global.tab.sideBar
