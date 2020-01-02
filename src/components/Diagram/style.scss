@@ -106,3 +106,15 @@
     pointer-events: none;
     fill: none
 }
+
+&.view {
+
+    .linkShadow {
+        cursor: default;
+    }
+
+    .node {
+        cursor: default;
+    }
+
+}

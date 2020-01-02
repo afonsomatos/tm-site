@@ -60,8 +60,11 @@ export default class Graph {
 
     // Can we drag a node right now?
     private get enableNodeDrag(): boolean {
-        return !this.temporaryTransition.active
+        return !this.temporaryTransition.active && !this.view
     }
+
+    // In view-mode, certain functionalities do not apply
+    public view: boolean = false
 
     constructor(svgElement: SVGSVGElement) {
 
