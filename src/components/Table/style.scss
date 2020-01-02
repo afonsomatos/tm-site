@@ -5,6 +5,23 @@ table {
 	border-collapse: separate;
 }
 
+// View-mode
+&.view {
+
+	.bottom-row {
+		display: none;
+	}
+
+	.row-wrapper:last-child .row td {
+		border-bottom: none;
+	}
+	
+	td:last-child:not(.divider) {
+		display: none;
+	}
+
+}
+
 td {
 	transition: background-color 0.2s ease;
 

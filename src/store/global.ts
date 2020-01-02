@@ -1,4 +1,4 @@
-import Tab from "@/components/Tab"
+import Tab, { Tabs } from "@/components/Tab"
 import { Model } from "@/shared/model"
 import { Direction } from "@/shared/types"
 import { Store } from "@/store/types"
@@ -20,6 +20,10 @@ class Global implements Store<State> {
 		currentTab: {} as Tab,
 		model: exampleNewModel(),
 		view: View.Diagram
+	}
+
+	get canEdit(): boolean {
+		return this.state.currentTab === Tabs.Edit
 	}
 
 	set view(view: View) {

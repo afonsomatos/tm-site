@@ -1,5 +1,5 @@
 <template>
-	<div id="app">
+	<div id="app" :class="{ view: !canEdit }">
 		<div class="app-wrapper" ref="wrapper">
 			<svg id="svg" ref="svg">
 				<rect id="background" x="0" y="0" width="100%" height="100%" fill="transparent"/>
@@ -41,6 +41,14 @@ export default Vue.extend({
 			global,
 		}
 	},
+	computed: {
+		canEdit: () => global.canEdit
+	},
+	watch: {
+		canEdit(value: boolean) {
+			this.graph.view = !value
+		}	
+	},
 	methods: {
 		...mapActions("diagram", {
 			setStatePosition: Action.SET_STATE_POSITION,
@@ -78,13 +86,17 @@ export default Vue.extend({
 		let graph = new Graph(svg)
 
 		graph.onStateRightClick = (state: State) => {
-			this.selectState(state)
-			this.openMenu("state")
+			if (this.canEdit) {
+				this.selectState(state)
+				this.openMenu("state")
+			}
 		}
 
 		graph.onLinkRightClick = (link: Link) => {
-			this.selectLink(link)
-			this.openMenu("link")
+			if (this.canEdit) {
+				this.selectLink(link)
+				this.openMenu("link")
+			}
 		}
 
 		this.$store.state.diagram.graph = graph
@@ -96,7 +108,9 @@ export default Vue.extend({
 
         // Add new state
 		d3.select("#background").on("contextmenu", () => {
-			this.openMenu("addState")
+			if (this.canEdit) {
+				this.openMenu("addState")
+			}
 		})
 	},
 	
