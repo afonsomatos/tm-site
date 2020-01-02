@@ -1,5 +1,5 @@
 <template>
-    <div id="table" class="wrapper">
+    <div id="table" class="wrapper" :class="{ view: !canEdit }">
         <div class="main">
             <div class="row-label">States</div>
             <div class="col-label">Characters</div>
@@ -50,7 +50,9 @@ export default Vue.extend({
 			addColumn: Action.ADD_CHARACTER,
 		})
 	},
-	computed: { },
+	computed: {
+		canEdit: () => global.canEdit
+	},
 	data() {
 		return {
 			global,
@@ -66,18 +68,18 @@ export default Vue.extend({
 		let table = new Table(wrapper)
 
 		table.onTransitionClick = (transition: Transition) => {
-			console.log("transition clicked:", transition)
-			this.setTransition(transition)
+			if (this.canEdit)
+				this.setTransition(transition)
 		}
 
 		table.onStateClick = (state: State) => {
-			console.log("state clicked:", state)
-			this.setState(state)
+			if (this.canEdit)
+				this.setState(state)
 		}
 
 		table.onCharClick = (char: String) => {
-			console.log("character clicked:", char)
-			this.setChar(char)
+			if (this.canEdit)
+				this.setChar(char)
 		}
 
 		this.table = table
