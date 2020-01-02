@@ -37,6 +37,7 @@ export interface State {
 	info: Info
 }
 
+const NO_STATE = "~"
 
 class Run implements Store<State> {
 	
@@ -46,7 +47,7 @@ class Run implements Store<State> {
 		info: {
 			time: 0,
 			space: 0,
-			state: "~"
+			state: NO_STATE
 		}
 	}
 
@@ -78,12 +79,13 @@ class Run implements Store<State> {
 		if (simulator.turing.finished) {
 			this.playing = false
 		}
+
 		
-		let snapshot = simulator.turing.snapshot
+		let { time, space, state } = simulator.turing.snapshot
 		this.info = {
-			time: 	snapshot.time,
-			space: 	snapshot.space,
-			state: 	simulator.converter.state(snapshot.state).label
+			time,
+			space,
+			state:  state === -1 ? NO_STATE : simulator.converter.state(state).label
 		}
 
 		let status = Status.Normal
