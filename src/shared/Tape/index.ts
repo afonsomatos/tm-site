@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import _ from "lodash"
 
 import simulator from "@/shared/simulator"
-import { Snapshot, Transition } from "tm-simple"
+import { Snapshot, Transition } from "@/tm"
 
 const translate = (x: number, y: number) => `translate(${x}, ${y})`
 

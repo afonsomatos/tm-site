@@ -2,7 +2,7 @@
 import Vue from "vue"
 
 import { Model, State } from "@/shared/model"
-import { Snapshot, Program, Turing } from "tm-simple"
+import { Snapshot, Program, Turing } from "@/tm"
 
 /**
  * Events that happen within the simulator.
