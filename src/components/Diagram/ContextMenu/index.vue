@@ -61,7 +61,6 @@ export default Vue.extend({
     position: absolute;
     color: #616161;
     font-size: 24px;
-    font-family: "Segoe UI semibold";
     border-radius: 6px;
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.09);
     overflow: hidden;

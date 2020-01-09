@@ -20,7 +20,7 @@ export default Vue.extend({
 
 .button {
     display: inline-block;
-	font: $font-small-semibold;
+	font-size: 16px;
     color: $color-light;
 	background-color: $color-normal;
 	border: none;

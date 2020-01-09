@@ -57,7 +57,7 @@ export default Vue.extend({
 
 .tape-input {
     letter-spacing: 15px;
-    font: $tape-font-small;
+    font: bold 16px "Roboto Mono", monospace;
 }
 
 </style>

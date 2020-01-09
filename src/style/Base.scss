@@ -4,7 +4,7 @@
 html, body {
 	width: 100%;
 	height: 100%;
-	font: $font-small;
+	font-family: "Open Sans";
 }
 
 * { box-sizing: border-box; }
@@ -12,4 +12,8 @@ html, body {
 
 a {
 	text-decoration: none;
+}
+
+input {
+	font: inherit;
 }
