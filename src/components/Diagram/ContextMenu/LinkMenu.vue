@@ -82,7 +82,6 @@ export default Vue.extend({
 
 .group {
     > div {
-        font-family: "Open Sans";
         font-weight: 600;
         letter-spacing: 5px;
         cursor: pointer;

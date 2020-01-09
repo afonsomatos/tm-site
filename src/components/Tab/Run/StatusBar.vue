@@ -63,11 +63,12 @@ export default Vue.extend({
 }
 
 span {
-    font: 200 18px "Open Sans";
+    font-weight: 300;
+    font-size: 16px;
 }
 
 span + span {
-    font: 18px "Open Sans";
+    font-weight: normal;
     margin-left: 10px;
 }
 

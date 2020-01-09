@@ -113,7 +113,6 @@ $cell-size: 60px;
 .cell {
     width: $cell-size;
     height: $cell-size;
-    font: $tape-font-big;
     line-height: $cell-size;
     text-align: center;
     border-right: 1px solid #D2D2D2;
@@ -163,7 +162,7 @@ $cell-size: 60px;
     }
 
     text {
-        font: $tape-font-big;
+        font: bold 32px "Roboto Mono", monospace;
 
         &.head { fill: $color-active; }
     }
