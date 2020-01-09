@@ -355,7 +355,7 @@ export default class Graph {
                 // Make sure the text fits in node without wrapping or overflowing
                 .attr("class", "node-label")
                 .attr("text-anchor", "middle")
-                .attr("alignment-baseline", "middle")
+                .attr("dominant-baseline", "middle")
                 // TODO: Can some of this go to scss file?
                 .style("font-size", "24px")
                 .attr("dy", ".1em")
