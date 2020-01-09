@@ -63,11 +63,11 @@ export default Vue.extend({
 }
 
 span {
-    font: 18px "Segoe UI light";
+    font: 200 18px "Open Sans";
 }
 
 span + span {
-    font: 18px "Segoe UI regular";
+    font: 18px "Open Sans";
     margin-left: 10px;
 }
 

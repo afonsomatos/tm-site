@@ -42,7 +42,7 @@ export default Vue.extend({
 }
 
 .input {
-    font-family: 'Segoe UI';
+    font-family: "Open Sans";
     font-size: 20px;
     display: inline-block;
     padding: 5px;

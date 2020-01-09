@@ -82,7 +82,8 @@ export default Vue.extend({
 
 .group {
     > div {
-        font-family: "Segoe UI semibold";
+        font-family: "Open Sans";
+        font-weight: 600;
         letter-spacing: 5px;
         cursor: pointer;
         padding: 10px 15px;
