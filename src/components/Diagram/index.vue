@@ -104,6 +104,8 @@ export default Vue.extend({
 		graph.setModel(global.model)
 		graph.setTransform(this.$store.state.diagram.transform)
 
+		graph.view = !global.canEdit
+
 		this.graph = graph
 
         // Add new state
