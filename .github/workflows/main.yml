@@ -16,8 +16,8 @@ jobs:
         npm run build
 
     - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      with:
-        ACCESS_TOKEN: 7c5cf29b0fc04e7497326d08373b6a90a3c82ade
-        BRANCH: gh-pages
-        FOLDER: dist
+      uses: peaceiris/actions-gh-pages@v2
+      env:
+        PERSONAL_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./dist
