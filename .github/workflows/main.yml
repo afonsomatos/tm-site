@@ -1,7 +1,7 @@
-name: Build and Deploy
+name: Deploy to GitHub Pages
 on:
-  push:	
-    branches:	
+  push:
+    branches:
       - master
 jobs:
   build-and-deploy:
@@ -10,9 +10,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Build and Deploy
+    - name: Build
+      run: |
+        npm install
+        npm run build
+
+    - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        ACCESS_TOKEN: 0584cfc7d707e79e00c3d3f9506833c9552dcc80
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: dist # The folder the action should deploy.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: dist
