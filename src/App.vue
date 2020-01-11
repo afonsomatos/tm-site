@@ -57,7 +57,7 @@ import simulator, { Event } from "@/shared/simulator"
 import run from "@/store/run"
 import global, { View } from "@/store/global"
 import { mapMutations } from "vuex"
-import Mutation from "./store/modules/diagram/mutation"
+import Mutation from "@/store/modules/diagram/mutation"
 
 export default Vue.extend({
 	data() {
@@ -87,12 +87,16 @@ export default Vue.extend({
 		}
 	},
 	created() {
+		// Unserialize saved model
+		global.loadModel()
 		// Set model of simulator
 		simulator.setModel(global.model) 
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
 			run.sync()
 		})
+		// TODO: Find better way
+		setInterval(() => global.saveModel(), 500)
 	},
 	components: { ActionBar, SideBar, Middle, ContextMenu }
 })

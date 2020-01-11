@@ -1,6 +1,7 @@
 import _ from "lodash"
 
 import { Vector, Direction } from "@/shared/types"
+import JSONType from "./jsonType" 
 
 export interface State {
 	position: Vector,
@@ -175,6 +176,72 @@ export class Model {
 
 	public removeTransition(transition: Transition): boolean {
 		return this._transitions.delete(transition)
+	}
+
+	/**
+	 * Constructs a model based on a parseable string. 
+	 */
+	public static unserialize(json: string): Model {
+
+		let modelJSON = JSON.parse(json) as JSONType.Model
+		let model = new Model()
+	
+		// Load states
+		model._states = new Set(Object.values(modelJSON.states))
+		
+		// Load transitions
+		for (let transition of modelJSON.transitions) {
+			model._transitions.add({
+				from: modelJSON.states[transition.from],
+				to: modelJSON.states[transition.to],
+				read: transition.read,
+				direction: transition.direction,
+				undefined: transition.undefined,
+				write: transition.write
+			})
+		}
+		
+		model._start = modelJSON.states[modelJSON.start]
+		model.accept = new Set(
+			modelJSON.accept.map(i => modelJSON.states[i])
+		)
+		model.reject = new Set(
+			modelJSON.reject.map(i => modelJSON.states[i])
+		)
+
+		return model
+	}
+
+	/**
+	 * Converts this model to a parseable string.
+	 */
+	public serialize(): string {
+
+		let states: JSONType.State[] = this.states
+		let transitions = this.allTransitions.map(t => {
+			return {
+				read: t.read,
+				write: t.write,
+				undefined: t.undefined,
+				direction: t.direction,
+				from: states.indexOf(t.from),
+				to: states.indexOf(t.to)
+			} as JSONType.Transition
+		})
+
+		let start: number = states.indexOf(this.start)
+		let reject = [...this.reject].map(s => states.indexOf(s))
+		let accept = [...this.accept].map(s => states.indexOf(s))
+
+		let model: JSONType.Model = {
+			states,
+			transitions,
+			start,
+			reject,
+			accept
+		}
+
+		return JSON.stringify(model)
 	}
 
 }
