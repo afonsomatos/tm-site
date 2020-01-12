@@ -9,6 +9,6 @@ No server is needed. Visit the website https://afonsomatos.github.io/tm-site/ to
 # build
 
 ```
-npm run build
-npm run serve # Or simply open dist/ folder on your browser.
+npm run start
+serve # Or simply open dist/ folder on your browser.
 ```
