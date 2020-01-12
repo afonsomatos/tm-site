@@ -5,9 +5,20 @@
                 <Table v-if="isGrid" />
                 <Diagram v-else />
             </keep-alive>
-            <div class="view-mode">
-                <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram }"/>
-                <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }"/>
+            <div class="top-bar">
+                <select @change="changeModel">
+                    <option
+                        v-for="(model, i) in this.models"
+                        :key="i"
+                        :selected="selectedModel === model"
+                        >
+                        {{ displayName(model) }}
+                    </option> 
+                </select>
+                <div class="view-mode">
+                    <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram }"/>
+                    <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }"/>
+                </div>
             </div>
         </div>
         <div class="float">
@@ -34,6 +45,13 @@ import * as d3 from "d3"
 
 export default Vue.extend({
     methods: {
+        displayName(model) {
+            return global.notebook.modelUniqueName(model)
+        },
+        changeModel(e) {
+            let index = e.target.selectedIndex
+            global.model = this.models[index]
+        },
         showDiagram() {
             global.view = View.Diagram
         },
@@ -65,6 +83,12 @@ export default Vue.extend({
         },
         isGrid() {
             return global.view === View.Grid
+        },
+        models() {
+            return global.notebook.models
+        },
+        selectedModel() {
+            return global.model
         }
     },
     data() {
@@ -85,7 +109,6 @@ export default Vue.extend({
     transition: color 0.25s;
     padding: 10px;
     color: #444;
-    background-color: #E8E8E8;
 
     &:active, &.active {
         color: #5A73EF;
@@ -109,15 +132,25 @@ export default Vue.extend({
     width: 100%;
 }
 
+.top-bar {
+    left: 50%;
+    transform: translate(-50%, 0);
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+}
+
+select {
+    margin-right: 20px;
+    vertical-align: super;
+    padding: 5px 10px;
+    font-size: 14px;
+    -moz-appearance: toolbox;
+}
+
 .view-mode {
     font-size: 28px;
-    left: 50%;
-    top: 10px;
-    transform: translate(-50%, 0);
-    display: flex;
-    z-index: 1;
-    border: 1px solid #e0e0e0;
-    position: absolute;
+    display: inline-flex;
 }
 
 </style>

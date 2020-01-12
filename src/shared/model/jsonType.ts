@@ -19,6 +19,7 @@ namespace JSONType {
 	}
 	
 	export interface Model {
+		name: string,
 		states: Record<number, State>,
 		transitions: Transition[],
 		start: number,

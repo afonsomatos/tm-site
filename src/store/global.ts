@@ -1,7 +1,8 @@
 import Tab, { Tabs } from "@/components/Tab"
 import { Model } from "@/shared/model"
 import { Store } from "@/store/types"
-import exampleNewModel from "@/shared/model/example"
+import Notebook from "@/shared/notebook"
+import exampleNotebook from "@/shared/notebook/example"
 
 export enum View {
 	Diagram,
@@ -11,15 +12,21 @@ export enum View {
 interface State {
 	currentTab: Tab,
 	model: Model,
-	view: View
+	view: View,
+	notebook: Notebook
 }
 
 class Global implements Store<State> {
 	
 	state = {
+		notebook: {} as Notebook,
 		currentTab: {} as Tab,
-		model: exampleNewModel(),
+		model: {} as Model,
 		view: View.Diagram
+	}
+
+	constructor() {
+		this.loadNotebook()
 	}
 
 	get canEdit(): boolean {
@@ -50,15 +57,27 @@ class Global implements Store<State> {
 		this.state.model = model
 	}
 
-	saveModel() {
-		localStorage.setItem("model", this.model.serialize())
+	get notebook() {
+		return this.state.notebook
 	}
 
-	loadModel() {
-		let modelJSON = localStorage.getItem("model")
-		if (modelJSON) {
-			this.state.model = Model.unserialize(modelJSON)
+	set notebook(notebook: Notebook) {
+		this.state.notebook = notebook
+		this.saveNotebook()
+	}
+
+	saveNotebook() {
+		localStorage.setItem("notebook", this.notebook.serialize())
+	}
+
+	loadNotebook() {
+		let notebookJSON = localStorage.getItem("notebook")
+		if (notebookJSON) {
+			this.state.notebook = Notebook.unserialize(notebookJSON)
+		} else {
+			this.state.notebook = exampleNotebook()
 		}
+		this.state.model = this.state.notebook.models[0]
 	}
 }
 

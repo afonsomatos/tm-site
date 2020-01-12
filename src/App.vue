@@ -87,16 +87,14 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		// Unserialize saved model
-		global.loadModel()
 		// Set model of simulator
-		simulator.setModel(global.model) 
+		simulator.setModel(global.model)
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
 			run.sync()
 		})
 		// TODO: Find better way
-		setInterval(() => global.saveModel(), 500)
+		setInterval(() => global.saveNotebook(), 500)
 	},
 	components: { ActionBar, SideBar, Middle, ContextMenu }
 })

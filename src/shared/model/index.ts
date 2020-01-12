@@ -29,6 +29,8 @@ export enum Type {
 
 export class Model {
 
+	name: string = "Model"
+
 	private _states: Set<State>
 	private _transitions: Set<Transition>
 	private _start: State
@@ -179,11 +181,10 @@ export class Model {
 	}
 
 	/**
-	 * Constructs a model based on a parseable string. 
+	 * Constructs a model based on a json-friendly object.
 	 */
-	public static unserialize(json: string): Model {
+	public static fromJSONType(modelJSON: JSONType.Model): Model {
 
-		let modelJSON = JSON.parse(json) as JSONType.Model
 		let model = new Model()
 	
 		// Load states
@@ -209,13 +210,15 @@ export class Model {
 			modelJSON.reject.map(i => modelJSON.states[i])
 		)
 
+		model.name = modelJSON.name
+
 		return model
 	}
 
 	/**
-	 * Converts this model to a parseable string.
+	 * Converts this model to a json-friendly object.
 	 */
-	public serialize(): string {
+	public toJSONType(): JSONType.Model {
 
 		let states: JSONType.State[] = this.states
 		let transitions = this.allTransitions.map(t => {
@@ -238,10 +241,11 @@ export class Model {
 			transitions,
 			start,
 			reject,
-			accept
+			accept,
+			name: this.name
 		}
 
-		return JSON.stringify(model)
+		return model
 	}
 
 }

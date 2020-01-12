@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?iu90s8');
-  src:  url('fonts/icomoon.eot?iu90s8#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?iu90s8') format('truetype'),
-    url('fonts/icomoon.woff?iu90s8') format('woff'),
-    url('fonts/icomoon.svg?iu90s8#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?1xtfhu');
+  src:  url('fonts/icomoon.eot?1xtfhu#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?1xtfhu') format('truetype'),
+    url('fonts/icomoon.woff?1xtfhu') format('woff'),
+    url('fonts/icomoon.svg?1xtfhu#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,74 +25,86 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-forward:before {
+.icon-book:before {
   content: "\e900";
 }
-.icon-clear:before {
+.icon-copy:before {
   content: "\e901";
 }
-.icon-done:before {
+.icon-upload:before {
   content: "\e902";
 }
-.icon-left-arrow:before {
+.icon-download:before {
   content: "\e903";
 }
-.icon-right-arrow:before {
+.icon-forward:before {
   content: "\e904";
 }
-.icon-circle-add:before {
+.icon-clear:before {
   content: "\e905";
 }
-.icon-delete:before {
+.icon-done:before {
   content: "\e906";
 }
-.icon-dot-fill:before {
+.icon-left-arrow:before {
   content: "\e907";
 }
-.icon-dot-stroke:before {
+.icon-right-arrow:before {
   content: "\e908";
 }
-.icon-function:before {
+.icon-circle-add:before {
   content: "\e909";
 }
-.icon-left-arrow-alt:before {
+.icon-delete:before {
   content: "\e90a";
 }
-.icon-right-arrow-alt:before {
+.icon-dot-fill:before {
   content: "\e90b";
 }
-.icon-add:before {
+.icon-dot-stroke:before {
   content: "\e90c";
 }
-.icon-diagram:before {
+.icon-function:before {
   content: "\e90d";
 }
-.icon-sum:before {
+.icon-left-arrow-alt:before {
   content: "\e90e";
 }
-.icon-redo:before {
+.icon-right-arrow-alt:before {
   content: "\e90f";
 }
-.icon-play:before {
+.icon-add:before {
   content: "\e910";
 }
-.icon-pause:before {
+.icon-diagram:before {
   content: "\e911";
 }
-.icon-replay:before {
+.icon-sum:before {
   content: "\e912";
 }
-.icon-repeat:before {
+.icon-redo:before {
   content: "\e913";
 }
-.icon-edit:before {
+.icon-play:before {
   content: "\e914";
 }
-.icon-github:before {
+.icon-pause:before {
   content: "\e915";
 }
-.icon-code:before {
+.icon-replay:before {
   content: "\e916";
+}
+.icon-repeat:before {
+  content: "\e917";
+}
+.icon-edit:before {
+  content: "\e918";
+}
+.icon-github:before {
+  content: "\e919";
+}
+.icon-code:before {
+  content: "\e91a";
 }
 .icon-grid:before {
   content: "\ea71";

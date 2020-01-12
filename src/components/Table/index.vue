@@ -51,7 +51,14 @@ export default Vue.extend({
 		})
 	},
 	computed: {
-		canEdit: () => global.canEdit
+		canEdit: () => global.canEdit,
+		model: () => global.model
+	},
+	watch: {
+		model(newModel) {
+			this.table.model = newModel
+			this.table.update()
+		}
 	},
 	data() {
 		return {

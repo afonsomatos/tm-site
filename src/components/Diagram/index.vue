@@ -42,12 +42,16 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		canEdit: () => global.canEdit
+		canEdit: () => global.canEdit,
+		model: () => global.model,
 	},
 	watch: {
 		canEdit(value: boolean) {
 			this.graph.view = !value
-		}	
+		},
+		model(newModel) {
+			this.graph.setModel(newModel)
+		}
 	},
 	methods: {
 		...mapActions("diagram", {

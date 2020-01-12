@@ -2,6 +2,7 @@ import { VueConstructor } from "vue"
 
 import Edit      from "./Edit"
 import Run       from "./Run"
+import Notebook  from "./Notebook"
 
 export default interface Tab {
     tabIcon: string,
@@ -9,5 +10,5 @@ export default interface Tab {
     bottomFloat?: VueConstructor,
 }
 
-export const ALL_TABS : Tab[] = [ Run, Edit ]
-export const Tabs = { Run, Edit }
+export const ALL_TABS : Tab[] = [ Run, Edit, Notebook ]
+export const Tabs = { Run, Edit, Notebook }
