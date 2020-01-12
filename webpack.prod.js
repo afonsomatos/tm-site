@@ -5,7 +5,8 @@ const path = require("path")
 module.exports = {
     entry: ["./src/index.ts"],
     watch: false,
-    mode: "none",
+    devtool: "source-map",
+    mode: "production",
     performance: { hints: false },
     module: {
       rules: [
