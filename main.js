@@ -14207,6 +14207,10 @@ var __assign = (undefined && undefined.__assign) || function () {
             if (!show) {
                 this.setMenu(null);
             }
+        },
+        model: function (newModel) {
+            _shared_simulator__WEBPACK_IMPORTED_MODULE_5__["default"].setModel(newModel);
+            _store_run__WEBPACK_IMPORTED_MODULE_6__["default"].reset();
         }
     },
     methods: __assign({}, Object(vuex__WEBPACK_IMPORTED_MODULE_8__["mapMutations"])("diagram", {
@@ -14219,6 +14223,9 @@ var __assign = (undefined && undefined.__assign) || function () {
         },
         sidebar: function () {
             return _store_global__WEBPACK_IMPORTED_MODULE_7__["default"].tab.sideBar;
+        },
+        model: function () {
+            return _store_global__WEBPACK_IMPORTED_MODULE_7__["default"].model;
         }
     },
     created: function () {
