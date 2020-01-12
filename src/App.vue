@@ -70,6 +70,10 @@ export default Vue.extend({
 			if (!show) {
 				this.setMenu(null)
 			}
+		},
+		model(newModel) {
+			simulator.setModel(newModel)
+			run.reset()
 		}
 	},
 	methods: {
@@ -84,6 +88,9 @@ export default Vue.extend({
 		},
 		sidebar() {
 			return global.tab.sideBar
+		},
+		model() {
+			return global.model
 		}
 	},
 	created() {
