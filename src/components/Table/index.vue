@@ -9,14 +9,14 @@
 					<tr class="header-row">
 						<td><!-- empty top left corner --></td>
 						<td class="right-cell">
-							<icon-btn icon="add" class="add-column" @click="addColumn" />
+							<icon-btn title="Add a new column" icon="add" class="add-column" @click="addColumn" />
 						</td>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr class="bottom-row">
 						<td class="left-cell">
-							<icon-btn icon="add" class="add-row" @click="addRow" />
+							<icon-btn title="Add a new state" icon="add" class="add-row" @click="addRow" />
 						</td>
 					</tr>
 				</tfoot>

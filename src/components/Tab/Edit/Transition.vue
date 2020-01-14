@@ -9,7 +9,7 @@
         <Section v-if="!transition.undefined">
             <!-- Select next state -->
             <Field name="To">
-                <select @change="changeState">
+                <select title="Next state" @change="changeState">
                     <option
                         v-for="(state, i) in states"
                         :key="i"
@@ -21,6 +21,7 @@
             <!-- What to write on the tape -->
             <Field name="Write">
                 <Input
+                    title="A character to write"
                     v-model="transition.write"
                     class="char-input"
                     maxlength="1"

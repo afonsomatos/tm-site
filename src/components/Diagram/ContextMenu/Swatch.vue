@@ -1,8 +1,9 @@
 <template>
     <div class="swatch">
         <icon-btn 
-			v-for="(type, i) in types"
-			:key="i"
+			v-for="(type, name) in types"
+			:key="name"
+			:title="name"
 			:class="{ selected: type === stateType, [type]: true}"
 			:icon="icon(type)"
 			@click="set(type)"
@@ -25,7 +26,12 @@ export default Vue.extend({
 	components: { IconBtn },
 	data() {
 		return {
-			types: [ Type.Normal, Type.Accept, Type.Reject, Type.Start ]
+			types: {
+				"Normal": Type.Normal,
+				"Accept": Type.Accept,
+				"Reject": Type.Reject,
+				"Start": Type.Start
+			}
 		}
 	},
     computed: {

@@ -1,12 +1,12 @@
 <template>
     <div class="v-menu">
-        <icon-btn icon="right-arrow-alt" @click="createTransition" :clickable="true" />
-        <icon-btn icon="edit" @click="edit" :clickable="true" />
+        <icon-btn title="Transition to other states" icon="right-arrow-alt" @click="createTransition" :clickable="true" />
+        <icon-btn title="Rename this state" icon="edit" @click="edit" :clickable="true" />
 
         <!-- Show dot that represents current state type -->
-        <icon-btn :icon="stateIcon" :class="type" :clickable="true" @click="swatch" />
+        <icon-btn title="Change this state's type" :icon="stateIcon" :class="type" :clickable="true" @click="swatch" />
         
-        <icon-btn icon="delete" class="red" @click="remove" :clickable="true" />
+        <icon-btn title="Delete this state" icon="delete" class="red" @click="remove" :clickable="true" />
     </div>
 </template>
 

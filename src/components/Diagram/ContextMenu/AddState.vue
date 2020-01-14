@@ -1,6 +1,6 @@
 <template>
     <div class="v-menu">
-        <icon-btn icon="circle-add" @click="add" :clickable="true" />
+        <icon-btn title="Add a new state" icon="circle-add" @click="add" :clickable="true" />
     </div>
 </template>
 

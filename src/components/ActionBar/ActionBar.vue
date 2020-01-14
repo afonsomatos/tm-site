@@ -2,18 +2,18 @@
     <div class="action-bar">
         <div class="top">
             <Action
-                v-for="(tab, index) in tabs"
-                :key="index"
+                v-for="(tab, name) in tabs"
+                :key="name"
                 :icon="tab.tabIcon"
                 :selected="isTab(tab)"
-            
+                :title="name"
                 @click.native="switchTab(tab)"
                 />
         </div>
 
         <div class="bottom">
             <a href="http://github.com/afonsomatos/tm-site.git">
-                <Action icon="github" />
+                <Action title="See project on Github" icon="github" />
             </a>
         </div>
     </div>
@@ -37,13 +37,13 @@ import Vue from 'vue'
 import { mapMutations } from "vuex"
 import Action from "./Action.vue"
 
-import Tab, { ALL_TABS, Tabs } from "@/components/Tab"
+import Tab, { Tabs } from "@/components/Tab"
 import global from "@/store/global"
 
 export default Vue.extend({
     data() {
         return {
-            tabs: ALL_TABS,
+            tabs: Tabs,
             global
         }
     },

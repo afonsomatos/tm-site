@@ -10,5 +10,4 @@ export default interface Tab {
     bottomFloat?: VueConstructor,
 }
 
-export const ALL_TABS : Tab[] = [ Run, Edit, Notebook ]
 export const Tabs = { Run, Edit, Notebook }

@@ -16,7 +16,7 @@
         <!-- Delete all transitions that come from this character -->
         <Section>
             <Field name="Delete">
-                <icon-btn icon="delete" class="delete" @click="remove" />
+                <icon-btn title="Delete the char's column" icon="delete" class="delete" @click="remove" />
             </Field>
         </Section>
     </div>

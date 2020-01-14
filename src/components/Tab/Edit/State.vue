@@ -13,6 +13,7 @@
                     <icon-btn
                         v-for="(icon, type) in icons"
                         :key="type"
+                        :title="tooltip[type]"
                         :icon="icon"
                         :class="{[type]: true, selected: stateType === type}"
                         @click="setType(type)"
@@ -23,7 +24,7 @@
         <Section>
             <!-- Delete -->
             <Field name="delete">
-                <icon-btn icon="delete" class="delete" @click="handleDelete" />
+                <icon-btn title="Delete this state" icon="delete" class="delete" @click="handleDelete" />
             </Field>
         </Section>
     </div>
@@ -50,6 +51,11 @@ export default Vue.extend({
                 [Type.Start]: "right-arrow-alt",
                 [Type.Accept]: "done",
                 [Type.Reject]: "clear"
+            },
+            tooltip: {
+                [Type.Start]: "Start state",
+                [Type.Accept]: "Accept state",
+                [Type.Reject]: "Reject state"
             },
             label: null
         }

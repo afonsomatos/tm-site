@@ -2,7 +2,7 @@
 	<div>
 		<Section>
 			<Field name="Notebook">
-				<Input v-model="notebook.name" />
+				<Input title="Display name" v-model="notebook.name" />
 			</Field>
 		</Section>
 		<Section>
@@ -16,25 +16,25 @@
 						{{ displayName(model) }}
 					</option>
 				</select>
-				<IconBtn class="icon" icon="add" @click="add"/>
+				<IconBtn title="Add a new machine" class="icon" icon="add" @click="add"/>
 			</div>
 			<Field name="name">
 				<Input v-model="selectedModel.name" />
 			</Field>
 			<Field name="action">
 				<div class="actions">
-					<IconBtn class="icon" icon="copy" @click="copy" />
-					<IconBtn class="icon" icon="delete" @click="remove" />
+					<IconBtn class="icon" title="Duplicate selected machine" icon="copy" @click="copy" />
+					<IconBtn class="icon" title="Delete selected machine (irreversible)" icon="delete" @click="remove" />
 				</div>
 			</Field>
 		</Section>	
 		<Section>
 			<Field name="load">
 				<input ref="input" style="display: none;" type="file" @change="load" />
-				<IconBtn class="icon" icon="upload" @click="loadClick" />
+				<IconBtn title="Upload a JSON file" class="icon" icon="upload" @click="loadClick" />
 			</Field>
 			<Field name="save">
-				<a :href="downloadHref" :download="downloadFile"> 
+				<a title="Download as a JSON file" :href="downloadHref" :download="downloadFile"> 
 					<IconBtn ref="save" class="icon" icon="download"/>
 				</a>
 			</Field>
