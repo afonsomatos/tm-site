@@ -1,5 +1,6 @@
 # Javascript builds
 dist/main.js
+dist/main.js.map
 
 # Logs
 logs
