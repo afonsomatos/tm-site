@@ -106,7 +106,13 @@ export default Vue.extend({
 		this.$store.state.diagram.graph = graph
 
 		graph.setModel(global.model)
-		graph.setTransform(this.$store.state.diagram.transform)
+		
+		// Set diagram referential transform when SVG size has stabilized
+		this.$nextTick(() => graph.setTransform({
+            x: svg.clientWidth / 2,
+            y: svg.clientHeight / 2,
+            k: 1
+        }))
 
 		graph.view = !global.canEdit
 
