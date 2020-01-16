@@ -2,6 +2,7 @@ import { Model } from "@/shared/model"
 import ModelJSON from "@/shared/model/jsonType"
 
 export interface NotebookJSON {
+	version: number,
 	name: string,
 	models: ModelJSON.Model[]
 }
@@ -16,9 +17,10 @@ export default class Notebook {
 
 	public serialize(): string {
 		return JSON.stringify({
+			version: 0,
 			name: this.name,
 			models: [...this.models].map(x => x.toJSONType())
-		}, null, 4)
+		} as NotebookJSON, null, 4)
 	}
 
 	public static unserialize(json: string): Notebook {
@@ -27,6 +29,8 @@ export default class Notebook {
 
 		notebook.name = notebookJSON.name
 		notebook.models = notebookJSON.models.map(Model.fromJSONType)
+
+		// Convert from older versions here
 
 		return notebook
 	}
