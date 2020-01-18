@@ -85,7 +85,7 @@ export default class Graph {
         this.nodeGroup = this.wrapper.append("g")
 
         this.zoom = d3.zoom()
-        this.zoomLabel = this.svg.append("text").attr("class", "zoom-label")
+        this.zoomLabel = this.svg.select("#zoom-label") 
 
         this.setup()
     }
@@ -223,12 +223,6 @@ export default class Graph {
         }
     }
 
-    public setTransform(transform: Transform) {
-        this.transform = transform
-        this.zoom.translateBy(this.svg, transform.x, transform.y)
-        this.zoom.scaleTo(this.svg, transform.k)
-    }
-
     public update() {
         this.setupNodes()
         this.setupLinks()
@@ -245,7 +239,12 @@ export default class Graph {
             .text(t => Math.floor(t.k * 100) + "%")
             .attr("x", "100%")
             .attr("y", "100%")
-            .on("click", () => this.zoom.scaleTo(this.svg, 1))
+            .on("click", () => this.resetZoom())
+    }
+
+    public resetZoom() {
+        this.zoom.translateTo(this.svg, 0, 0)
+        this.zoom.scaleTo(this.svg, 1)
     }
 
     private setupZoom() {
@@ -254,7 +253,6 @@ export default class Graph {
             this.transform = { x, y, k }
             this.wrapper.attr("transform", transformAttr(this.transform))
             this.updateZoomLabel()
-            //this.onTransform(this.transform)
         })
 
         this.svg.call(this.zoom)

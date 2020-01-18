@@ -14,6 +14,7 @@
 						<path  d="M -5 5, 0 0.3, -5 -5"></path>
 					</marker>
 				</defs>
+				<text id="zoom-label">100%</text>
 			</svg>
 		</div>
 	</div>
@@ -108,11 +109,7 @@ export default Vue.extend({
 		graph.setModel(global.model)
 		
 		// Set diagram referential transform when SVG size has stabilized
-		this.$nextTick(() => graph.setTransform({
-            x: svg.clientWidth / 2,
-            y: svg.clientHeight / 2,
-            k: 1
-        }))
+		this.$nextTick(() => graph.resetZoom())
 
 		graph.view = !global.canEdit
 
