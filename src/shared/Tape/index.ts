@@ -151,6 +151,9 @@ export default class Tape {
 		this._tape[this._head] = trans.write
 		this.update()
 
+		if (trans.direction === 0)
+			return
+			
 		let wrapper = d3.select(this._wrapper)
 
 		if (trans.direction == 1) {
@@ -168,7 +171,7 @@ export default class Tape {
 					wrapper.attr("transform", translate(0, 0))
 					this.reset()
 				})
-		} else {
+		} else if (trans.direction == -1) {
 
 			// Show next left-most cell
 			wrapper.attr("transform", translate(-this.cellSize, 0))
@@ -182,6 +185,7 @@ export default class Tape {
 					this.reset()
 				})
 		}
+
 	}
 
 	/**

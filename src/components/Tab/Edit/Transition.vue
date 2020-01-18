@@ -31,11 +31,11 @@
             <!-- What direction to go -->
             <Field name="Direction">
                 <div class="direction">
-                    <div v-for="(icon, dir) in directions"
+                    <div v-for="dir of directions"
                         :key="dir"
                         :class="{ selected: dir === transition.direction }"
                         @click="setDirection(dir)">
-                        <Icon :icon="icon" />
+                        {{ dir }}
                     </div>
                 </div>
             </Field>
@@ -61,10 +61,7 @@ export default Vue.extend({
     data() {
         return {
             global,
-            directions: {
-                [Direction.Left]: "left-arrow-alt",
-                [Direction.Right]: "right-arrow-alt"
-            }
+            directions: [Direction.Left, Direction.Stay, Direction.Right]
         }
     },
     computed: {

@@ -3,6 +3,7 @@ import Vue from "vue"
 
 import { Model, State } from "@/shared/model"
 import { Snapshot, Program, Turing } from "@/tm"
+import { Direction } from "./types"
 
 /**
  * Events that happen within the simulator.
@@ -14,6 +15,12 @@ export enum Event {
 	UPDATE = "update",
 	RESET = "reset",
 	BACK = "back"
+}
+
+const directionOffset = {
+	[Direction.Left]: -1,
+	[Direction.Right]: 1,
+	[Direction.Stay]: 0
 }
 
 /**
@@ -48,7 +55,7 @@ class ProgramConverter {
 
 		for (let transition of model.transitions) {
 			this.program.transitions.push({
-				direction: transition.direction === 'L' ? -1 : 1,
+				direction: directionOffset[transition.direction],
 				read: transition.read,
 				write: transition.write,
 				from: this.stateId(transition.from),

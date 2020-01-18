@@ -1,6 +1,7 @@
 export enum Direction {
     Left = "L",
-    Right = "R"
+    Right = "R",
+    Stay = "S"
 }
 
 export interface Transition {

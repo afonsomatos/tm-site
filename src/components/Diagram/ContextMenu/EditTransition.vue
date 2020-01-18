@@ -11,8 +11,12 @@
             <input v-model="transition.write" @input="update" maxlength="1" @focus="$event.target.select()"/>
         </div>
         <div class="direction">
-            <div @click="setLeft" :class="{ active: left }">L</div>
-            <div @click="setRight" :class="{ active: right }">R</div>
+            <div v-for="dir of directions"
+                :key="dir"
+                :class="{ selected: dir === transition.direction }"
+                @click="setDirection(dir)">
+                {{ dir }}
+            </div>
         </div>
     </div>
 </template>
@@ -29,21 +33,16 @@ import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
 
 export default Vue.extend({
+    data() {
+        return {
+            directions: [Direction.Left, Direction.Stay, Direction.Right]
+        }
+    },
     components: { IconBtn },
     computed: {
-
         transition() {
             return this.$store.state.diagram.transition
-        },
-
-        left() {
-            return this.transition.direction === Direction.Left
-        },
-
-        right() {
-            return this.transition.direction === Direction.Right
         }
-
     },
     destroyed() {
         this.normalize()
@@ -70,13 +69,8 @@ export default Vue.extend({
             this.goBack()
         },
 
-        setLeft() {
-            this.transition.direction = Direction.Left
-            this.update()
-        },
-
-        setRight() {
-            this.transition.direction = Direction.Right
+        setDirection(dir: Direction) {
+            this.transition.direction = dir
             this.update()
         }
     }
@@ -124,13 +118,12 @@ input {
 .direction {
     padding: 10px;
     display: grid;
-    grid-gap: 30px;
+    grid-template-columns: auto;
     grid-auto-flow: column;
-    justify-content: center;
 
     > div {
         cursor: pointer;
-        &.active { color: $color-active; }
+        &.selected { color: $color-active; }
     }
 }
 
