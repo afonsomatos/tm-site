@@ -74,18 +74,18 @@ export default class Graph {
         this.svg = d3.select(svgElement)
         this.wrapper = this.svg.append("g")
         
+        this.linkGroup = this.wrapper.append("g")
+        this.nodeGroup = this.wrapper.append("g")
+        
+        this.zoom = d3.zoom()
+        this.zoomLabel = this.svg.select("#zoom-label") 
+        
         // Referential marker will be at (0, 0)
         this.wrapper.append("text")
             .classed("referential-marker", true)
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle")
             .text("+")
-
-        this.linkGroup = this.wrapper.append("g")
-        this.nodeGroup = this.wrapper.append("g")
-
-        this.zoom = d3.zoom()
-        this.zoomLabel = this.svg.select("#zoom-label") 
 
         this.setup()
     }
