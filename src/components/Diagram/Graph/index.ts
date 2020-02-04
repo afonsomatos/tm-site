@@ -66,6 +66,9 @@ export default class Graph {
     // In view-mode, certain functionalities do not apply
     public view: boolean = false
 
+    // Marks the center of the diagram
+    public referentialMarker: SVGElement
+
     constructor(svgElement: SVGSVGElement) {
 
         this.model = new Model()
@@ -81,11 +84,12 @@ export default class Graph {
         this.zoomLabel = this.svg.select("#zoom-label") 
         
         // Referential marker will be at (0, 0)
-        this.wrapper.append("text")
+        this.referentialMarker = this.wrapper.append("text")
             .classed("referential-marker", true)
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle")
             .text("+")
+            .node()
 
         this.setup()
     }
@@ -253,6 +257,13 @@ export default class Graph {
             this.transform = { x, y, k }
             this.wrapper.attr("transform", transformAttr(this.transform))
             this.updateZoomLabel()
+
+            // Maintain marker size
+            d3.select(this.referentialMarker).attr("transform", transformAttr({
+                x: 0,
+                y: 0,
+                k: 1 / k
+            }))
         })
 
         this.svg.call(this.zoom)
