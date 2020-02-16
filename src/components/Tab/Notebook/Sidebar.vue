@@ -39,6 +39,17 @@
 				</a>
 			</Field>
 		</Section>
+        <Section>
+            <Field name="Wildcard">
+                <Input
+                    maxlength="1"
+					class="char-input"
+                    @input="renameWildcard($event)"
+                    :value="global.notebook.wildcard"
+					v-selectOnFocus
+                />
+            </Field>
+        </Section>
 	</div>
 </template>
 
@@ -65,6 +76,9 @@ export default Vue.extend({
 		}
 	},
 	methods: {
+		renameWildcard(newWildcard) {
+			global.notebook.wildcard = newWildcard || undefined
+		},
 		loadClick() {
 			this.$refs.input.click()
 		},
@@ -130,6 +144,12 @@ export default Vue.extend({
 	display: inline-grid;
 	grid-auto-flow: column;
 	grid-gap: 10px;
+}
+
+.char-input {
+    box-sizing: content-box;
+    text-align: center;
+    width: 1em;
 }
 
 .model-list {
