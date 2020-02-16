@@ -256,7 +256,7 @@ export class Turing {
 	 */
     public next(): Transition | undefined {
 
-		let transition = this.nextTransition
+		let transition = _.cloneDeep(this.nextTransition)
 		if (this.finished ||transition === undefined) {
 			return
 		}
