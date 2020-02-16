@@ -71,6 +71,11 @@ export interface Program {
 	 * Set of all transitions possible between states.
 	 */
 	transitions: Transition[],
+
+	/**
+	 * Wildcard character.
+	 */
+	wildcard?: string
 }
 
 /**
@@ -165,7 +170,7 @@ export class Turing {
 	 */
 	private get nextTransition(): Transition | undefined {
 		return this.program.transitions.find(t => {
-			return t.from === this.state && t.read === this.get(this.head)
+			return t.from === this.state && (t.read === this.get(this.head) || t.read === this.program.wildcard)
 		})
 	}
 
@@ -244,11 +249,24 @@ export class Turing {
 		this.visited.add(index)
 	}
 	
+	/**
+	 * Advances one step, and returns the transition taken.
+	 * When using wildcards, it will return the transition with wildcards replaced, for example:
+	 * * -> * and reads A, will return A -> A
+	 */
     public next(): Transition | undefined {
 
 		let transition = this.nextTransition
 		if (this.finished ||transition === undefined) {
 			return
+		}
+
+		if (transition.read === this.program.wildcard) {
+			transition.read = this.get(this.head)
+
+			if (transition.write === this.program.wildcard) {
+				transition.write = transition.read
+			}
 		}
 
 		this.time++

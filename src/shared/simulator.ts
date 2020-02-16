@@ -43,6 +43,7 @@ class ProgramConverter {
 
 		this.program = {
 			empty: "#",
+			wildcard: "*",
 			transitions: [],
 			
 			// The identifier of each state will be its index
