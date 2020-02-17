@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/vue": "^2.0.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "sass-loader": "^7.1.0",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
