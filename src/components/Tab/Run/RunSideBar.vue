@@ -21,7 +21,7 @@ import run from "@/store/run"
 export default Vue.extend({
     data() {
         return {
-            input: "example",
+            input: "11111",
             run,
         }
     },

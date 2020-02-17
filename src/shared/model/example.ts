@@ -6,34 +6,35 @@ export default () => {
 
 	let a = {
 		label: "a",
-		position: {x: 100, y: 200}
+		position: {x: 0, y: 0}
 	}
 
 	let b = {
 		label: "b",
-		position: {x: 300, y: 200}
+		position: {x: 200, y: 0}
 	}
 
 	let c = {
 		from: a,
-		to: b,
-		direction: Direction.Left,
+		to: a,
+		direction: Direction.Right,
 		read: "1",
-		write: "0"
+		write: "1"
 	}
 
 	let d = {
-		from: b,
-		to: a,
-		direction: Direction.Left,
-		read: "1",
-		write: "2"
+		from: a,
+		to: b,
+		direction: Direction.Right,
+		read: "#",
+		write: "#"
 	}
 	
 	model.addState(a)
 	model.addState(b)
 
 	model.start = a
+	model.accept.add(b)
 
 	model.addTransition(c)
 	model.addTransition(d)

@@ -16,6 +16,8 @@ interface State {
 	notebook: Notebook
 }
 
+const localStorageRootName = "notebook"
+
 class Global implements Store<State> {
 	
 	state = {
@@ -66,12 +68,17 @@ class Global implements Store<State> {
 		this.saveNotebook()
 	}
 
+	resetNotebook() {
+		this.state.notebook = exampleNotebook()
+		this.state.model = this.state.notebook.models[0]
+	}
+
 	saveNotebook() {
-		localStorage.setItem("notebook", this.notebook.serialize())
+		localStorage.setItem(localStorageRootName, this.notebook.serialize())
 	}
 
 	loadNotebook() {
-		let notebookJSON = localStorage.getItem("notebook")
+		let notebookJSON = localStorage.getItem(localStorageRootName)
 		if (notebookJSON) {
 			this.state.notebook = Notebook.unserialize(notebookJSON)
 		} else {

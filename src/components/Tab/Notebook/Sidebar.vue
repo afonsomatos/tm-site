@@ -50,6 +50,11 @@
                 />
             </Field>
         </Section>
+		<Section>
+			<Field name="delete">
+				<IconBtn title="Delete notebook" class="icon" icon="delete" @click="deleteNotebook" />
+			</Field>
+		</Section>
 	</div>
 </template>
 
@@ -76,6 +81,11 @@ export default Vue.extend({
 		}
 	},
 	methods: {
+		deleteNotebook() {
+			if (confirm(`This action will PERMANENTLY delete your current notebook ${global.notebook.name}.`)) {
+				global.resetNotebook()
+			}
+		},
 		renameWildcard(newWildcard) {
 			global.notebook.wildcard = newWildcard || undefined
 		},
