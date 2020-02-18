@@ -12,6 +12,9 @@
         </div>
 
         <div class="bottom">
+            <a target="_blank" href="https://github.com/afonsomatos/tm-site/tree/master/docs">
+                <Action title="See documentation on Github" icon="help" />
+            </a>
             <a href="http://github.com/afonsomatos/tm-site.git">
                 <Action title="See project on Github" icon="github" />
             </a>
