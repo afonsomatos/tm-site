@@ -1,6 +1,8 @@
 Documentation
 ------
 
+This is a short guide on how to use the app. 
+
 **Quick start**
 
 1. Go to the edit tab by clicking on the *pen* icon in the left side-bar.
