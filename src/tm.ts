@@ -170,8 +170,10 @@ export class Turing {
 	 */
 	private get nextTransition(): Transition | undefined {
 		return this.program.transitions.find(t => {
-			return t.from === this.state && (t.read === this.get(this.head) || t.read === this.program.wildcard)
-		})
+			return t.from === this.state && t.read === this.get(this.head)
+		}) || this.program.transitions.find(t => {
+			return t.from === this.state && t.read === this.program.wildcard
+		}) 
 	}
 
 	/**
