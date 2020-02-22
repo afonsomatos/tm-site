@@ -135,6 +135,7 @@ class Simulator {
 		this.model = model
 		this.converter = new ProgramConverter(model)
 		this.converter.program.wildcard = global.notebook.wildcard
+		this.converter.program.empty = global.notebook.blank
 		this.turing.setProgram(this.converter.program)
 	}
 

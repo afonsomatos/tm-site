@@ -50,6 +50,23 @@
                 />
             </Field>
         </Section>
+        <Section>
+            <Field name="Blank">
+                <Input
+                    maxlength="1"
+					class="char-input"
+                    @input="renameBlank($event)"
+                    :value="global.notebook.blank"
+					v-selectOnFocus
+                />
+            </Field>
+        </Section>
+		<Section>
+			<Field name="load emulator machines">
+				<input ref="inputEm" style="display: none;" type="file" @change="loadEm" multiple />
+				<IconBtn title="Upload emulator machines" class="icon" icon="upload" @click="loadEmClick" />
+			</Field>
+		</Section>
 		<Section>
 			<Field name="delete">
 				<IconBtn title="Delete notebook" class="icon" icon="delete" @click="deleteNotebook" />
@@ -73,6 +90,8 @@ import exampleModel from "@/shared/model/example"
 import exampleNotebook from "@/shared/notebook/example"
 import Notebook from "@/shared/notebook"
 
+import { parseFromEmulator } from "@/shared/model/emulatorMedium"
+
 export default Vue.extend({
 	data() {
 		return {
@@ -86,9 +105,34 @@ export default Vue.extend({
 				global.resetNotebook()
 			}
 		},
+
+		renameBlank(newBlank: string) {
+			global.notebook.blank = newBlank || "#"
+		},
+
 		renameWildcard(newWildcard) {
 			global.notebook.wildcard = newWildcard || undefined
 		},
+		
+		loadEm(e) {
+			for (let file of e.target.files) {
+				let fileReader = new FileReader()
+				fileReader.onload = e => {
+					let model = parseFromEmulator((e.target as any).result)
+					model.name = file.name
+					global.notebook.models.push(model)
+					global.notebook.blank = "_"
+					global.notebook.wildcard = "*"
+					global.saveNotebook()
+				}
+				fileReader.readAsText(file)
+			}
+		},
+
+		loadEmClick() {
+			this.$refs.inputEm.click()
+		},
+
 		loadClick() {
 			this.$refs.input.click()
 		},
