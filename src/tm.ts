@@ -171,9 +171,9 @@ export class Turing {
 	private get nextTransition(): Transition | undefined {
 		return this.program.transitions.find(t => {
 			return t.from === this.state && t.read === this.get(this.head)
-		}) || this.program.transitions.find(t => {
+		}) || (this.program.wildcard && this.program.transitions.find(t => {
 			return t.from === this.state && t.read === this.program.wildcard
-		}) 
+		}))
 	}
 
 	/**
