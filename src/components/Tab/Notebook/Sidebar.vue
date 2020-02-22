@@ -90,7 +90,7 @@ import exampleModel from "@/shared/model/example"
 import exampleNotebook from "@/shared/notebook/example"
 import Notebook from "@/shared/notebook"
 
-import parseFromEmulator from "@/shared/model/parseFromEmulator"
+import { parseFromEmulator } from "@/shared/model/emulatorMedium"
 
 export default Vue.extend({
 	data() {
