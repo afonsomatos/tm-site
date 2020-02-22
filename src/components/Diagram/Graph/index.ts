@@ -484,21 +484,25 @@ export default class Graph {
             let newLinkText = linkText.enter()
                 .append("text")
                 .attr("class", "linkText")
+
+            linkText = linkText.merge(newLinkText)
                 
             // Special design for loops
             if (link.from === link.to) {
-                newLinkText
-                    .merge(linkText)
-                        .attr("transform", translateAttr(link.from.position))
-                        .attr("dy", (_, i) => -3 - 1.4 * i + "em")
-                        .html(transitionLabel)
+                linkText
+                    .attr("transform", translateAttr(link.from.position))
+                    .attr("dy", (_, i) => -3 - 1.4 * i + "em")
+                    .html(transitionLabel)
             } else {
                 // Design for straight and arcs
-                newLinkText.append("textPath")
+                linkText
+                    .attr("transform", null)
+                    .html(null)
+                    .append("textPath")
                         .attr("startOffset", "50%")
                         .attr("text-anchor", "middle")
                 
-                newLinkText.merge(linkText)
+               linkText
                     .attr("dy", (_, i) => {
                         let val = reversed  ? 1.5 + 1.4 * i
                                             : -1 - 1.4 * i

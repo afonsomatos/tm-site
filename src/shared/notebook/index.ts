@@ -5,7 +5,8 @@ export interface NotebookJSON {
 	version: number,
 	name: string,
 	models: ModelJSON.Model[],
-	wildcard?: string
+	wildcard?: string,
+	blank: string
 }
 
 /**
@@ -16,12 +17,14 @@ export default class Notebook {
 	name: string = "Example Notebook"
 	models: Model[] = []
 	wildcard?: string
+	blank: string = "#"
 
 	public serialize(): string {
 		return JSON.stringify({
 			version: 0,
 			name: this.name,
 			wildcard: this.wildcard,
+			blank: this.blank,
 			models: [...this.models].map(x => x.toJSONType())
 		} as NotebookJSON, null, 4)
 	}
@@ -35,6 +38,9 @@ export default class Notebook {
 		notebook.wildcard = notebookJSON.wildcard
 
 		// Convert from older versions here
+
+		if (notebookJSON.blank !== undefined)
+			notebook.blank = notebookJSON.blank
 
 		return notebook
 	}

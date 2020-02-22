@@ -164,6 +164,16 @@ export class Model {
 		return this.transitions.some(t => t.from == from && t.to == to)
 	}
 
+	/**
+	 * Removes all duplicate transitions from end to beginning.
+	 */
+	public normalize() {
+		this._transitions = new Set(_.uniqWith(
+			Array(...this._transitions).reverse(),
+			(t1, t2) => t1.read === t2.read && t1.from === t2.from
+		))
+	}
+
 	public addTransition(transition: Transition) {
 		
 		if (!this._states.has(transition.from) || !this._states.has(transition.to)) {

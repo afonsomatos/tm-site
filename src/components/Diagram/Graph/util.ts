@@ -30,6 +30,9 @@ export function norm(vector: Vector): number {
 }
 
 export function unit(vector: Vector): Vector {
+    if (norm(vector) === 0) {
+        return { x: 0, y: 0 }
+    }
     return mul(vector, 1 / norm(vector))
 }
 

@@ -21,6 +21,7 @@ export default Vue.extend({
 
 .name {
     font-size: 13px;
+    line-height: 200%;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #707070;
