@@ -1,0 +1,14 @@
+name: Test
+on:
+  push:
+    branches:
+      - '*'
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Build
+      run: |
+        npm ci
+        npm run build
+	npm run test
