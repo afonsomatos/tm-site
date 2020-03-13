@@ -7,7 +7,7 @@ import { Model, State, Transition, Type } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
 const removeCommentAndEmptyLines = /^[^;%]*/
-const extractTokens = /^ *(?<from>[^ ]+) +(?<read>[^ ]) +(?<write>[^ ]) +(?<direction>[lr\*]) +(?<to>[^ ]+) *$/
+const extractTokens = /^ *([^ ]+) +([^ ]) +([^ ]) +([lr\*]) +([^ ]+) *$/
 
 const directions = {
 	"r": Direction.Right,
@@ -83,7 +83,7 @@ class EmulatorParser {
 			if (obj === null)
 				return null
 	
-			let { from, read, write, direction, to } = obj.groups
+			let [ _, from, read, write, direction, to ] = obj
 
 			let modelFrom = this.createState(from)
 			let modelTo = this.createState(to)
