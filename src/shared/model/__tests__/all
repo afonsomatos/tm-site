@@ -1,0 +1,7 @@
+back 0 0 r back
+back 1 1 r back
+back _ _ l q0
+
+q0 0 1 r back
+q0 1 0 l q0
+q0 _ _ * halt-accept

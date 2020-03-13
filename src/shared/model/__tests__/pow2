@@ -1,0 +1,19 @@
+start # # r start
+start _ _ * halt-reject
+start 1 # r one
+
+one 1 1 r clean
+one # # r one
+one _ _ * halt-accept
+
+clean 1 # r stay
+clean # # r clean
+clean _ _ l back
+
+stay 1 1 r clean
+stay # # r stay
+stay _ _ * halt-reject
+
+back 1 1 l back
+back # # l back
+back _ _ r start
