@@ -105,7 +105,7 @@ class Run implements Store<State> {
 		simulator.reset()
 	}
 
-	load(input: string) {
+	load(input: string[]) {
 		this.playing = false
 		simulator.load(input)
 	}

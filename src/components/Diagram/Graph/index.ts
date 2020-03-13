@@ -16,7 +16,7 @@ function transformAttr(transform: Transform): string {
 }
 
 function transitionLabel({ read, write, direction }: Transition): string {
-    return `${read} &rarr; ${write}, ${direction}`
+    return `${read.join('')} &rarr; ${write.join('')}, ${direction.join('')}`
 }
 
 export default class Graph {
@@ -143,12 +143,13 @@ export default class Graph {
         
         let newTransition = {
             from, to,
-            direction: Direction.Right,
-            read: "#",
-            write: "#",
+            direction: [Direction.Right],
+            read: ["#"],
+            write: ["#"],
         }
 
         this.model.addTransition(newTransition)
+        this.model.normalize()
         this.update()
 
         return newTransition

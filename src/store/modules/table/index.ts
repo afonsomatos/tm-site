@@ -57,7 +57,7 @@ const getters: GetterTree<State, any> = {
 
 	[Getter.AVAILABLE_CHAR]: state => (char: string) => {
 		return state.table.model.allTransitions
-			.findIndex(t => t.read === char) === -1
+			.findIndex(t => t.read[0] === char) === -1
 	}
 
 }
@@ -133,7 +133,7 @@ const actions: ActionTree<State, any> = {
 		let model = state.table.model
 		
 		model.allTransitions
-			.filter(t => t.read === state.char)
+			.filter(t => t.read[0] === state.char)
 			.forEach(t => model.removeTransition(t))
 
 		state.mode = null
@@ -148,8 +148,8 @@ const actions: ActionTree<State, any> = {
 		let model = state.table.model
 
 		for (let transition of model.allTransitions) {
-			if (transition.read === state.char) {
-				transition.read = newChar
+			if (transition.read[0] === state.char) {
+				transition.read[0] = newChar
 			}
 		}
 
@@ -165,7 +165,7 @@ const actions: ActionTree<State, any> = {
 		let model = state.table.model
 
 		// Find next available character
-		let characters = new Set(model.allTransitions.map(t => t.read))
+		let characters = new Set(model.allTransitions.map(t => t.read[0]))
 		let i = 60;
 		while (characters.has(String.fromCharCode(++i)));
 
@@ -176,11 +176,11 @@ const actions: ActionTree<State, any> = {
 		 */
 		for (let s of model.states) {
 			model.addTransition({
-				read: char,
-				write: char,
+				read: [char],
+				write: [char],
 				from: s,
 				to: s,
-				direction: Direction.Right,
+				direction: [Direction.Right],
 				undefined: true
 			})
 		}

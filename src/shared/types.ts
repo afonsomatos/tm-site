@@ -4,12 +4,6 @@ export enum Direction {
     Stay = "S"
 }
 
-export interface Transition {
-    read: string,
-    write: string,
-    direction: Direction
-}
-
 export interface Vector {
     x: number,
     y: number

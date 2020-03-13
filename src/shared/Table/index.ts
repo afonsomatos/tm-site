@@ -67,7 +67,7 @@ export default class Table {
 	public update() {
 		
 		// All characters to read from will be represented as columns 
-		let readCharacters = _.uniq(this._model.allTransitions.map(t => t.read))
+		let readCharacters = _.uniq(this._model.allTransitions.map(t => t.read[0]))
 
 		// Bind characters to headers
 		let headers = d3.select(this._headerRow)
@@ -134,15 +134,15 @@ export default class Table {
 
 			// Find or create undefined transitions to fill missing gaps
 			let transitions = readCharacters.map<Transition>(char => {
-				let transition: Transition = self.transitionsFrom(state).find(t => t.read === char)
+				let transition: Transition = self.transitionsFrom(state).find(t => t.read[0] === char)
 				if (transition === undefined) {
 					// Create missing undefined transition
 					transition = {
 						from: state,
 						to: state,
-						direction: Direction.Right,
-						read: char,
-						write: char,
+						direction: [Direction.Right],
+						read: [char],
+						write: [char],
 						undefined: true
 					}
 

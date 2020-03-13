@@ -6,6 +6,8 @@ import { Model, State } from "@/shared/model"
 import { Snapshot, Program, Turing } from "@/tm"
 import { Direction } from "./types"
 
+import _ from "lodash"
+
 
 /**
  * Events that happen within the simulator.
@@ -57,13 +59,13 @@ class ProgramConverter {
 		}
 
 		for (let transition of model.transitions) {
-			this.program.transitions.push({
-				direction: directionOffset[transition.direction],
+			this.program.transitions.push(_.cloneDeep({
+				direction: transition.direction.map(x => directionOffset[x]),
 				read: transition.read,
 				write: transition.write,
 				from: this.stateId(transition.from),
 				to: this.stateId(transition.to),
-			})
+			}))
 		}
 	}
 
@@ -101,7 +103,7 @@ class Simulator {
 	/**
 	 * Last used input.
 	 */
-	input: string = ''
+	input: string[] = ['']
 
 	/**
 	 * Transitions and states.
@@ -136,13 +138,13 @@ class Simulator {
 		this.converter = new ProgramConverter(model)
 		this.converter.program.wildcard = global.notebook.wildcard
 		this.converter.program.empty = global.notebook.blank
-		this.turing.setProgram(this.converter.program)
+		this.turing = new Turing(model.tapes, this.converter.program)
 	}
 
 	/**
 	 * Prepare tape.
 	 */
-	public load(input: string) {
+	public load(input: string[]) {
 		this.input = input
 		this.reset()
 	}
@@ -192,6 +194,7 @@ class Simulator {
 			return
 
 		this.turing.rollBack(this.history.pop())
+
 		this.pause()
 		this.bus.$emit(Event.BACK)
 	}

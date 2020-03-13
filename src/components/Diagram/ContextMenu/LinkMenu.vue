@@ -16,8 +16,8 @@ import Vue from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
 
 import IconBtn from "@/components/IconBtn.vue"
-import { Transition, Direction } from "@/shared/types"
-import { Link } from "@/shared/model"
+import { Direction } from "@/shared/types"
+import { Link, Transition } from "@/shared/model"
 
 import Graph from "@/components/Diagram/Graph/index"
 
@@ -46,7 +46,7 @@ export default Vue.extend({
         }),
 
         text(transition: Transition): string {
-            return `${transition.read} → ${transition.write}, ` + transition.direction
+            return `${transition.read.join('')} → ${transition.write.join('')}, ` + transition.direction.join('')
         },
 
         add() {

@@ -1,5 +1,17 @@
 <template>
     <div>
+        <Section>
+            <Field name="Tapes">
+                <select title="Number of tapes" @change="changeTapes">
+                    <option
+                        v-for="(number, i) in [1, 2, 3, 4, 5]"
+                        :key="i"
+                        :selected="number === tapes">
+                        {{ number }}
+                    </option> 
+                </select>
+            </Field>
+        </Section>
         <component :is="editor[currentEditor]" v-if="isGridView" />
     </div>
 </template>
@@ -11,11 +23,15 @@ import Transition from "./Transition.vue"
 import Char from "./Char.vue"
 import State from "./State.vue"
 
+import Section from "@/components/SideBar/Section.vue"
+import Field from "@/components/SideBar/Field.vue"
+import Input from "@/components/Input.vue"
+
 import { Mode } from "@/store/modules/table"
 import global, { View } from "@/store/global"
 
 export default Vue.extend({
-    components: { Transition, State, Char },
+    components: { Transition, State, Char, Section, Field, Input },
     data() {
         return {
             global,
@@ -26,7 +42,18 @@ export default Vue.extend({
             }
         }
     },
+    methods: {
+        changeTapes(e) {
+            let tapes: number = e.target.value
+            global.model.tapes = Number(tapes)
+            global.model.normalize()
+            this.$store.state.diagram.graph.update()
+        }
+    },
     computed: {
+        tapes() {
+            return global.model.tapes
+        },
         isGridView() {
             return global.view === View.Grid
         },
@@ -37,3 +64,11 @@ export default Vue.extend({
 })
 
 </script>
+
+<style lang="scss" scoped>
+
+select {
+    padding: 3px 20px;
+}
+
+</style>

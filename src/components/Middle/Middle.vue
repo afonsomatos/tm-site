@@ -15,9 +15,9 @@
                         {{ displayName(model) }}
                     </option> 
                 </select>
-                <div class="view-mode">
+                <div class="view-mode" v-if="tapes === 1">
                     <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram }"/>
-                    <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }"/>
+                    <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }" />
                 </div>
             </div>
         </div>
@@ -89,12 +89,24 @@ export default Vue.extend({
         },
         selectedModel() {
             return global.model
+        },
+        tapes() {
+            return global.model.tapes
         }
     },
     data() {
         return {
             floatTransitionDuration: 800,
             global,
+        }
+    },
+    watch: {
+        tapes(tapes: number) {
+            // Temporarily switch to diagram view for multiple-tapes 
+            if (tapes > 1 && global.view === View.Grid) {
+                console.log("switched!")
+                global.view = View.Diagram
+            }
         }
     },
     components: { Icon, Table, Diagram }

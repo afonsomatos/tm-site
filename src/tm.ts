@@ -1,4 +1,5 @@
 import _ from "lodash"
+import { isEqualBy } from "@/shared/util"
 
 /**
  * Direction taken within a transition.
@@ -22,12 +23,12 @@ export interface Transition {
 	/**
 	 * Character read.
 	 */
-	read: string,
+	read: string[],
 
 	/**
 	 * Character written.
 	 */
-	write: string,
+	write: string[],
 
 	/**
 	 * Identifier of the next state.
@@ -37,7 +38,7 @@ export interface Transition {
 	/**
 	 * Direction taken.
 	 */
-	direction: Direction
+	direction: Direction[]
 }
 
 export interface Program {
@@ -90,20 +91,25 @@ export type Tape = {
  * Has sufficient information for restoring a turing session.
  */
 export type Snapshot = {
-	head: number,
+	head: number[],
 	state: number,
 	space: number,
 	time: number,
-	tape: Tape,
-	visited: Set<number>,
+	tape: Tape[],
+	visited: Set<number>[],
 }
 
 export class Turing {
 
 	/**
+	 * Number of tapes.
+	 */
+	private tapes: number
+
+	/**
 	 * Visited cells.
 	 */
-	private visited: Set<number>
+	private visited: Set<number>[]
 
 	/**
 	 * Loaded program.
@@ -113,12 +119,12 @@ export class Turing {
 	 /**
 	 * Index of the tape currently pointed to.
 	 */
-	private head: number
+	private head: number[]
 
 	/**
 	 * The tape itself, i.e indexes matched to strings.
 	 */
-	private tape: Tape
+	private tape: Tape[]
 
 	/**
 	 * Identifier of the current state.
@@ -134,7 +140,7 @@ export class Turing {
 	 * How many cells visited since start (including load).
 	 */
 	private get space(): number {
-		return this.visited.size
+		return _.sumBy(this.visited, x => x.size)
 	}
 
 	/**
@@ -169,34 +175,46 @@ export class Turing {
 	 * Returns the next transition to take.
 	 */
 	private get nextTransition(): Transition | undefined {
-		return this.program.transitions.find(t => {
-			return t.from === this.state && t.read === this.get(this.head)
-		}) || (this.program.wildcard && this.program.transitions.find(t => {
-			return t.from === this.state && t.read === this.program.wildcard
-		}))
+		
+		// Get characters from each tape's head
+		let currentHeads = this.tape.map((_, i) => this.get(i, this.head[i]))
+		
+		// Find all transitions that match
+		let matches = this.program.transitions.filter(t => {
+			return t.from === this.state &&
+				isEqualBy(t.read, currentHeads, (a, b) => a === b || a === this.program.wildcard)
+		})
+
+		// Get the transition with the least wildcards
+		let next = _.minBy(matches, match => {
+			return match.read.filter(x => x === this.program.wildcard).length
+		})
+
+		return next
 	}
 
 	/**
 	 * Takes a snapshot of the current state.
 	 */
 	public get snapshot(): Snapshot {
-		return {
+		return _.cloneDeep({
 			head: this.head,
 			state: this.state,
-			tape: _.clone(this.tape),
-			visited: _.clone(this.visited),
+			tape: this.tape,
+			visited: this.visited,
 			space: this.space, 
 			time: this.time
-		}
+		})
 	}
 
-	constructor() {
-		this.visited = new Set()
-		this.tape = {}
-		this.head = 0
+	constructor(tapes: number = 1, program?: Program) {
+		this.tapes = tapes
+		this.visited = _.times(tapes, () => new Set())
+		this.tape = _.times(tapes, () => ({}))
+		this.head = new Array(tapes).fill(0)
 		this.time = 0
 		this.state = 0
-		this.program = {
+		this.program = program || {
 			accept: [0, 1],
 			empty: "#",
 			reject: [2],
@@ -206,8 +224,8 @@ export class Turing {
 		}
 	}
 
-	private get(index: number): string {
-		return this.tape[index] || this.program.empty
+	private get(tape: number, index: number): string {
+		return this.tape[tape][index] || this.program.empty
 	}
 
 	public setProgram(program: Program) {
@@ -215,40 +233,43 @@ export class Turing {
 	}
 
 	public rollBack(snapshot: Snapshot) {
-		this.head = snapshot.head
+		this.head = _.cloneDeep(snapshot.head)
 		this.state = snapshot.state
-		this.tape = _.clone(snapshot.tape)
-		this.visited = _.clone(snapshot.visited)
+		this.tape = _.cloneDeep(snapshot.tape)
+		this.visited = _.cloneDeep(snapshot.visited)
 		this.time = snapshot.time
 	}
 
 	public reset() {
-		this.tape = {}
+		this.tape = _.times(this.tapes, () => ({}))
 		this.state = this.program.start
-		this.head = 0
+		this.head.fill(0)
 		this.time = 0
-		this.visited = new Set()
+		this.visited.map(() => new Set())
 	}
 
 	/**
 	 * Writes a character for each next cell. 
 	 */
-	public load(input: string) {
+	public load(inputs: string[]) {
 		// Resets the whole tape
 		this.reset()
 		// Write `input` on tape
-		let head = this.head
-		for (let char of input) {
-			this.visit(head)
-			this.tape[head++] = char
+		for (let i = 0; i < this.tapes; ++i) {
+			let head = this.head[i]
+			let input = inputs[i]			
+			for (let char of input) {
+				this.visit(i, head)
+				this.tape[i][head++] = char
+			}
 		}
 	}
 
 	/**
 	 * Called when the machine visits a certain cell. It's used to keep track of the space taken. 
 	 */
-	private visit(index: number): void {
-		this.visited.add(index)
+	private visit(tape: number, index: number): void {
+		this.visited[tape].add(index)
 	}
 	
 	/**
@@ -259,24 +280,28 @@ export class Turing {
     public next(): Transition | undefined {
 
 		let transition = _.cloneDeep(this.nextTransition)
-		if (this.finished ||transition === undefined) {
+		if (this.finished || transition === undefined) {
 			return
 		}
 
-		if (transition.read === this.program.wildcard) {
-			transition.read = this.get(this.head)
+		for (let i = 0; i < this.tapes; ++i) {
 
-			if (transition.write === this.program.wildcard) {
-				transition.write = transition.read
+			if (transition.read[i] === this.program.wildcard) {
+				transition.read[i] = this.get(i, this.head[i])
+			
+				if (transition.write[i] === this.program.wildcard) {
+					transition.write[i] = transition.read[i]
+				}
 			}
+
+			this.tape[i][this.head[i]] = transition.write[i]
+			this.head[i] += transition.direction[i]
+			this.visit(i, this.head[i])
 		}
 
 		this.time++
-        this.tape[this.head] = transition.write
 		this.state = transition.to
-		this.head += transition.direction
-		this.visit(this.head)
-		
+
         return transition
     }
 	/**
@@ -284,15 +309,21 @@ export class Turing {
 	 */
     public show(length: number): string {
         const pointer = '^'
-        const spacing = "  "
-        // Tape
-        let tapeRow = Array(length).fill("").map((_val, i) => this.get(this.head + i - length/2)).join(spacing)
-        // Head pointer
-        let headPointer = Array(length).fill(" ")
-        headPointer[length / 2] = pointer
-        let headRow = headPointer.join(spacing)
+		const spacing = "  "
 
-        return [tapeRow, headRow].join('\n')
+		let tapes = []
+		
+		for (let i = 0; i < this.tapes; ++i) {
+			// Tape
+			let tapeRow = Array(length).fill("").map((_val, i) => this.get(i, this.head[i] + i - length/2)).join(spacing)
+			// Head pointer
+			let headPointer = Array(length).fill(" ")
+			headPointer[length / 2] = pointer
+			let headRow = headPointer.join(spacing)
+			tapes.push([tapeRow, headRow].join('\n'))
+		}
+
+		return tapes.join('\n')
 	}
 	
 }

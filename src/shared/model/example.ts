@@ -17,17 +17,17 @@ export default () => {
 	let c = {
 		from: a,
 		to: a,
-		direction: Direction.Right,
-		read: "1",
-		write: "1"
+		direction: [Direction.Right],
+		read: ["1"],
+		write: ["1"]
 	}
 
 	let d = {
 		from: a,
 		to: b,
-		direction: Direction.Right,
-		read: "#",
-		write: "#"
+		direction: [Direction.Right],
+		read: ["#"],
+		write: ["#"]
 	}
 	
 	model.addState(a)

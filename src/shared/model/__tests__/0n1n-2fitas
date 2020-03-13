@@ -1,0 +1,7 @@
+A 0_ _0 rr A
+A 1_ 1_ *l B
+A __ __ *l B
+
+B 10 10 rl B
+B __ __ ** halt-accept
+B ** ** ** halt-reject

@@ -2,18 +2,26 @@
     <div class="v-menu">
         <div class="icons">
             <icon-btn icon="left-arrow" class="icon" @click="goBack" :clickable="true" />
-            <div><!-- --></div>
+            <select v-model="tapeIndex" v-if="tapeNumber > 1">
+                <option
+                    v-for="(number, i) in tapes"
+                    :key="i"
+                    :value="i"
+                    >
+                    {{ number }}
+                </option> 
+            </select>
             <icon-btn icon="delete" class="icon red" @click="remove" :clickable="true" />
         </div>
         <div class="read-write">
-            <input v-model="transition.read" @input="update" maxlength="1" @focus="$event.target.select()"/>
+            <input v-model="transition.read[tapeIndex]" @input="update" maxlength="1" @focus="$event.target.select()"/>
             <div>→</div>
-            <input v-model="transition.write" @input="update" maxlength="1" @focus="$event.target.select()"/>
+            <input v-model="transition.write[tapeIndex]" @input="update" maxlength="1" @focus="$event.target.select()"/>
         </div>
         <div class="direction">
             <div v-for="dir of directions"
                 :key="dir"
-                :class="{ selected: dir === transition.direction }"
+                :class="{ selected: dir === transition.direction[tapeIndex] }"
                 @click="setDirection(dir)">
                 {{ dir }}
             </div>
@@ -22,31 +30,46 @@
 </template>
 
 <script lang="ts">
+import _ from "lodash"
 import Vue from 'vue'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 import IconBtn from "@/components/IconBtn.vue"
 
-import { Transition, Direction } from "@/shared/types"
+import { Direction } from "@/shared/types"
 
 import Action from "@/store/modules/diagram/action"
 import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
 
+import global from "@/store/global"
+
 export default Vue.extend({
     data() {
         return {
+            global,
+            tapeIndex: 0,
             directions: [Direction.Left, Direction.Stay, Direction.Right]
         }
     },
     components: { IconBtn },
+    watch: {
+        tapeNumber(tapes: number) {
+            this.tapeIndex = Math.min(tapes - 1, this.tapeIndex)
+        }
+    },
     computed: {
+        tapeNumber() {
+            return global.model.tapes
+        },
+        tapes() {
+            return _.times(global.model.tapes, i => i + 1)
+        },
         transition() {
             return this.$store.state.diagram.transition
         }
     },
     destroyed() {
         this.normalize()
-
     },
     methods: {
 
@@ -70,7 +93,7 @@ export default Vue.extend({
         },
 
         setDirection(dir: Direction) {
-            this.transition.direction = dir
+            Vue.set(this.transition.direction, this.tapeIndex, dir)
             this.update()
         }
     }

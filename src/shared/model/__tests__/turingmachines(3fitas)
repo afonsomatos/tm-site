@@ -1,0 +1,54 @@
+
+q0 1__ 11_ rr* q0
+q0 0__ 0__ r** q1
+q0 _** *** *** halt-reject
+
+q1 1__ 1_1 r*r q1
+q1 0__ 0__ rll trans
+q1 _** *** *** halt-reject
+
+trans _** _** *** halt-accept
+trans 0** 0** *** trans1
+trans 1** 1** *** trans1
+
+trans1 01* 01* rl* trans1
+trans1 11* 11* rl* trans1ok
+trans1 _** *** *** halt-reject
+
+trans1ok 01* 01* rl* trans1ok
+trans1ok *_* *_* *r* simb1
+trans1ok 11* *** *** halt-reject
+trans1ok _1* *** *** halt-reject
+
+simb1 0*1 0*1 r*l simb1
+simb1 **_ **_ **r trans2
+simb1 1*1 1*1 r*l simb1ok
+simb1 _*1 *** *** halt-reject
+
+simb1ok 0*1 0*1 r*l simb1ok
+simb1ok **_ **_ **r trans2
+simb1ok 1*1 *** *** halt-reject
+simb1ok _*1 *** *** halt-reject
+
+trans2 01* 01* rr* trans2
+trans2 11* 11* rr* trans2ok
+trans2 _** *** *** halt-reject
+
+trans2ok 01* 01* rr* trans2ok
+trans2ok *_* *_* *l* simb2
+trans2ok 11* *** *** halt-reject
+trans2ok _1* *** *** halt-reject
+
+simb2 0*1 0*1 r*r simb2
+simb2 **_ **_ **l move
+simb2 1*1 1*1 r*r simb2ok
+simb2 _*1 *** *** halt-reject
+
+simb2ok 0*1 0*1 r*r simb2ok
+simb2ok **_ **_ **l move
+simb2ok 1*1 *** *** halt-reject
+simb2ok _*1 *** *** halt-reject
+
+move 0** 0** r** trans
+move 1** 1** r** trans
+move _** *** *** halt-reject

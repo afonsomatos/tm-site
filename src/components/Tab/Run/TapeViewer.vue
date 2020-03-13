@@ -1,8 +1,8 @@
 <template>
     <div class="tape-viewer">
-        <svg id="tape" ref="tape" :class="status">
+        <div id="tapeWrapper" ref="tapeWrapper" :class="status">
 
-        </svg>
+        </div>
         <div class="controllers">
             <div>
                 <!---->
@@ -27,22 +27,38 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 import _ from "lodash"
 import IconBtn from "@/components/IconBtn.vue"
-import Tape from "@/shared/Tape"
+import Tape, { Transition as SimpleTransition } from "@/shared/Tape"
 import run from "@/store/run"
+import * as d3 from "d3"
+
+import global from "@/store/global"
 
 import simulator, { Event } from '@/shared/simulator'
+
+import { Transition } from "@/tm"
+import { Direction } from '@/shared/types'
+import { Model } from '@/shared/model'
 
 export default Vue.extend({
     components: { IconBtn },
     data() {
         return {
+            global,
             run,
             tape: null,
             transition: null,
             resetTape: null,
         }
     },
+    watch: {
+        model(newModel: Model, oldModel: Model) {
+            if (newModel !== oldModel)
+                this.setupTapes()
+        }
+    },
     computed: {
+        model: () => global.model,
+        tapes: () => global.model.tapes,
         status: () => run.status,
         playing: () => run.playing,
         stepThrottle() {
@@ -58,20 +74,53 @@ export default Vue.extend({
         back: () => run.back(),
         reset: () => run.reset(),
         step: () => run.step(),
+        setupTapes() {
+
+            // Refresh model and default tape
+            simulator.setModel(global.model)
+            simulator.load(Array(global.model.tapes).fill(""))
+            simulator.reset()
+            
+            let tapeWrapper = d3.select(this.$refs.tapeWrapper as HTMLElement)
+            tapeWrapper.html(null)
+
+            this.tape = _.times(this.tapes, i => {
+
+                let tapeEl = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+                tapeEl.setAttribute("class", "tape");
+                (this.$refs.tapeWrapper).appendChild(tapeEl)
+
+                let tape = new Tape(tapeEl as any,
+                     () => simulator.turing.snapshot.head[i],
+                     () => simulator.turing.snapshot.tape[i]
+                )
+                return tape
+            })
+
+        }
     },
     mounted() {
-        this.tape = new Tape(this.$refs.tape as SVGSVGElement)
         
+        this.setupTapes()
+    
         // Sync when resetting
         this.resetTape = () => {
-            console.log("resize")
-            this.tape.reset()
+            this.tape.forEach((x: Tape) => x.reset())
         }
         
         simulator.bus.$on([Event.BACK, Event.RESET], this.resetTape)
 
         // Animate transition
-        this.transition = (t: unknown) => this.tape.transition(t)
+        this.transition = (t: Transition) => {
+            this.tape.forEach((x: Tape, i: number) => {
+                return x.transition({
+                    read: t.read[i],
+                    write: t.write[i],
+                    direction: [Direction.Left, Direction.Stay, Direction.Right][t.direction[i] + 1]
+                })
+            })
+        }
+
         simulator.bus.$on(Event.TRANSITION, this.transition)
 
         window.addEventListener("resize", this.resetTape)
@@ -130,8 +179,6 @@ $cell-size: 60px;
 }
 
 .tape-viewer {
-    //border: 1px solid #C4C4C4;
-    border-bottom: none;
     font-size: 38px;
     padding: 20px;
     background: $color-gray-2;
@@ -143,30 +190,43 @@ $cell-size: 60px;
 
 @import "src/style/Lib";
 
-#tape {
+#tapeWrapper {
     border: 2px solid $color-active;
     border-left: none;
     border-right: none;
-    width: 100%;
 
     &.rejected, &.undefined { border-color: $color-negative; }
     &.accepted { border-color: $color-positive; }
     &.idle { border-color: $color-normal; }
 
-    .cursor {
-        fill: $color-active;
+    .tape {
+        display: block;
+        width: 100%;
+
+        border-bottom: 1px solid #D2D2D2;
+
+        .cursor {
+            fill: $color-active;
+            visibility: hidden;
+        }
+
+        .rect {
+            fill: white;
+        }
+
+        text {
+            font: bold 32px "Roboto Mono", monospace;
+
+            &.head { fill: $color-active; }
+        }
+
+        &:last-child {
+            border-bottom: none;
+            .cursor {
+                visibility: visible;
+            }
+        }
     }
-
-    .rect {
-        fill: white;
-    }
-
-    text {
-        font: bold 32px "Roboto Mono", monospace;
-
-        &.head { fill: $color-active; }
-    }
-
 }
 
 </style>

@@ -14,9 +14,9 @@ export interface Link {
 }
 
 export type Transition = Link & {
-	direction: Direction,
-	read: string,
-	write: string,
+	direction: Direction[],
+	read: string[],
+	write: string[],
 	undefined?: boolean,
 }
 
@@ -30,6 +30,7 @@ export enum Type {
 export class Model {
 
 	name: string = "Model"
+	tapes: number = 1
 
 	private _states: Set<State>
 	private _transitions: Set<Transition>
@@ -170,8 +171,28 @@ export class Model {
 	public normalize() {
 		this._transitions = new Set(_.uniqWith(
 			Array(...this._transitions).reverse(),
-			(t1, t2) => t1.read === t2.read && t1.from === t2.from
+			(t1, t2) => _.isEqual(t1.read, t2.read) && _.isEqual(t1.from, t2.from)
 		))
+
+		this._transitions.forEach(t => {
+
+			_.times(this.tapes - t.direction.length, () => {
+				t.direction.push(Direction.Right)
+			})
+
+			_.times(this.tapes - t.read.length, () => {
+				t.read.push("#")
+			})
+
+			_.times(this.tapes - t.write.length, () => {
+				t.write.push("#")
+			})
+
+			t.direction.splice(this.tapes)
+			t.read.splice(this.tapes)
+			t.write.splice(this.tapes)
+		})
+
 	}
 
 	public addTransition(transition: Transition) {
@@ -221,6 +242,7 @@ export class Model {
 		)
 
 		model.name = modelJSON.name
+		model.tapes = modelJSON.tapes
 
 		return model
 	}
@@ -252,7 +274,8 @@ export class Model {
 			start,
 			reject,
 			accept,
-			name: this.name
+			name: this.name,
+			tapes: this.tapes,
 		}
 
 		return model

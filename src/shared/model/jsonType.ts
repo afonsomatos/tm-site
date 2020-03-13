@@ -12,14 +12,15 @@ namespace JSONType {
 	}
 	
 	export type Transition = Link & {
-		direction: Direction,
-		read: string,
-		write: string,
+		direction: Direction[],
+		read: string[],
+		write: string[],
 		undefined?: boolean
 	}
 	
 	export interface Model {
 		name: string,
+		tapes: number,
 		states: Record<number, State>,
 		transitions: Transition[],
 		start: number,

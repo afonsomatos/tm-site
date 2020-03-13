@@ -22,7 +22,7 @@
             <Field name="Write">
                 <Input
                     title="A character to write"
-                    v-model="transition.write"
+                    v-model="transition.write[0]"
                     class="char-input"
                     maxlength="1"
                     @input="onWriteChange"
@@ -33,7 +33,7 @@
                 <div class="direction">
                     <div v-for="dir of directions"
                         :key="dir"
-                        :class="{ selected: dir === transition.direction }"
+                        :class="{ selected: dir === transition.direction[0] }"
                         @click="setDirection(dir)">
                         {{ dir }}
                     </div>
@@ -82,13 +82,13 @@ export default Vue.extend({
             this.$store.state.table.table.update()
         },
         onWriteChange() {
-            if (this.transition.write.length === 0) {
-                this.transition.write = '#'
+            if (this.transition.write[0].length === 0) {
+                this.transition.write[0] = '#'
             }
             this.update()
         },
         setDirection(dir: Direction) {
-            this.transition.direction = dir
+            this.transition.direction[0] = dir
             this.update()
         },
         setUndefined(event) {

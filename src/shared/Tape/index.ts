@@ -2,9 +2,17 @@ import * as d3 from "d3"
 import _ from "lodash"
 
 import simulator from "@/shared/simulator"
-import { Snapshot, Transition } from "@/tm"
+import { Snapshot } from "@/tm"
+import { Direction } from "@/shared/types"
 
 const translate = (x: number, y: number) => `translate(${x}, ${y})`
+
+
+export interface Transition {
+    read: string,
+    write: string,
+    direction: Direction
+}
 
 export default class Tape {
 
@@ -50,7 +58,7 @@ export default class Tape {
 	 */
 	private _visible: number[]
 
-    constructor(svgElement: SVGSVGElement) {
+    constructor(svgElement: SVGSVGElement, private getHead: () => number, private getTape: () => { [index: number]: string }) {
 		
         this._svg = svgElement
 		this._wrapper = d3.select(this._svg).append("g").node()
@@ -146,17 +154,17 @@ export default class Tape {
 	 * Animates a transition. 
 	 */
 	public transition(trans: Transition) {
-		
+
 		// Change the text of current head cell.
 		this._tape[this._head] = trans.write
 		this.update()
 
-		if (trans.direction === 0)
+		if (trans.direction === Direction.Stay)
 			return
 			
 		let wrapper = d3.select(this._wrapper)
 
-		if (trans.direction == 1) {
+		if (trans.direction === Direction.Right) {
 
 			// Show next right-most cell
 			let last = this._visible[this._visible.length - 1]
@@ -166,12 +174,12 @@ export default class Tape {
 			// Smooth right transition
             wrapper.transition()
 				.duration(0.5 * simulator.interval)
-				.attr("transform", translate(-trans.direction * this.cellSize, 0))
+				.attr("transform", translate(-this.cellSize, 0))
 				.on("end", () => {
 					wrapper.attr("transform", translate(0, 0))
 					this.reset()
 				})
-		} else if (trans.direction == -1) {
+		} else if (trans.direction === Direction.Left) {
 
 			// Show next left-most cell
 			wrapper.attr("transform", translate(-this.cellSize, 0))
@@ -193,10 +201,10 @@ export default class Tape {
 	 */
 	public reset() {
 		
-		let { head, tape } = simulator.turing.snapshot
+		//let { head, tape } = simulator.turing.snapshot
 		
-		this._head = head
-		this._tape = tape
+		this._head = this.getHead()
+		this._tape = this.getTape()
 		
 		// Checks for the available width.
 		this._width = this._svg.clientWidth

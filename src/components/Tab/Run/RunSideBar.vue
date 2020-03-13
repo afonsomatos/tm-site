@@ -1,7 +1,11 @@
 <template>
     <Section title="Load" class="load-section">
         <div class="name">Load input</div>
-        <Input v-model="input" class="tape-input" />
+        <div class="inputs">
+            <Input v-for="(_, i) in input" :key="i"
+                v-model="input[i]" class="tape-input" ref="input"
+                />
+        </div>
         <div class="button-holder">
             <Button class="blue" value="Load" @click="load"/>
         </div>
@@ -11,32 +15,46 @@
 <script lang="ts">
 import Vue      from 'vue'
 import { mapActions } from 'vuex'
+import _ from "lodash"
 
 import Section from "@/components/SideBar/Section.vue"
-import Input from "@/components/Input.vue"
 import Button from "@/components/Button.vue"
+import Input from "@/components/Input.vue"
 
+import global from "@/store/global"
 import run from "@/store/run"
+import { text } from 'd3'
+
+import assert from "assert"
 
 export default Vue.extend({
     data() {
         return {
-            input: "11111",
+            input: [],
             run,
         }
     },
+    mounted() {
+        this.input = Array(global.model.tapes).fill("111")
+    },
     methods: {
         load() {
-            run.load(this.input)
+            run.load(_.cloneDeep(this.input))
         }
     },
-    components: { Section, Input, Button }
+    components: { Section, Button, Input }
 })
 </script>
 
 <style lang="scss" scoped>
 
 @import "src/style/Lib";
+
+.inputs {
+    display: grid;
+    grid-auto-flow: row;
+    grid-gap: 10px;
+}
 
 .name {
     font-size: 13px;
@@ -56,9 +74,16 @@ export default Vue.extend({
 }
 
 .tape-input {
+    overflow: hidden;
     letter-spacing: 15px;
+    resize: none;
+	background: #FAFAFA;
+    
+	padding: 5px 10px;
+    border: none;
     width: 100%;
     font: bold 16px "Roboto Mono", monospace;
+    line-height: 20px;
 }
 
 </style>

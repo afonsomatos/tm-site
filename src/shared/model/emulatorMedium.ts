@@ -7,7 +7,7 @@ import { Model, State, Transition, Type } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
 const removeCommentAndEmptyLines = /^[^;%]*/
-const extractTokens = /^ *([^ ]+) +([^ ]) +([^ ]) +([lr\*]) +([^ ]+) *$/
+const extractTokens = /^ *([^ ]+) +([^ ]+) +([^ ]+) +([lr\*]+) +([^ ]+) *$/
 
 const directions = {
 	"r": Direction.Right,
@@ -26,13 +26,13 @@ class EmulatorParser {
 	/**
 	 * Create a new transition if it does not exist. 
 	 */
-	createTransition(from: State, read: string, write: string, direction: Direction, to: State) {
+	createTransition(from: State, read: string[], write: string[], direction: Direction[], to: State) {
 		const transition: Transition = {
 			from,
 			to,
 			direction,
-			read: read,
-			write: write,
+			read,
+			write
 		}
 		this.model.addTransition(transition)
 		this.model.normalize()
@@ -84,12 +84,15 @@ class EmulatorParser {
 				return null
 	
 			let [ _, from, read, write, direction, to ] = obj
+			
+			// TODO: Check consistency
+			this.model.tapes = read.length
 
 			let modelFrom = this.createState(from)
 			let modelTo = this.createState(to)
-			let modelDir = directions[direction]
+			let modelDir = direction.split('').map(x => directions[x])
 
-			this.createTransition(modelFrom, read, write, modelDir, modelTo)
+			this.createTransition(modelFrom, read.split(''), write.split(''), modelDir, modelTo)
 		}
 
 		this.setPositions()
