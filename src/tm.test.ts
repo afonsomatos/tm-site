@@ -18,11 +18,15 @@ const program: Program = {
 	]
 }
 
+let turing = null
+
+beforeEach(() => {
+	turing = new Turing()
+	turing.setProgram(program)
+})
+
 test("basic machine", () => {
 	
-
-	let turing = new Turing()
-	turing.setProgram(program)
 	turing.load("111")
 
 	while (turing.next())
@@ -47,8 +51,6 @@ test("basic machine", () => {
 
 test("reset", () => {
 
-	let turing = new Turing()
-	turing.setProgram(program)
 	turing.load("111")
 	while (turing.next())
 		;
@@ -67,8 +69,6 @@ test("reset", () => {
 
 test("reject example", () => {
 	
-	let turing = new Turing()
-	turing.setProgram(program)
 	turing.load("110")
 	while (turing.next())
 		;
