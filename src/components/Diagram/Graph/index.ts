@@ -143,9 +143,9 @@ export default class Graph {
         
         let newTransition = {
             from, to,
-            direction: [Direction.Right],
-            read: ["#"],
-            write: ["#"],
+            direction: [],
+            read: [],
+            write: [],
         }
 
         this.model.addTransition(newTransition)

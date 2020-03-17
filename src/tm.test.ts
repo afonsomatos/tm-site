@@ -218,4 +218,32 @@ describe("Multi-tape", () => {
 		expect(turing.accepted).toBe(true)
 	})
 
+	test("Repeated characters", () => {
+
+		const program: Program = {
+			empty: "#",
+			states: 2,
+			start: 0,
+			accept: [1],
+			reject: [],
+			transitions: [
+				{ from: 0, read: ["#", "#"], write: ["#", "#"], to: 1, direction: [Direction.Right, Direction.Right] },
+				{ from: 0, read: ["1", "#"], write: ["1", "b"], to: 0, direction: [Direction.Right, Direction.Right] }
+			]
+		}
+
+		let turing = new Turing(2)
+		turing.setProgram(program)
+
+		turing.load(["111", ""])
+		turing.next()
+
+		expect(turing.snapshot)
+			.toMatchObject({
+				head: [1, 1],
+				time: 1,
+				tape: [ { 0: "1" }, { 0: "b"} ]
+			})
+
+	})
 })

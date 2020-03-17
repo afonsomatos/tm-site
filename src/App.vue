@@ -71,9 +71,12 @@ export default Vue.extend({
 				this.setMenu(null)
 			}
 		},
-		model(newModel) {
-			simulator.setModel(newModel)
-			run.reset()
+		model: {
+			immediate: true,
+			handler(newModel) {
+				simulator.setModel(newModel)
+				//run.reset()
+			}
 		}
 	},
 	methods: {
@@ -94,8 +97,6 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		// Set model of simulator
-		simulator.setModel(global.model)
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
 			run.sync()

@@ -26,16 +26,26 @@ import run from "@/store/run"
 import { text } from 'd3'
 
 import assert from "assert"
+import { Model } from '@/shared/model'
 
 export default Vue.extend({
     data() {
         return {
             input: [],
+            global,
             run,
         }
     },
-    mounted() {
-        this.input = Array(global.model.tapes).fill("111")
+    watch: {
+        tapes: {
+            immediate: true,
+            handler(newTapes: number) {
+                this.input = _.times(newTapes, i => this.input[i] || "")
+            }
+        }
+    },
+    computed: {
+        tapes: () => global.model.tapes
     },
     methods: {
         load() {

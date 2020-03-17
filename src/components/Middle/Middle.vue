@@ -104,7 +104,6 @@ export default Vue.extend({
         tapes(tapes: number) {
             // Temporarily switch to diagram view for multiple-tapes 
             if (tapes > 1 && global.view === View.Grid) {
-                console.log("switched!")
                 global.view = View.Diagram
             }
         }

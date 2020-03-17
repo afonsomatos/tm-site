@@ -83,7 +83,7 @@ export default Vue.extend({
         },
         onWriteChange() {
             if (this.transition.write[0].length === 0) {
-                this.transition.write[0] = '#'
+                this.transition.write[0] = global.notebook.blank
             }
             this.update()
         },
