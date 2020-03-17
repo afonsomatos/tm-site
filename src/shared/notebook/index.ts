@@ -21,7 +21,7 @@ export default class Notebook {
 
 	public serialize(): string {
 		return JSON.stringify({
-			version: 0,
+			version: 1,
 			name: this.name,
 			wildcard: this.wildcard,
 			blank: this.blank,
@@ -31,13 +31,24 @@ export default class Notebook {
 
 	public static unserialize(json: string): Notebook {
 		let notebook = new Notebook()
-		let notebookJSON = JSON.parse(json) as NotebookJSON
+		let notebookJSON = JSON.parse(json)
 
 		notebook.name = notebookJSON.name
-		notebook.models = notebookJSON.models.map(Model.fromJSONType)
 		notebook.wildcard = notebookJSON.wildcard
 
-		// Convert from older versions here
+		// From version 0 to version 1
+		if (notebookJSON.version === 0) {
+
+			notebookJSON.models.forEach(model => model.transitions.forEach(t => {
+				t.read = [t.read]
+				t.write = [t.write]
+				t.direction = [t.direction]
+			}))
+
+			notebookJSON.version = 1
+		}
+
+		notebook.models = notebookJSON.models.map(Model.fromJSONType)
 
 		if (notebookJSON.blank !== undefined)
 			notebook.blank = notebookJSON.blank
