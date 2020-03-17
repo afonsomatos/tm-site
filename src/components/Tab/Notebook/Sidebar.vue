@@ -122,6 +122,7 @@ export default Vue.extend({
 			let fr = new FileReader()
 			fr.onload = e => {
 				global.notebook = Notebook.unserialize((e.target as any).result)
+				global.model = global.notebook.models[0]
 			}
 			fr.readAsText(e.target.files[0])
 		},
