@@ -1,13 +1,7 @@
 import { Model } from "@/shared/model"
-import ModelJSON from "@/shared/model/jsonType"
+import { upgrade } from "./version"
 
-export interface NotebookJSON {
-	version: number,
-	name: string,
-	models: ModelJSON.Model[],
-	wildcard?: string,
-	blank: string
-}
+import * as v1 from "@/shared/notebook/version/v1"
 
 /**
  * Compiles multiple models.
@@ -26,28 +20,16 @@ export default class Notebook {
 			wildcard: this.wildcard,
 			blank: this.blank,
 			models: [...this.models].map(x => x.toJSONType())
-		} as NotebookJSON, null, 4)
+		} as v1.Notebook, null, 4)
 	}
 
 	public static unserialize(json: string): Notebook {
+
 		let notebook = new Notebook()
-		let notebookJSON = JSON.parse(json)
+		let notebookJSON = upgrade(JSON.parse(json), 1) as v1.Notebook
 
 		notebook.name = notebookJSON.name
 		notebook.wildcard = notebookJSON.wildcard
-
-		// From version 0 to version 1
-		if (notebookJSON.version === 0) {
-
-			notebookJSON.models.forEach(model => model.transitions.forEach(t => {
-				t.read = [t.read]
-				t.write = [t.write]
-				t.direction = [t.direction]
-			}))
-
-			notebookJSON.version = 1
-		}
-
 		notebook.models = notebookJSON.models.map(Model.fromJSONType)
 
 		if (notebookJSON.blank !== undefined)

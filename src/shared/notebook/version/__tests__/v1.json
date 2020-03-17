@@ -1,0 +1,49 @@
+{
+	"version": 1,
+    "name": "Example Notebook",
+    "wildcard": "*",
+    "blank": "#",
+    "models": [
+        {
+            "states": [
+                {
+                    "label": "a",
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    }
+                },
+                {
+                    "label": "b",
+                    "position": {
+                        "x": 200,
+                        "y": 0
+                    }
+                }
+            ],
+            "transitions": [
+                {
+                    "read": ["1"],
+                    "write": ["1"],
+                    "direction": ["R"],
+                    "from": 0,
+                    "to": 0
+                },
+                {
+                    "read": ["#"],
+                    "write": ["#"],
+                    "direction": ["R"],
+                    "from": 0,
+                    "to": 1
+                }
+            ],
+            "start": 0,
+            "reject": [],
+            "accept": [
+                1
+			],
+			"tapes": 1,
+            "name": "Model"
+        }
+    ]
+}

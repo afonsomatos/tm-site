@@ -1,7 +1,7 @@
 import _ from "lodash"
 
 import { Vector, Direction } from "@/shared/types"
-import JSONType from "./jsonType" 
+import * as v1 from "@/shared/notebook/version/v1" 
 
 export interface State {
 	position: Vector,
@@ -214,7 +214,7 @@ export class Model {
 	/**
 	 * Constructs a model based on a json-friendly object.
 	 */
-	public static fromJSONType(modelJSON: JSONType.Model): Model {
+	public static fromJSONType(modelJSON: v1.Model): Model {
 
 		let model = new Model()
 	
@@ -250,9 +250,9 @@ export class Model {
 	/**
 	 * Converts this model to a json-friendly object.
 	 */
-	public toJSONType(): JSONType.Model {
+	public toJSONType(): v1.Model {
 
-		let states: JSONType.State[] = this.states
+		let states: v1.State[] = this.states
 		let transitions = this.allTransitions.map(t => {
 			return {
 				read: t.read,
@@ -261,14 +261,14 @@ export class Model {
 				direction: t.direction,
 				from: states.indexOf(t.from),
 				to: states.indexOf(t.to)
-			} as JSONType.Transition
+			} as v1.Transition
 		})
 
 		let start: number = states.indexOf(this.start)
 		let reject = [...this.reject].map(s => states.indexOf(s))
 		let accept = [...this.accept].map(s => states.indexOf(s))
 
-		let model: JSONType.Model = {
+		let model: v1.Model = {
 			states,
 			transitions,
 			start,
