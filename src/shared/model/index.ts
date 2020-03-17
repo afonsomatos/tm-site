@@ -31,6 +31,8 @@ export class Model {
 
 	name: string = "Model"
 	tapes: number = 1
+	wildcard?: string = "*"
+	blank: string = "#"
 
 	private _states: Set<State>
 	private _transitions: Set<Transition>
@@ -181,11 +183,11 @@ export class Model {
 			})
 
 			_.times(this.tapes - t.read.length, () => {
-				t.read.push("#")
+				t.read.push(this.blank)
 			})
 
 			_.times(this.tapes - t.write.length, () => {
-				t.write.push("#")
+				t.write.push(this.blank)
 			})
 
 			t.direction.splice(this.tapes)
@@ -273,6 +275,8 @@ export class Model {
 			transitions,
 			start,
 			reject,
+			blank: this.blank,
+			wildcard: this.wildcard,
 			accept,
 			name: this.name,
 			tapes: this.tapes,

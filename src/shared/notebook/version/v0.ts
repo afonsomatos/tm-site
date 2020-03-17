@@ -52,6 +52,8 @@ export function upgrade(oldNotebook: Notebook): v1.Notebook {
 	let newNotebook = oldNotebook as any
 	newNotebook.models.forEach((model: any) => {
 		model.tapes = 1
+		model.blank = oldNotebook.blank
+		model.wildcard = oldNotebook.wildcard
 		model.transitions.forEach((t: any) => {
 			t.read = [t.read]
 			t.write = [t.write]

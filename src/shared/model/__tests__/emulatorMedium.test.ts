@@ -11,7 +11,9 @@ function parse(filename: string) {
 		labels: model.states.map(x => x.label),
 		transitions: model.transitions.length,
 		characters: _.flatMap(model.transitions.map(x => x.read.concat(x.write))),
-		tapes: model.tapes
+		tapes: model.tapes,
+		blank: model.blank,
+		wildcard: model.wildcard,
 	}
 } 
 
@@ -71,4 +73,12 @@ describe("simple", () => {
 		expect(transitions).toBe(15)
 		expect(characters).toEqual(expect.arrayContaining(["#", "1", "_"]))
 	})
+})
+
+test("wildcards & blanks", () => {
+
+	let { wildcard, blank } = parse("pow2")
+	
+	expect(wildcard).toBe("*")
+	expect(blank).toBe("_")
 })

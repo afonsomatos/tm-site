@@ -43,7 +43,9 @@
                 1
 			],
 			"tapes": 1,
-            "name": "Model"
+            "name": "Model",
+            "blank": "#",
+            "wildcard": "*"
         }
     ]
 }

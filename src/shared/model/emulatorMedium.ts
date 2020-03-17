@@ -97,6 +97,9 @@ class EmulatorParser {
 
 		this.setPositions()
 
+		this.model.blank = "_"
+		this.model.wildcard = "*"
+		
 		return this.model
 	}
 

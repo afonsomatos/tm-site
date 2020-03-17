@@ -1,7 +1,6 @@
 // Just using Vue as an event-bus
 import Vue from "vue"
 
-import global from "@/store/global"
 import { Model, State } from "@/shared/model"
 import { Snapshot, Program, Turing } from "@/tm"
 import { Direction } from "./types"
@@ -136,8 +135,8 @@ class Simulator {
 	public setModel(model: Model) {
 		this.model = model
 		this.converter = new ProgramConverter(model)
-		this.converter.program.wildcard = global.notebook.wildcard
-		this.converter.program.empty = global.notebook.blank
+		this.converter.program.wildcard = model.wildcard
+		this.converter.program.empty = model.blank
 		this.turing = new Turing(model.tapes, this.converter.program)
 	}
 

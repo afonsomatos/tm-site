@@ -39,28 +39,6 @@
 				</a>
 			</Field>
 		</Section>
-        <Section>
-            <Field name="Wildcard">
-                <Input
-                    maxlength="1"
-					class="char-input"
-                    @input="renameWildcard($event)"
-                    :value="global.notebook.wildcard"
-					v-selectOnFocus
-                />
-            </Field>
-        </Section>
-        <Section>
-            <Field name="Blank">
-                <Input
-                    maxlength="1"
-					class="char-input"
-                    @input="renameBlank($event)"
-                    :value="global.notebook.blank"
-					v-selectOnFocus
-                />
-            </Field>
-        </Section>
 		<Section>
 			<Field name="load emulator machines">
 				<input ref="inputEm" style="display: none;" type="file" @change="loadEm" multiple />
@@ -106,13 +84,13 @@ export default Vue.extend({
 			}
 		},
 
-		renameBlank(newBlank: string) {
-			global.notebook.blank = newBlank || "#"
-		},
+		// renameBlank(newBlank: string) {
+		// 	global.notebook.blank = newBlank || "#"
+		// },
 
-		renameWildcard(newWildcard) {
-			global.notebook.wildcard = newWildcard || undefined
-		},
+		// renameWildcard(newWildcard) {
+		// 	global.notebook.wildcard = newWildcard || undefined
+		// },
 		
 		loadEm(e) {
 			for (let file of e.target.files) {
@@ -121,8 +99,8 @@ export default Vue.extend({
 					let model = parseFromEmulator((e.target as any).result)
 					model.name = file.name
 					global.notebook.models.push(model)
-					global.notebook.blank = "_"
-					global.notebook.wildcard = "*"
+					// global.notebook.blank = "_"
+					// global.notebook.wildcard = "*"
 					global.saveNotebook()
 				}
 				fileReader.readAsText(file)

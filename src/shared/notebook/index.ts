@@ -10,15 +10,11 @@ export default class Notebook {
 	
 	name: string = "Example Notebook"
 	models: Model[] = []
-	wildcard?: string
-	blank: string = "#"
 
 	public serialize(): string {
 		return JSON.stringify({
 			version: 1,
 			name: this.name,
-			wildcard: this.wildcard,
-			blank: this.blank,
 			models: [...this.models].map(x => x.toJSONType())
 		} as v1.Notebook, null, 4)
 	}
@@ -29,11 +25,7 @@ export default class Notebook {
 		let notebookJSON = upgrade(JSON.parse(json), 1) as v1.Notebook
 
 		notebook.name = notebookJSON.name
-		notebook.wildcard = notebookJSON.wildcard
 		notebook.models = notebookJSON.models.map(Model.fromJSONType)
-
-		if (notebookJSON.blank !== undefined)
-			notebook.blank = notebookJSON.blank
 
 		return notebook
 	}
