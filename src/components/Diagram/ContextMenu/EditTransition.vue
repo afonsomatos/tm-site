@@ -115,6 +115,7 @@ export default Vue.extend({
     width: 100%;
     display: grid;
     grid-template-columns: min-content auto min-content;
+    align-items: center;
 }
 
 .read-write {
