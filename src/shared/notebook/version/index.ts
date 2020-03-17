@@ -19,6 +19,9 @@ const upgradeChain: {
 export function upgrade(notebook: Notebook, target: number): Notebook {
 	if (notebook.version >= target)
 		return notebook
-	
+
+	if (!(target in upgradeChain))
+		throw new Error("Version not supported: " + target)
+
 	return upgrade(upgradeChain[notebook.version](notebook), target)
 }
