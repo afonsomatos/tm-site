@@ -45,8 +45,8 @@ class ProgramConverter {
 		this.model = model
 
 		this.program = {
-			empty: "#",
-			wildcard: "*",
+			empty: model.blank,
+			wildcard: model.wildcard,
 			transitions: [],
 			
 			// The identifier of each state will be its index
@@ -135,8 +135,6 @@ class Simulator {
 	public setModel(model: Model) {
 		this.model = model
 		this.converter = new ProgramConverter(model)
-		this.converter.program.wildcard = model.wildcard
-		this.converter.program.empty = model.blank
 		this.turing = new Turing(model.tapes, this.converter.program)
 	}
 
