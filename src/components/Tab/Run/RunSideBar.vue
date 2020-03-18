@@ -1,15 +1,32 @@
 <template>
-    <Section title="Load" class="load-section">
-        <div class="name">Load input</div>
-        <div class="inputs">
-            <Input v-for="(_, i) in input" :key="i"
-                v-model="input[i]" class="tape-input" ref="input"
-                />
-        </div>
-        <div class="button-holder">
-            <Button class="blue" value="Load" @click="load"/>
-        </div>
-    </Section>
+    <div>
+        <Section title="Load" class="load-section">
+            <div class="name">Load input</div>
+            <div class="inputs">
+                <Input v-for="(_, i) in input" :key="i"
+                    v-model="input[i]" class="tape-input" ref="input"
+                    />
+            </div>
+            <div class="button-holder">
+                <Button class="blue" value="Load" @click="load"/>
+            </div>
+        </Section>
+        <Category name="Information" />
+        <Section>
+            <Field name="Type">
+                Single Tape
+            </Field>
+            <Field name="S-Transitions">
+                Yes
+            </Field>
+            <Field name="Bi-directional">
+                Yes
+            </Field>
+            <Field name="Deterministic">
+                Yes
+            </Field>
+        </Section>
+    </div>
 </template>
 
 <script lang="ts">
@@ -17,6 +34,8 @@ import Vue      from 'vue'
 import { mapActions } from 'vuex'
 import _ from "lodash"
 
+import Field from "@/components/SideBar/Field.vue"
+import Category from "@/components/SideBar/Category.vue"
 import Section from "@/components/SideBar/Section.vue"
 import Button from "@/components/Button.vue"
 import Input from "@/components/Input.vue"
@@ -52,7 +71,7 @@ export default Vue.extend({
             run.load(_.cloneDeep(this.input))
         }
     },
-    components: { Section, Button, Input }
+    components: { Section, Button, Input, Category, Field }
 })
 </script>
 

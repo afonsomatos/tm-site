@@ -23,6 +23,7 @@ export default Vue.extend({
     font-size: 13px;
     line-height: 200%;
     letter-spacing: 1px;
+    justify-self: left;
     text-transform: uppercase;
     color: #707070;
 }
@@ -30,7 +31,8 @@ export default Vue.extend({
 .field {
     align-items: center;
     display: grid;
-    grid-template-columns: auto min-content;
+    grid-auto-flow: column;
+    justify-items: right;
     padding-top: 10px;
     padding-bottom: 10px;
     
