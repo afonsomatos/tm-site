@@ -1,17 +1,19 @@
 <template>
     <div class="v-menu">
         <div class="icons">
-            <icon-btn icon="left-arrow" class="icon" @click="goBack" :clickable="true" />
-            <select v-model="tapeIndex" v-if="tapeNumber > 1">
-                <option
-                    v-for="(number, i) in tapes"
-                    :key="i"
-                    :value="i"
-                    >
-                    {{ number }}
-                </option> 
-            </select>
-            <icon-btn icon="delete" class="icon red" @click="remove" :clickable="true" />
+            <icon-btn icon="done" class="icon" @click="goBack" :clickable="true" title="Go back" />
+            <div>
+                <select v-model="tapeIndex" v-if="tapeNumber > 1">
+                    <option
+                        v-for="(number, i) in tapes"
+                        :key="i"
+                        :value="i"
+                        >
+                        {{ number }}
+                    </option> 
+                </select>
+            </div>
+            <icon-btn icon="delete" class="icon red" @click="remove" :clickable="true" title="Delete transition" />
         </div>
         <div class="read-write">
             <input v-model="transition.read[tapeIndex]" @input="update" maxlength="1" @focus="$event.target.select()"/>
