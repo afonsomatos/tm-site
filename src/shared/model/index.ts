@@ -32,7 +32,7 @@ export class Model {
 	name: string = "Model"
 	tapes: number = 1
 	wildcard?: string = "*"
-	blank: string = "#"
+	blank: string = "_"
 
 	private _states: Set<State>
 	private _transitions: Set<Transition>

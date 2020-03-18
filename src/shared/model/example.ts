@@ -26,8 +26,8 @@ export default () => {
 		from: a,
 		to: b,
 		direction: [Direction.Right],
-		read: ["#"],
-		write: ["#"]
+		read: [model.blank],
+		write: [model.blank]
 	}
 	
 	model.addState(a)
