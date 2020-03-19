@@ -40,13 +40,17 @@ import Vue from 'vue'
 import { mapMutations } from "vuex"
 import Action from "./Action.vue"
 
-import Tab, { Tabs } from "@/components/Tab"
+import Edit      from "@/components/Tab/Edit"
+import Run       from "@/components/Tab/Run"
+import Notebook  from "@/components/Tab/Notebook"
+
+import Tab from "@/components/Tab"
 import global from "@/store/global"
 
 export default Vue.extend({
     data() {
         return {
-            tabs: Tabs,
+            tabs: [Run, Edit, Notebook],
             global
         }
     },
@@ -59,7 +63,7 @@ export default Vue.extend({
         }
     },
     created() {
-        global.tab = Tabs.Run
+        global.tab = Run
     },
     components: { Action },
 })

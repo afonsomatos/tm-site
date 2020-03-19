@@ -1,7 +1,9 @@
 import "jest"
 import path from "path"
 import fs from "fs"
+
 import * as v0 from "../v0"
+import * as v1 from "../v1"
 
 function parseJson(filename: string): any {
 	return JSON.parse(
@@ -11,12 +13,12 @@ function parseJson(filename: string): any {
 
 describe("upgrade", () => {
 
-	test("version 0", async () => {
+	test("0 -> 1", async () => {
 
 		let version0: v0.Notebook 	= parseJson("v0.json")
-		let expected: any			= parseJson("v1.json")
+		let expected: v1.Notebook   = parseJson("v1.json")
 
-		let actual = v0.upgrade(version0 as v0.Notebook)
+		let actual = v1.upgrade(version0 as v0.Notebook)
 
 		expect(actual).toEqual(expected)
 	})

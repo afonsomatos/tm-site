@@ -13,3 +13,21 @@ export type Transition = Omit<v0.Transition, 'read' | 'direction' | 'write'> & {
 }
 
 export * from "./v0"
+
+export function upgrade(oldNotebook: v0.Notebook): Notebook {
+
+	let newNotebook = oldNotebook as any
+	newNotebook.models.forEach((model: any) => {
+		model.tapes = 1
+		model.blank = oldNotebook.blank
+		model.wildcard = oldNotebook.wildcard
+		model.transitions.forEach((t: any) => {
+			t.read = [t.read]
+			t.write = [t.write]
+			t.direction = [t.direction]
+		})
+	})
+
+	newNotebook.version = 1
+	return newNotebook as Notebook
+}

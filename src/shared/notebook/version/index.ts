@@ -7,7 +7,7 @@ type Notebook = v0.Notebook | v1.Notebook
 const upgradeChain: {
 	[version: number]: (arg: Notebook) => Notebook
 } = {
-	[0]: v0.upgrade,
+	[0]: v1.upgrade,
 	[1]: _.identity
 }
 
