@@ -94,6 +94,7 @@ export class Model {
 		
 		this.reject = new Set()
 		this.accept = new Set()
+		this._start = null
 	}
 
 
@@ -159,6 +160,9 @@ export class Model {
 			if (t.from === state || t.to === state) {
 				this._transitions.delete(t)
 			}
+		}
+		if (this._start === state) {
+			this._start = null
 		}
 		return this._states.delete(state)
 	}

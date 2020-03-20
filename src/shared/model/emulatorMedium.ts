@@ -114,8 +114,8 @@ class EmulatorParser {
 		let angle = 0
 		for (let state of states) {
 			state.position = {
-				x: Math.cos(angle) * radius,
-				y: Math.sin(angle) * radius
+				x: -Math.cos(angle) * radius,
+				y: -Math.sin(angle) * radius
 			}
 			angle += slice
 		}

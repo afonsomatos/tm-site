@@ -231,6 +231,37 @@ export default class Graph {
     public update() {
         this.setupNodes()
         this.setupLinks()
+        this.startArrow()
+    }
+
+    /**
+     * Marks the initial node with an arrow.
+     */
+    private startArrow() {
+
+        const lineLength = 30;
+
+        let startLink = this.linkGroup
+            .selectAll<SVGPathElement, State>("#start-link")
+            .data([ this.model.start ])
+
+        startLink.exit().remove()
+        
+        startLink.enter()
+            .append("path")
+                .attr("class", "link")
+                .attr("id", "start-link")
+            .merge(startLink)
+                .attr("visibility", s => s ? "visible" : "hidden")
+                .filter(s => s !== null)
+                .attr("d", state => {
+                    // Left tip of start node
+                    const target = add(state.position, { x: -this.nodeRadius, y: 0 })
+                    const source = add(target, { x: -lineLength, y: 0 })
+                    const linePath = `M ${source.x} ${source.y} L ${target.x} ${target.y}`
+
+                    return linePath
+                })
     }
 
     public setModel(model: Model) {
@@ -301,6 +332,11 @@ export default class Graph {
         // Update links
         // TODO: Speed this up? Performance will suffer.
         this.setupLinks()
+
+        if (this.model.start === state) {
+            this.startArrow()
+        }
+
     }
 
     /**
