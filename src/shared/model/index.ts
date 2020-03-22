@@ -175,10 +175,6 @@ export class Model {
 	 * Removes all duplicate transitions from end to beginning.
 	 */
 	public normalize() {
-		this._transitions = new Set(_.uniqWith(
-			Array(...this._transitions).reverse(),
-			(t1, t2) => _.isEqual(t1.read, t2.read) && _.isEqual(t1.from, t2.from)
-		))
 
 		this._transitions.forEach(t => {
 
@@ -198,6 +194,11 @@ export class Model {
 			t.read.splice(this.tapes)
 			t.write.splice(this.tapes)
 		})
+
+		this._transitions = new Set(_.uniqWith(
+			Array(...this._transitions).reverse(),
+			(t1, t2) => _.isEqual(t1.read, t2.read) && t1.from === t2.from
+		))
 
 	}
 
