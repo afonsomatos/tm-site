@@ -2,11 +2,11 @@
     <div class="action-bar">
         <div class="top">
             <Action
-                v-for="(tab, name) in tabs"
-                :key="name"
+                v-for="(tab, i) in tabs"
+                :key="i"
                 :icon="tab.tabIcon"
                 :selected="isTab(tab)"
-                :title="name"
+                :title="tab.name"
                 @click.native="switchTab(tab)"
                 />
         </div>
