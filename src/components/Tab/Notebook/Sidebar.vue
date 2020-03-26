@@ -2,7 +2,7 @@
 	<div>
 		<Section>
 			<Field name="Notebook">
-				<Input title="Display name" v-model="notebook.name" />
+				<Input title="Display name" :value="notebook.name" @input="changeName($event)" />
 			</Field>
 		</Section>
 		<Section>
@@ -70,7 +70,8 @@ import Notebook from "@/shared/notebook"
 
 import { parseFromEmulator } from "@/shared/model/emulatorMedium"
 import { store } from "@/shared/app/store"
-import { app } from "../../../shared/app"
+import { app } from "@/shared/app"
+import { Command } from "@/shared/app/notebookService"
 
 export default Vue.extend({
 	data() {
@@ -82,7 +83,7 @@ export default Vue.extend({
 	methods: {
 		deleteNotebook() {
 			if (confirm(`This action will PERMANENTLY delete your current notebook ${store.notebook.notebook.name}.`)) {
-				app.notebookService.reset()
+				app.notebookService.execute(Command.reset)
 			}
 		},
 
@@ -94,8 +95,7 @@ export default Vue.extend({
 				fileReader.onload = e => {
 					let model = parseFromEmulator((e.target as any).result)
 					model.name = file.name
-					store.notebook.notebook.models.push(model)
-					app.notebookService.save()
+					app.notebookService.execute(Command.addModel(model))
 				}
 				fileReader.readAsText(file)
 			}
@@ -115,7 +115,10 @@ export default Vue.extend({
 
 			let fr = new FileReader()
 			fr.onload = e => {
-				app.notebookService.setNotebook(Notebook.unserialize((e.target as any).result))
+
+				app.notebookService.execute(
+					Command.setNotebook(Notebook.unserialize((e.target as any).result))
+				)
 			}
 			fr.readAsText(e.target.files[0])
 		},
@@ -128,19 +131,36 @@ export default Vue.extend({
 		add() {
 			let newModel = exampleModel()
 			newModel.name = "New Model"
-			store.notebook.notebook.models.push(newModel)
+
+			app.notebookService.execute(
+				Command.addModel(newModel)
+			)
+
 			this.selectedModel = newModel 
 		},
 		copy() {
 			let copyModel = _.cloneDeep(this.selectedModel)
-			store.notebook.notebook.models.push(copyModel)
+			
+			app.notebookService.execute(
+				Command.addModel(copyModel)
+			)
+
+
+
 			this.selectedModel = copyModel
 		},
 		remove() {
 			if (this.models.length > 1) {
-				store.notebook.notebook.models = _.without(this.models, this.selectedModel)
+
+				app.notebookService.execute(
+					Command.removeModel(this.selectedModel)
+				)
+
 			    this.selectedModel = global.model = _.last(this.models)
 			}
+		},
+		changeName(name: string) {
+			app.notebookService.execute(Command.setName(name))
 		}
 	},
 	computed: {

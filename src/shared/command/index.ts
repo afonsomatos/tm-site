@@ -6,11 +6,11 @@ export interface ICommand {
 	undo(): void
 }
 
-export function complexCommand(commands: Array<ICommand>): ICommand {
+export function complexCommand(commands: Array<ICommand>, comment?: string): ICommand {
 	return {
 		execute: () => _.forEach(commands, x => x.execute()),
 		undo:	 () => _.forEachRight(commands, x => x.undo()),
-		comment: commands.map(x => x.comment).join(" > ")
+		comment: comment || commands.map(x => x.comment).join(" > ")
 	}
 }
 
