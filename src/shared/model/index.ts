@@ -195,10 +195,10 @@ export class Model {
 			t.write.splice(this.tapes)
 		})
 
-		this._transitions = new Set(_.uniqWith(
-			Array(...this._transitions).reverse(),
-			(t1, t2) => _.isEqual(t1.read, t2.read) && t1.from === t2.from
-		))
+		// this._transitions = new Set(_.uniqWith(
+		// 	Array(...this._transitions).reverse(),
+		// 	(t1, t2) => _.isEqual(t1.read, t2.read) && t1.from === t2.from
+		// ))
 
 	}
 
