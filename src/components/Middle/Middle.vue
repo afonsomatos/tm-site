@@ -40,6 +40,7 @@ import Table    from "@/components/Table/index.vue"
 import Diagram  from "@/components/Diagram/index.vue"
 
 import global, { View } from "@/store/global"
+import { store } from "@/shared/app/store"
 
 import * as d3 from "d3"
 
@@ -76,7 +77,7 @@ export default Vue.extend({
     },
     computed: {
         bottom() {
-            return global.tab.bottomFloat
+            return store.tab.bottomFloat
         },
         isDiagram() {
             return global.view === View.Diagram

@@ -45,25 +45,26 @@ import Run       from "@/components/Tab/Run"
 import Notebook  from "@/components/Tab/Notebook"
 
 import Tab from "@/components/Tab"
-import global from "@/store/global"
+
+import { store } from "@/shared/app/store"
+import { app } from "@/shared/app"
 
 export default Vue.extend({
     data() {
         return {
-            tabs: [Run, Edit, Notebook],
-            global
+            tabs: [Run, Edit, Notebook]
         }
     },
     methods: {
         isTab(tab: Tab) {
-            return global.tab === tab
+            return store.tab === tab
         },
         switchTab(tab: Tab) {
-            global.tab = tab
+            app.setTab(tab)
         }
     },
     created() {
-        global.tab = Run
+        app.setTab(Run)
     },
     components: { Action },
 })

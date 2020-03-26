@@ -59,6 +59,8 @@ import global, { View } from "@/store/global"
 import { mapMutations } from "vuex"
 import Mutation from "@/store/modules/diagram/mutation"
 
+import { store } from "@/shared/app/store"
+
 export default Vue.extend({
 	data() {
 		return {
@@ -90,7 +92,7 @@ export default Vue.extend({
 					global.view === View.Diagram && global.canEdit
 		},
 		sidebar() {
-			return global.tab.sideBar
+			return store.tab.sideBar
 		},
 		model() {
 			return global.model
