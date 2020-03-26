@@ -51,6 +51,7 @@ import Input from "@/components/Input.vue"
 
 import { Mode } from "@/store/modules/table"
 import global, { View } from "@/store/global"
+import { store } from "@/shared/app/store"
 
 export default Vue.extend({
     components: { Transition, State, Char, Section, Field, Input, Category },
@@ -86,7 +87,7 @@ export default Vue.extend({
             return global.model.tapes
         },
         isGridView() {
-            return global.view === View.Grid
+            return store.view === View.Grid
         },
         currentEditor() {
             return this.$store.state.table.mode

@@ -1,8 +1,10 @@
 import { IStore } from "@/shared/app/store"
 import Tab from "@/components/Tab"
+import { View } from "@/store/global"
 
 export interface IApplication {
 	setTab(tab: Tab): void
+	setView(view: View): void
 }
 
 export class Application implements IApplication {
@@ -14,5 +16,9 @@ export class Application implements IApplication {
 
 	setTab(tab: Tab) {
 		this.store.tab = tab
+	}
+
+	setView(view: View) {
+		this.store.view = view
 	}
 }

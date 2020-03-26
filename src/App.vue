@@ -89,7 +89,7 @@ export default Vue.extend({
 	computed: {
 		showContextMenu() {
 			return this.$store.state.diagram.menu !== null &&
-					global.view === View.Diagram && global.canEdit
+					store.view === View.Diagram && store.canEdit
 		},
 		sidebar() {
 			return store.tab.sideBar

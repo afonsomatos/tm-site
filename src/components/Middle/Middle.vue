@@ -43,6 +43,7 @@ import global, { View } from "@/store/global"
 import { store } from "@/shared/app/store"
 
 import * as d3 from "d3"
+import { app } from "@/shared/app"
 
 export default Vue.extend({
     methods: {
@@ -54,10 +55,10 @@ export default Vue.extend({
             global.model = this.models[index]
         },
         showDiagram() {
-            global.view = View.Diagram
+            app.setView(View.Diagram)
         },
         showGrid() {
-            global.view = View.Grid
+            app.setView(View.Grid)
         },
         enter(el, done) {
             d3.select(el)
@@ -80,10 +81,10 @@ export default Vue.extend({
             return store.tab.bottomFloat
         },
         isDiagram() {
-            return global.view === View.Diagram
+            return store.view === View.Diagram
         },
         isGrid() {
-            return global.view === View.Grid
+            return store.view === View.Grid
         },
         models() {
             return global.notebook.models
@@ -104,8 +105,8 @@ export default Vue.extend({
     watch: {
         tapes(tapes: number) {
             // Temporarily switch to diagram view for multiple-tapes 
-            if (tapes > 1 && global.view === View.Grid) {
-                global.view = View.Diagram
+            if (tapes > 1 && store.view === View.Grid) {
+                app.setView(View.Diagram)
             }
         }
     },
