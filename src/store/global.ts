@@ -28,10 +28,6 @@ class Global implements Store<State> {
 		view: View.Diagram
 	}
 
-	constructor() {
-		this.loadNotebook()
-	}
-
 	get model() {
 		return this.state.model
 	}
@@ -40,33 +36,6 @@ class Global implements Store<State> {
 		this.state.model = model
 	}
 
-	get notebook() {
-		return this.state.notebook
-	}
-
-	set notebook(notebook: Notebook) {
-		this.state.notebook = notebook
-		this.saveNotebook()
-	}
-
-	resetNotebook() {
-		this.state.notebook = exampleNotebook()
-		this.state.model = this.state.notebook.models[0]
-	}
-
-	saveNotebook() {
-		localStorage.setItem(localStorageRootName, this.notebook.serialize())
-	}
-
-	loadNotebook() {
-		let notebookJSON = localStorage.getItem(localStorageRootName)
-		if (notebookJSON) {
-			this.state.notebook = Notebook.unserialize(notebookJSON)
-		} else {
-			this.state.notebook = exampleNotebook()
-		}
-		this.state.model = this.state.notebook.models[0]
-	}
 }
 
 export default new Global()

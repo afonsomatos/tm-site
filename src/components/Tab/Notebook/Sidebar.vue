@@ -69,6 +69,8 @@ import exampleNotebook from "@/shared/notebook/example"
 import Notebook from "@/shared/notebook"
 
 import { parseFromEmulator } from "@/shared/model/emulatorMedium"
+import { store } from "@/shared/app/store"
+import { app } from "../../../shared/app"
 
 export default Vue.extend({
 	data() {
@@ -79,18 +81,12 @@ export default Vue.extend({
 	},
 	methods: {
 		deleteNotebook() {
-			if (confirm(`This action will PERMANENTLY delete your current notebook ${global.notebook.name}.`)) {
-				global.resetNotebook()
+			if (confirm(`This action will PERMANENTLY delete your current notebook ${store.notebook.notebook.name}.`)) {
+				app.notebookService.reset()
 			}
 		},
 
-		// renameBlank(newBlank: string) {
-		// 	global.notebook.blank = newBlank || "#"
-		// },
 
-		// renameWildcard(newWildcard) {
-		// 	global.notebook.wildcard = newWildcard || undefined
-		// },
 		
 		loadEm(e) {
 			for (let file of e.target.files) {
@@ -98,10 +94,8 @@ export default Vue.extend({
 				fileReader.onload = e => {
 					let model = parseFromEmulator((e.target as any).result)
 					model.name = file.name
-					global.notebook.models.push(model)
-					// global.notebook.blank = "_"
-					// global.notebook.wildcard = "*"
-					global.saveNotebook()
+					store.notebook.notebook.models.push(model)
+					app.notebookService.save()
 				}
 				fileReader.readAsText(file)
 			}
@@ -115,14 +109,13 @@ export default Vue.extend({
 			this.$refs.input.click()
 		},
 		load(e) {
-			if (!confirm(`This action will OVERRIDE your current notebook.\nNotebook "${global.notebook.name}" will be LOST.`)) {
+			if (!confirm(`This action will OVERRIDE your current notebook.\nNotebook "${store.notebook.notebook.name}" will be LOST.`)) {
 					return
 				}
 
 			let fr = new FileReader()
 			fr.onload = e => {
-				global.notebook = Notebook.unserialize((e.target as any).result)
-				global.model = global.notebook.models[0]
+				app.notebookService.setNotebook(Notebook.unserialize((e.target as any).result))
 			}
 			fr.readAsText(e.target.files[0])
 		},
@@ -130,34 +123,34 @@ export default Vue.extend({
 			this.selectedModel = this.models[e.target.selectedIndex]
 		},
 		displayName(model) {
-			return global.notebook.modelUniqueName(model)
+			return store.notebook.notebook.modelUniqueName(model)
 		},
 		add() {
 			let newModel = exampleModel()
 			newModel.name = "New Model"
-			global.notebook.models.push(newModel)
+			store.notebook.notebook.models.push(newModel)
 			this.selectedModel = newModel 
 		},
 		copy() {
 			let copyModel = _.cloneDeep(this.selectedModel)
-			global.notebook.models.push(copyModel)
+			store.notebook.notebook.models.push(copyModel)
 			this.selectedModel = copyModel
 		},
 		remove() {
 			if (this.models.length > 1) {
-				global.notebook.models = _.without(this.models, this.selectedModel)
+				store.notebook.notebook.models = _.without(this.models, this.selectedModel)
 			    this.selectedModel = global.model = _.last(this.models)
 			}
 		}
 	},
 	computed: {
-		notebook: () => global.notebook,
-		models: () => global.notebook.models,
-		downloadFile: ()  => global.notebook.name + ".json", 
+		notebook: () => store.notebook.notebook,
+		models: () => store.notebook.notebook.models,
+		downloadFile: ()  => store.notebook.notebook.name + ".json", 
 		downloadHref() {
 			let fileName = this.notebook.name
 			let data = "data:text/json;charset=utf-8," + encodeURIComponent(
-				global.notebook.serialize()
+				store.notebook.notebook.serialize()
 			)
 			return `data:${data}`
 		}

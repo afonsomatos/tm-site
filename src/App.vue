@@ -106,7 +106,7 @@ export default Vue.extend({
 			app.runService.sync()
 		})
 		// TODO: Find better way
-		setInterval(() => global.saveNotebook(), 500)
+		setInterval(() => app.notebookService.save(), 500)
 	},
 	components: { ActionBar, SideBar, Middle, ContextMenu }
 })

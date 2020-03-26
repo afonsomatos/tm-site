@@ -48,7 +48,7 @@ import { app } from "@/shared/app"
 export default Vue.extend({
     methods: {
         displayName(model) {
-            return global.notebook.modelUniqueName(model)
+            return store.notebook.notebook.modelUniqueName(model)
         },
         changeModel(e) {
             let index = e.target.selectedIndex
@@ -87,7 +87,7 @@ export default Vue.extend({
             return store.view === View.Grid
         },
         models() {
-            return global.notebook.models
+            return store.notebook.notebook.models
         },
         selectedModel() {
             return global.model
