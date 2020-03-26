@@ -32,26 +32,6 @@ class Global implements Store<State> {
 		this.loadNotebook()
 	}
 
-	get canEdit(): boolean {
-		return this.state.currentTab.canEdit
-	}
-
-	set view(view: View) {
-		this.state.view = view
-	}
-
-	get view() {
-		return this.state.view
-	}
-
-	set tab(tab: Tab) {
-		this.state.currentTab = tab
-	}
-	
-	get tab() {
-		return this.state.currentTab
-	}
-
 	get model() {
 		return this.state.model
 	}
