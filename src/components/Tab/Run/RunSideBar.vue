@@ -22,18 +22,17 @@ import Button from "@/components/Button.vue"
 import Input from "@/components/Input.vue"
 
 import global from "@/store/global"
-import run from "@/store/run"
 import { text } from 'd3'
 
 import assert from "assert"
 import { Model } from '@/shared/model'
+import { app } from '@/shared/app'
 
 export default Vue.extend({
     data() {
         return {
             input: [],
-            global,
-            run,
+            global
         }
     },
     watch: {
@@ -49,7 +48,7 @@ export default Vue.extend({
     },
     methods: {
         load() {
-            run.load(_.cloneDeep(this.input))
+            app.runService.load(_.cloneDeep(this.input))
         }
     },
     components: { Section, Button, Input }

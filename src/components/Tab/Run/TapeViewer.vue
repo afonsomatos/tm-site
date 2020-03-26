@@ -28,7 +28,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import _ from "lodash"
 import IconBtn from "@/components/IconBtn.vue"
 import Tape, { Transition as SimpleTransition } from "@/shared/Tape"
-import run from "@/store/run"
 import * as d3 from "d3"
 
 import global from "@/store/global"
@@ -38,13 +37,14 @@ import simulator, { Event } from '@/shared/simulator'
 import { Transition } from "@/tm"
 import { Direction } from '@/shared/types'
 import { Model } from '@/shared/model'
+import { store } from '@/shared/app/store'
+import { app } from '@/shared/app'
 
 export default Vue.extend({
     components: { IconBtn },
     data() {
         return {
             global,
-            run,
             tape: null,
             transition: null,
             resetTape: null,
@@ -59,21 +59,21 @@ export default Vue.extend({
     computed: {
         model: () => global.model,
         tapes: () => global.model.tapes,
-        status: () => run.status,
-        playing: () => run.playing,
+        status: () => store.run.status,
+        playing: () => store.run.playing,
         stepThrottle() {
             return _.throttle(
-                () => run.step(),
+                () => app.runService.step(),
                 simulator.interval,
                 { trailing: false })
         },
     },
     methods: {
-        play: () => run.play(),
-        pause: () => run.pause(),
-        back: () => run.back(),
-        reset: () => run.reset(),
-        step: () => run.step(),
+        play: () => app.runService.play(),
+        pause: () => app.runService.pause(),
+        back: () => app.runService.back(),
+        reset: () => app.runService.reset(),
+        step: () => app.runService.step(),
         setupTapes() {
 
             // Refresh model and default tape
@@ -127,7 +127,7 @@ export default Vue.extend({
     },
     destroyed() {
         // Once we close our tape, we can halt the simulator
-        run.pause()
+        app.runService.pause()
         
         // Stop listening for simulator events
         simulator.bus.$off([Event.UPDATE, Event.BACK], this.resetTape)

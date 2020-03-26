@@ -1,5 +1,5 @@
 import { Application }  from "./application"
-import { mut }          from "@/shared/app/store"
+import { mut }      	from "./store"
 
 const app = new Application(mut)
 

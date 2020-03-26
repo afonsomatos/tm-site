@@ -63,9 +63,6 @@ export default Vue.extend({
             app.setTab(tab)
         }
     },
-    created() {
-        app.setTab(Run)
-    },
     components: { Action },
 })
 

@@ -37,7 +37,7 @@ import IconBtn from "@/components/IconBtn.vue"
 import { Transition, State } from "@/shared/model"
 
 import global from "@/store/global"
-import { store } from '../../shared/app/store'
+import { store } from '@/shared/app/store'
 
 export default Vue.extend({
     methods: {

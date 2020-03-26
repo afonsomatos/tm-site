@@ -54,17 +54,18 @@ import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 
 import simulator, { Event } from "@/shared/simulator"
 
-import run from "@/store/run"
 import global, { View } from "@/store/global"
 import { mapMutations } from "vuex"
 import Mutation from "@/store/modules/diagram/mutation"
 
 import { store } from "@/shared/app/store"
+import { app } from "./shared/app"
+import Run from "./components/Tab/Run"
 
 export default Vue.extend({
 	data() {
 		return {
-			global, run
+			global
 		}
 	},
 	watch: {
@@ -99,9 +100,10 @@ export default Vue.extend({
 		}
 	},
 	created() {
+        app.setTab(Run)
 		// Detect when simulator changes
 		simulator.bus.$on(Event.UPDATE, () => {
-			run.sync()
+			app.runService.sync()
 		})
 		// TODO: Find better way
 		setInterval(() => global.saveNotebook(), 500)

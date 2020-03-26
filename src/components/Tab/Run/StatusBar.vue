@@ -9,18 +9,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import run, { Status } from "@/store/run"
+import { Status } from "@/shared/app/types"
+import { store } from '@/shared/app/store'
 
 export default Vue.extend({
     data() {
         return {
-            run
         }
     },
     computed: {
         status() {
-            let status = run.status
-            let info = run.info
+            let status = store.run.status
+            let info = store.run.info
             let statusLabel;
 
             switch (status) {
@@ -34,7 +34,7 @@ export default Vue.extend({
                     statusLabel = "Undefined"
                     break
                 case Status.Normal:
-                    statusLabel = run.playing ? "Running" : "Waiting"
+                    statusLabel = store.run.playing ? "Running" : "Waiting"
                     break
             }
 
