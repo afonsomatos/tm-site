@@ -26,10 +26,6 @@ import * as d3 from "d3"
 import _ from "lodash"
 import Vue from "vue"
 import Graph from "./Graph/index"
-import { mapActions, mapMutations } from "vuex"
-
-import Mutation from "@/store/modules/diagram/mutation"
-import Action from "@/store/modules/diagram/action"
 
 import { State, Link } from "@/shared/model"
 import { Point } from "@/shared/types"
@@ -62,9 +58,6 @@ export default Vue.extend({
 			app.diagramService.setEditState(state)
 		},
 
-		...mapMutations("diagram", {
-			setGraphPosition: Mutation.SET_GRAPH_POSITION,
-		}),
 
 		openMenu(menu: string) {
 			let [a, b] = d3.mouse(this.$refs.svg)
@@ -107,8 +100,6 @@ export default Vue.extend({
 
 		app.diagramService.setGraph(graph)
 		
-		this.$store.state.diagram.graph = graph
-
 		graph.setModel(store.model.model)
 		
 		// Set diagram referential transform when SVG size has stabilized

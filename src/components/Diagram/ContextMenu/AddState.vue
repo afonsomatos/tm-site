@@ -10,8 +10,6 @@ import { mapMutations, mapActions } from 'vuex'
 
 import IconBtn from "@/components/IconBtn.vue"
 
-import Action from "@/store/modules/diagram/action"
-import Mutation from "@/store/modules/diagram/mutation"
 
 import { Model, State } from "@/shared/model"
 import { app } from '../../../shared/app'

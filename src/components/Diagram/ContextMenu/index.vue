@@ -13,8 +13,6 @@ import Rename from "./Rename.vue"
 import AddState from "./AddState.vue"
 import Swatch from "./Swatch.vue"
 
-import { mapGetters } from "vuex"
-import Getter from "@/store/modules/diagram/getter"
 import { store } from '../../../shared/app/store'
 
 export default Vue.extend({

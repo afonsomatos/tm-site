@@ -14,11 +14,6 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { mapMutations, mapGetters, mapActions } from 'vuex'
-import Mutation from "@/store/modules/diagram/mutation"
-import Getter from "@/store/modules/diagram/getter"
-import Action from "@/store/modules/diagram/action"
-
 import IconBtn from "@/components/IconBtn.vue"
 import { Model, State, Type } from "@/shared/model"
 import { app } from '../../../shared/app'

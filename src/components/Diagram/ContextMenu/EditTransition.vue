@@ -39,10 +39,6 @@ import IconBtn from "@/components/IconBtn.vue"
 
 import { Direction } from "@/shared/types"
 
-import Action from "@/store/modules/diagram/action"
-import Mutation from "@/store/modules/diagram/mutation"
-import Getter from "@/store/modules/diagram/getter"
-
 import global from "@/store/global"
 import { store } from "@/shared/app/store"
 import { app } from "../../../shared/app"

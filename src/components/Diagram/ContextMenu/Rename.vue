@@ -8,9 +8,6 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { mapMutations, mapGetters } from 'vuex'
-import Mutation from "@/store/modules/diagram/mutation"
-import Getter from "@/store/modules/diagram/getter"
 
 import IconBtn from "@/components/IconBtn.vue"
 import { app } from '../../../shared/app'

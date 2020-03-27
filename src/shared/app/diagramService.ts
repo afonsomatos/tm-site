@@ -5,6 +5,7 @@ import { Link, State, Type, Transition } from "../model"
 import { IModelService, Command as ModelCommand} from "./modelService"
 
 export interface IDiagramService {
+	createLink(link: Link): Transition
 	createTransition(): void
 	addState(): void,
 	setGraphPosition(pos: Vector): void,
@@ -35,6 +36,11 @@ export class DiagramService implements IDiagramService {
 
 	setEditTransition(transition: Transition) {
 		this.diagramStore.transition = transition
+	}
+
+	createLink(link: Link): Transition {
+		// refactor
+		return this.graph.createTransition(link.from, link.to)
 	}
 
 	createTransition() {

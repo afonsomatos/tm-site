@@ -55,8 +55,6 @@ import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 import simulator, { Event } from "@/shared/simulator"
 
 import global, { View } from "@/store/global"
-import { mapMutations } from "vuex"
-import Mutation from "@/store/modules/diagram/mutation"
 
 import { store } from "@/shared/app/store"
 import { app } from "./shared/app"

@@ -21,8 +21,6 @@ import { Link, Transition } from "@/shared/model"
 
 import Graph from "@/components/Diagram/Graph/index"
 
-import Mutation from "@/store/modules/diagram/mutation"
-import Getter from "@/store/modules/diagram/getter"
 import { app } from '../../../shared/app'
 import { store } from '@/shared/app/store'
 
@@ -47,11 +45,9 @@ export default Vue.extend({
         },
 
         add() {
-            let diagram = this.$store.state.diagram
             let link: Link = store.diagram.link
-            let graph: Graph = diagram.graph
 
-            let transition = graph.createTransition(link.from, link.to)
+            let transition = app.diagramService.createLink(link)
             this.clickTransition(transition)
         },
 
