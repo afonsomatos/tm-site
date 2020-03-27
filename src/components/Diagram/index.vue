@@ -57,18 +57,18 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		...mapActions("diagram", {
-			setStatePosition: Action.SET_STATE_POSITION,
-		}),
-		
+
+		selectState(state: State) {
+			app.diagramService.setEditState(state)
+		},
+
 		...mapMutations("diagram", {
-			selectState: Mutation.SELECT_STATE,
-			selectLink: Mutation.SELECT_LINK,
 			setGraphPosition: Mutation.SET_GRAPH_POSITION,
 		}),
 
 		openMenu(menu: string) {
-			this.setGraphPosition(d3.mouse(this.$refs.svg))
+			let [a, b] = d3.mouse(this.$refs.svg)
+			app.diagramService.setGraphPosition({ x: a, y: b })
 			let [x, y] = d3.mouse(document.body)
 			app.diagramService.setContextMenuPosition({ x, y })
 			app.diagramService.setContextMenu(menu)
@@ -100,7 +100,7 @@ export default Vue.extend({
 
 		graph.onLinkRightClick = (link: Link) => {
 			if (this.canEdit) {
-				this.selectLink(link)
+				app.diagramService.setEditLink(link)
 				this.openMenu("link")
 			}
 		}

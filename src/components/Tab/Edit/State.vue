@@ -43,6 +43,7 @@ import Field from "@/components/SideBar/Field.vue"
 
 import { Action, Mutation, Getter } from "@/store/modules/table"
 import { Type } from "@/shared/model"
+import { store } from "../../../shared/app/store"
 
 export default Vue.extend({
     data() {
@@ -64,7 +65,6 @@ export default Vue.extend({
         this.label = this.state.label
     },
     computed: {
- 
         ...mapGetters("table", {
             stateType: Getter.STATE_TYPE
         }),

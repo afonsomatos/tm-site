@@ -3,7 +3,7 @@ import { View } from "../../store/global"
 import Tab from "@/components/Tab"
 import { Status } from "@/shared/app/types"
 import Notebook from "../notebook"
-import { Model, Transition, Type } from "../model"
+import { Model, Transition, Type, Link, State } from "../model"
 import { Point, Vector } from "../types"
 import { DeepReadonly } from "ts-essentials"
 
@@ -32,6 +32,10 @@ export interface IDiagramStore {
 	transition?: Transition
 	// State type
 	type?: Type
+    // Link being edited at the moment
+	link?: Link
+	// State being edited at the moment
+	state?: State,
 }
 
 export interface IModelStore {
@@ -55,7 +59,7 @@ export const mut: IStore = Vue.observable({
 		contextMenuPosition: {x:0,y:0},
 		transition: null,
 		menu: null,
-		type: null
+		type: null,
 	},
 	notebook: {
 		notebook: null	

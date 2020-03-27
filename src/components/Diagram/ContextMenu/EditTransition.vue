@@ -46,6 +46,7 @@ import Getter from "@/store/modules/diagram/getter"
 import global from "@/store/global"
 import { store } from "@/shared/app/store"
 import { app } from "../../../shared/app"
+import { Command } from "@/shared/app/modelService"
 
 export default Vue.extend({
     data() {
@@ -69,25 +70,22 @@ export default Vue.extend({
             return _.times(store.model.model.tapes, i => i + 1)
         },
         transition() {
-            return this.$store.state.diagram.transition
+            return store.diagram.transition
         }
     },
-    destroyed() {
-        this.normalize()
-    },
+
     methods: {
 
-        ...mapActions("diagram", {
-            deleteTransition: Action.DELETE_TRANSITION,
-            normalize: Action.NORMALIZE
-        }),
+
 
         goBack() {
             app.diagramService.setContextMenu("link")
         },
 
         remove() {
-            this.deleteTransition()
+            app.modelService.execute(
+                Command.removeTransition(this.transition)
+            )
             this.goBack()
         },
 

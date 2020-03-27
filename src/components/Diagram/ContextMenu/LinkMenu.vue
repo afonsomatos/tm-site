@@ -24,6 +24,7 @@ import Graph from "@/components/Diagram/Graph/index"
 import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
 import { app } from '../../../shared/app'
+import { store } from '@/shared/app/store'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -33,17 +34,13 @@ export default Vue.extend({
         }
     },
     mounted() {
-        let state = this.$store.state.diagram
-        this.transitions = state.graph.model.linkToTransitions(state.link)
+        this.transitions = store.model.model.linkToTransitions(store.diagram.link)
         // This link is empty!
         if (this.transitions.length === 0) {
             app.diagramService.setContextMenu(null)
         }
     },
     methods: {
-        ...mapMutations("diagram", {
-            selectTransition: Mutation.SELECT_TRANSITION,
-        }),
 
         text(transition: Transition): string {
             return `${transition.read.join('')} → ${transition.write.join('')}, ` + transition.direction.join('')
@@ -51,7 +48,7 @@ export default Vue.extend({
 
         add() {
             let diagram = this.$store.state.diagram
-            let link: Link = diagram.link
+            let link: Link = store.diagram.link
             let graph: Graph = diagram.graph
 
             let transition = graph.createTransition(link.from, link.to)
@@ -59,7 +56,7 @@ export default Vue.extend({
         },
 
         clickTransition(transition: Transition) {
-            this.selectTransition(transition)
+            app.diagramService.setEditTransition(transition)
             app.diagramService.setContextMenu("editTransition")
         }
     },

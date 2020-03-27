@@ -22,6 +22,8 @@ import Action from "@/store/modules/diagram/action"
 import IconBtn from "@/components/IconBtn.vue"
 import { Model, State, Type } from "@/shared/model"
 import { app } from '../../../shared/app'
+import { store } from '../../../shared/app/store'
+import { Command } from '../../../shared/app/modelService'
 
 export default Vue.extend({
 	components: { IconBtn },
@@ -36,24 +38,24 @@ export default Vue.extend({
 		}
 	},
     computed: {
-		...mapGetters("diagram", {
-			stateType: Getter.STATE_TYPE
-		}),
+		stateType() {
+			return store.diagram.type
+		},
         state() {
-            return this.$store.state.diagram.state
+            return store.diagram.state
         }
     },
     methods: {
 
 
-		...mapActions("diagram", {
-			setStateType: Action.SET_STATE_TYPE
-		}),
+
 		icon(type: Type) {
 			return type === Type.Normal ? "dot-stroke" : "dot-fill"
 		},
 		set(type: Type) {
-			this.setStateType(type)
+			app.modelService.execute(
+				Command.editStateType(store.diagram.state, type)
+			)
 			app.diagramService.setContextMenu("state")
 		}
     }

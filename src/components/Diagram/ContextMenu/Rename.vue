@@ -14,12 +14,13 @@ import Getter from "@/store/modules/diagram/getter"
 
 import IconBtn from "@/components/IconBtn.vue"
 import { app } from '../../../shared/app'
+import { store } from '../../../shared/app/store'
 
 export default Vue.extend({
     components: { IconBtn },
     computed: {
         state() {
-            return this.$store.state.diagram.state
+            return store.diagram.state
         }
     },
     methods: {
@@ -27,7 +28,7 @@ export default Vue.extend({
             app.diagramService.setContextMenu("state")
         },
         onRename(e) {
-            this.$store.state.diagram.graph.update()
+            app.diagramService.update()
         }
     }
 })

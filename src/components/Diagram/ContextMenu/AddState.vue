@@ -19,11 +19,8 @@ import { app } from '../../../shared/app'
 export default Vue.extend({
     components: { IconBtn },
     methods: {
-        ...mapActions("diagram", {
-            addState: Action.ADD_STATE
-        }),
         add() {
-            this.addState()
+            app.diagramService.addState()
             app.diagramService.setContextMenu(null)
         }
     }

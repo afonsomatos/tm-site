@@ -3,6 +3,8 @@ import { IModelStore } from "./store"
 import { Model, Transition, State, Type } from "../model"
 import { ICommand, IInvoker, Invoker } from "../command"
 import { IDiagramService } from "./diagramService"
+import { Vector } from "../types"
+import { toUnicode } from "punycode"
 
 export interface IModelProperties {
 	wildcard?: string,
@@ -21,22 +23,27 @@ export interface IModelService {
 	// getStartState(): State
 	// setStartState(state: State): void
 	// setProperties(modelProperties: IModelProperties): void
-	// getProperties(): IModelProperties
-	// getStateType(state: State): Type
-	// setStateType(state: State, type: Type): void
+	//getProperties(): IModelProperties
+	getStateType(state: State): Type
 	getModel(): Model
+	getStartState(): State
 	getTransitions(): Transition[]
 }
 
 export interface IModelHandlerService extends IModelService {
+	setStateType(state: State, type: Type): void
 	removeState(state: State): void
 	addState(state: State): void
-	getStartState(): State
 	setStartState(state: State): void
-
 	removeTransition(transition: Transition): void
 	addTransition(transition: Transition): void
 }
+
+export interface IStateProperties {
+	label: string,
+	position: Vector
+}
+
 
 export class ModelService implements IModelHandlerService {
 
@@ -107,6 +114,16 @@ export class ModelService implements IModelHandlerService {
 	getTransitions() {
 		return this.model.transitions
 	}
+
+	getStateType(state: State) {
+		return this.model.getType(state)
+	}
+
+	setStateType(state: State, type: Type) {
+		this.model.setType(state, type)
+		this.diagramService.update()
+	}
+
 }
 
 export namespace Command {
@@ -156,9 +173,23 @@ export namespace Command {
 		}
 	}
 
+	export const editStateType = (state: State, type: Type) => (modelService: IModelHandlerService): ICommand => {
+		let oldType: Type
+		return {
+			comment: "edit state type",
+			execute() {
+				oldType = modelService.getStateType(state)
+				modelService.setStateType(state, type)
+			},
+			undo() {
+				modelService.setStateType(state, oldType)
+			}
+		}
+	}
 
 }
 
 /**
+
 
  */

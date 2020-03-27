@@ -21,24 +21,30 @@ import Mutation from '@/store/modules/diagram/mutation'
 
 import { State, Model, Type } from "@/shared/model"
 import { app } from '../../../shared/app'
+import { store } from '../../../shared/app/store'
+import { Command } from '@/shared/app/modelService'
 
 export default Vue.extend({
     components: { IconBtn },
     computed: {
-        ...mapGetters("diagram", {
-            type: Getter.STATE_TYPE  
-        }),
-
+        type() {
+            return store.diagram.type
+        },
         stateIcon() {
             return this.type === Type.Normal ? "dot-stroke" : "dot-fill"
         },
     },
     methods: {
 
-        ...mapActions("diagram", {
-            newTransition: Action.CREATE_TRANSITION,
-            delete: Action.DELETE_STATE
-        }),
+        delete() {
+            app.modelService.execute(
+                Command.removeState(store.diagram.state)
+            )
+        },
+
+        newTransition() {
+            app.diagramService.createTransition()
+        },
 
         swatch() {
             app.diagramService.setContextMenu("swatch")

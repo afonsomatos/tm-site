@@ -26,10 +26,13 @@ export class Application implements IApplication {
 	constructor(
 		private store: IStore
 	) {
-		this.diagramService		= new DiagramService(store.diagram)
+		let diagramService		= new DiagramService(store.diagram)
 		this.runService 		= new RunService(store.run)
-		this.modelService 		= new ModelService(store.model, this.diagramService)
+		this.modelService 		= new ModelService(store.model, diagramService)
 		this.notebookService 	= new NotebookService(store.notebook, this.modelService)
+
+		diagramService.modelService = this.modelService
+		this.diagramService = diagramService
 	}
 
 	setTab(tab: Tab) {
