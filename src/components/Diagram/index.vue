@@ -62,8 +62,6 @@ export default Vue.extend({
 		}),
 		
 		...mapMutations("diagram", {
-			setContextPosition: Mutation.SET_CONTEXT_POSITION,
-			setMenu: Mutation.SET_MENU,
 			selectState: Mutation.SELECT_STATE,
 			selectLink: Mutation.SELECT_LINK,
 			setGraphPosition: Mutation.SET_GRAPH_POSITION,
@@ -71,8 +69,9 @@ export default Vue.extend({
 
 		openMenu(menu: string) {
 			this.setGraphPosition(d3.mouse(this.$refs.svg))
-			this.setContextPosition(d3.mouse(document.body))
-			this.setMenu(menu)
+			let [x, y] = d3.mouse(document.body)
+			app.diagramService.setContextMenuPosition({ x, y })
+			app.diagramService.setContextMenu(menu)
 		}
 	},
 	activated() {
@@ -85,7 +84,7 @@ export default Vue.extend({
 		// Close context menu when clicking outside it
 		d3.select(document.body).on("mousedown", () => {
 			if (svg.contains(d3.event.target) || svg === d3.event.target) {
-				this.setMenu(null)
+				app.diagramService.setContextMenu(null)
 			}
 		}, true)
 

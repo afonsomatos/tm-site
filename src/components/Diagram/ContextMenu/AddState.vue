@@ -14,6 +14,7 @@ import Action from "@/store/modules/diagram/action"
 import Mutation from "@/store/modules/diagram/mutation"
 
 import { Model, State } from "@/shared/model"
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -21,12 +22,9 @@ export default Vue.extend({
         ...mapActions("diagram", {
             addState: Action.ADD_STATE
         }),
-        ...mapMutations("diagram", {
-            setMenu: Mutation.SET_MENU
-        }),
         add() {
             this.addState()
-            this.setMenu(null)
+            app.diagramService.setContextMenu(null)
         }
     }
 })

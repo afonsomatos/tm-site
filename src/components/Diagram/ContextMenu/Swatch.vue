@@ -21,6 +21,7 @@ import Action from "@/store/modules/diagram/action"
 
 import IconBtn from "@/components/IconBtn.vue"
 import { Model, State, Type } from "@/shared/model"
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
 	components: { IconBtn },
@@ -44,9 +45,7 @@ export default Vue.extend({
     },
     methods: {
 
-        ...mapMutations("diagram", {
-            setMenu: Mutation.SET_MENU
-		}),
+
 		...mapActions("diagram", {
 			setStateType: Action.SET_STATE_TYPE
 		}),
@@ -55,7 +54,7 @@ export default Vue.extend({
 		},
 		set(type: Type) {
 			this.setStateType(type)
-			this.setMenu("state")
+			app.diagramService.setContextMenu("state")
 		}
     }
 })

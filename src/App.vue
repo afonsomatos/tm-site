@@ -71,7 +71,7 @@ export default Vue.extend({
 	watch: {
 		showContextMenu(show: boolean) {
 			if (!show) {
-				this.setMenu(null)
+				app.diagramService.setContextMenu(null)
 			}
 		},
 		model: {
@@ -82,14 +82,9 @@ export default Vue.extend({
 			}
 		}
 	},
-	methods: {
-		...mapMutations("diagram", {
-			setMenu: Mutation.SET_MENU
-		})
-	},
 	computed: {
 		showContextMenu() {
-			return this.$store.state.diagram.menu !== null &&
+			return store.diagram.menu !== null &&
 					store.view === View.Diagram && store.canEdit
 		},
 		sidebar() {

@@ -23,6 +23,7 @@ import Graph from "@/components/Diagram/Graph/index"
 
 import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -36,13 +37,12 @@ export default Vue.extend({
         this.transitions = state.graph.model.linkToTransitions(state.link)
         // This link is empty!
         if (this.transitions.length === 0) {
-            this.setMenu(null)
+            app.diagramService.setContextMenu(null)
         }
     },
     methods: {
         ...mapMutations("diagram", {
             selectTransition: Mutation.SELECT_TRANSITION,
-            setMenu: Mutation.SET_MENU,
         }),
 
         text(transition: Transition): string {
@@ -60,7 +60,7 @@ export default Vue.extend({
 
         clickTransition(transition: Transition) {
             this.selectTransition(transition)
-            this.setMenu("editTransition")
+            app.diagramService.setContextMenu("editTransition")
         }
     },
 })

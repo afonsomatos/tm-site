@@ -45,6 +45,7 @@ import Getter from "@/store/modules/diagram/getter"
 
 import global from "@/store/global"
 import { store } from "@/shared/app/store"
+import { app } from "../../../shared/app"
 
 export default Vue.extend({
     data() {
@@ -78,16 +79,11 @@ export default Vue.extend({
 
         ...mapActions("diagram", {
             deleteTransition: Action.DELETE_TRANSITION,
-            update: Action.UPDATE,
             normalize: Action.NORMALIZE
         }),
 
-        ...mapMutations("diagram", {
-            setMenu: Mutation.SET_MENU,
-        }),
-
         goBack() {
-            this.setMenu("link")
+            app.diagramService.setContextMenu("link")
         },
 
         remove() {
@@ -95,9 +91,13 @@ export default Vue.extend({
             this.goBack()
         },
 
+        update() {
+            app.diagramService.update()
+        },
+
         setDirection(dir: Direction) {
             Vue.set(this.transition.direction, this.tapeIndex, dir)
-            this.update()
+            app.diagramService.update()
         }
     }
 })

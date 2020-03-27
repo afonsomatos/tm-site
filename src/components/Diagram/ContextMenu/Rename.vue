@@ -13,6 +13,7 @@ import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
 
 import IconBtn from "@/components/IconBtn.vue"
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -22,11 +23,8 @@ export default Vue.extend({
         }
     },
     methods: {
-        ...mapMutations("diagram", {
-            setMenu: Mutation.SET_MENU
-        }),
         goBack() {
-            this.setMenu("state")
+            app.diagramService.setContextMenu("state")
         },
         onRename(e) {
             this.$store.state.diagram.graph.update()

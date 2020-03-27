@@ -20,6 +20,7 @@ import Getter from "@/store/modules/diagram/getter"
 import Mutation from '@/store/modules/diagram/mutation'
 
 import { State, Model, Type } from "@/shared/model"
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -34,31 +35,27 @@ export default Vue.extend({
     },
     methods: {
 
-        ...mapMutations("diagram", {
-            setMenu: Mutation.SET_MENU
-        }),
-
         ...mapActions("diagram", {
             newTransition: Action.CREATE_TRANSITION,
             delete: Action.DELETE_STATE
         }),
 
         swatch() {
-            this.setMenu("swatch")
+            app.diagramService.setContextMenu("swatch")
         },
         
         edit() {
-            this.setMenu('rename')
+            app.diagramService.setContextMenu('rename')
         },
 
         remove() {
             this.delete()
-            this.setMenu(null)
+            app.diagramService.setContextMenu(null)
         },
 
         createTransition() {
             this.newTransition()
-            this.setMenu(null)
+            app.diagramService.setContextMenu(null)
         }
     }
 })

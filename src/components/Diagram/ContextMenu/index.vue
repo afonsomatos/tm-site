@@ -15,6 +15,7 @@ import Swatch from "./Swatch.vue"
 
 import { mapGetters } from "vuex"
 import Getter from "@/store/modules/diagram/getter"
+import { store } from '../../../shared/app/store'
 
 export default Vue.extend({
     components: {
@@ -36,16 +37,16 @@ export default Vue.extend({
     },
     computed: {
 
-        ...mapGetters("diagram", {
-            position: Getter.POSITION
-        }),
+        position() {
+            return store.diagram.contextMenuPosition
+        },
 
         currentMenu() {
-            return this.$store.state.diagram.menu
+            return store.diagram.menu
         },
 
         style() {
-            let [left, top] = this.position 
+            let {x: left, y: top} = this.position 
             return {
                 left: left + "px",
                 top: top + "px"
