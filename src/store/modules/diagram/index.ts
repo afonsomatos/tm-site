@@ -11,6 +11,8 @@ import { Transform } from "@/components/Diagram/Graph/types"
 import Graph from "@/components/Diagram/Graph"
 
 import { State as MState, Link, Transition, Type } from "@/shared/model"
+import { app } from "@/shared/app"
+import { Command } from "@/shared/app/modelService"
 
 interface State {
     // Coordinates relative to the diagram
@@ -81,23 +83,40 @@ const actions: ActionTree<State, any> = {
             x: (x - transform.x) / transform.k,
             y: (y - transform.y) / transform.k
         }
+        
+        app.modelService.execute(
+            Command.addState({
+                position: statePosition,
+                label: "X"
+            })
+        )
 
-        state.graph.model.addState({
-            position: statePosition,
-            label: "X"
-        })
+        // state.graph.model.addState({
+        //     position: statePosition,
+        //     label: "X"
+        // })
 
-        state.graph.update()
+        // state.graph.update()
     },
 
     [Action.DELETE_STATE]: ({ state }) => {
-        state.graph.model.removeState(state.state)
-        state.graph.update()
+
+        app.modelService.execute(
+            Command.removeState(state.state)
+        )
+
+        // state.graph.model.removeState(state.state)
+        // state.graph.update()
     },
 
     [Action.DELETE_TRANSITION]: ({ state }) => {
-        state.graph.model.removeTransition(state.transition)
-        state.graph.update()
+
+        app.modelService.execute(
+            Command.removeTransition(state.transition)
+        )
+
+        // state.graph.model.removeTransition(state.transition)
+        // state.graph.update()
     },
 
     [Action.CREATE_TRANSITION]: ({ state }) => {
