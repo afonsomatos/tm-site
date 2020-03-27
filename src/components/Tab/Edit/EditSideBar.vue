@@ -68,23 +68,23 @@ export default Vue.extend({
     methods: {
         changeTapes(e) {
             let tapes: number = e.target.value
-            global.model.tapes = Number(tapes)
-            global.model.normalize()
+            store.model.model.tapes = Number(tapes)
+            store.model.model.normalize()
             this.$store.state.diagram.graph.update()
         },
         renameBlank(value: string) {
-            global.model.blank = value || global.model.blank
+            store.model.model.blank = value || store.model.model.blank
         },
         renameWildcard(value: string) {
-            global.model.wildcard = value || undefined
+            store.model.model.wildcard = value || undefined
         }
     },
     computed: {
         model() {
-            return global.model
+            return store.model.model
         },
         tapes() {
-            return global.model.tapes
+            return store.model.model.tapes
         },
         isGridView() {
             return store.view === View.Grid

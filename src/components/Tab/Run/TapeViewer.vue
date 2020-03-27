@@ -57,8 +57,8 @@ export default Vue.extend({
         }
     },
     computed: {
-        model: () => global.model,
-        tapes: () => global.model.tapes,
+        model: () => store.model.model,
+        tapes: () => store.model.model.tapes,
         status: () => store.run.status,
         playing: () => store.run.playing,
         stepThrottle() {
@@ -77,8 +77,8 @@ export default Vue.extend({
         setupTapes() {
 
             // Refresh model and default tape
-            simulator.setModel(global.model)
-            simulator.load(Array(global.model.tapes).fill(""))
+            simulator.setModel(store.model.model)
+            simulator.load(Array(store.model.model.tapes).fill(""))
             simulator.reset()
             
             let tapeWrapper = d3.select(this.$refs.tapeWrapper as HTMLElement)

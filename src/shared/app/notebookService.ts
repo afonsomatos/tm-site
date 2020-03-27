@@ -5,6 +5,7 @@ import exampleNotebook from "@/shared/notebook/example"
 import { Model } from "../model"
 import _ from "lodash"
 import { ICommand, complexCommand, IInvoker, Invoker } from "../command"
+import { IModelService } from "./modelService"
 
 export interface INotebookService {
 	execute(cmd: (arg: INotebookService) => ICommand): void,
@@ -23,25 +24,26 @@ const localStorageRootName = "notebook"
 export class NotebookService implements INotebookService {
 
 	private notebook: Notebook
-	private invoker: Map<Notebook, IInvoker>
+	private invoker: IInvoker
 
 	constructor(
-		private notebookStore: INotebookStore
+		private notebookStore: INotebookStore,
+		private modelService: IModelService
 	) {
-		this.invoker = new Map()
+		this.invoker = new Invoker()
 		this.load()
 	}
 
 	execute(command: (arg: INotebookService) => ICommand) {
-		this.invoker.get(this.notebook).execute(command(this))
+		this.invoker.execute(command(this))
 	}
 
 	redo() {
-		this.invoker.get(this.notebook).redo()
+		this.invoker.redo()
 	}
 
 	undo() {
-		this.invoker.get(this.notebook).undo()
+		this.invoker.undo()
 	}
 
 	getNotebook() {
@@ -50,12 +52,11 @@ export class NotebookService implements INotebookService {
 
 	setNotebook(notebook: Notebook) {
 		this.notebook = notebook
-		if (!this.invoker.has(notebook))
-			this.invoker.set(notebook, new Invoker())
 
 		this.save()
 		this.notebookStore.notebook = notebook
-		global.model = notebook.models[0]
+
+		this.modelService.setModel(notebook.models[0])
 	}
 
 	save() {

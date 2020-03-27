@@ -76,7 +76,7 @@ import { Command } from "@/shared/app/notebookService"
 export default Vue.extend({
 	data() {
 		return {
-			selectedModel: global.model,
+			selectedModel: store.model.model,
 			global,
 		}
 	},
@@ -156,7 +156,7 @@ export default Vue.extend({
 					Command.removeModel(this.selectedModel)
 				)
 
-			    this.selectedModel = global.model = _.last(this.models)
+			    this.selectedModel = store.model.model = _.last(this.models)
 			}
 		},
 		changeName(name: string) {

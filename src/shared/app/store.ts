@@ -3,10 +3,12 @@ import { View } from "../../store/global"
 import Tab from "@/components/Tab"
 import { Status } from "@/shared/app/types"
 import Notebook from "../notebook"
+import { Model } from "../model"
 
 export interface IStore {
 	notebook: INotebookStore,
 	run: IRunStore,
+	model: IModelStore,
 	view: View,
 	tab: Tab,
 	readonly canEdit: boolean
@@ -16,6 +18,10 @@ export interface Info {
 	time: number,
 	space: number,
 	state: string
+}
+
+export interface IModelStore {
+	model: Model 
 }
 
 export interface INotebookStore {
@@ -33,6 +39,9 @@ const NO_STATE = "~"
 export const mut: IStore = Vue.observable({
 	notebook: {
 		notebook: null	
+	},
+	model: {
+		model: null
 	},
 	run: {
 		playing: false,

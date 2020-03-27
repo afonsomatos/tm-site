@@ -56,6 +56,7 @@ import { Transition, State } from "@/shared/model"
 import { Direction } from "@/shared/types"
 
 import global from "@/store/global"
+import { store } from '@/shared/app/store'
 
 export default Vue.extend({
     data() {
@@ -66,7 +67,7 @@ export default Vue.extend({
     },
     computed: {
         states(): State[] {
-            return global.model.states
+            return store.model.model.states
         },
         transition(): Transition {
             return this.$store.state.table.transition
@@ -83,7 +84,7 @@ export default Vue.extend({
         },
         onWriteChange() {
             if (this.transition.write[0].length === 0) {
-                this.transition.write[0] = global.model.blank
+                this.transition.write[0] = store.model.model.blank
             }
             this.update()
         },

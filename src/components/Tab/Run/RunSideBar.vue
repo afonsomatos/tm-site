@@ -27,6 +27,7 @@ import { text } from 'd3'
 import assert from "assert"
 import { Model } from '@/shared/model'
 import { app } from '@/shared/app'
+import { store } from '@/shared/app/store'
 
 export default Vue.extend({
     data() {
@@ -44,7 +45,7 @@ export default Vue.extend({
         }
     },
     computed: {
-        tapes: () => global.model.tapes
+        tapes: () => store.model.model.tapes
     },
     methods: {
         load() {

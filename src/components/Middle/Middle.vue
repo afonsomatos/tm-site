@@ -52,7 +52,7 @@ export default Vue.extend({
         },
         changeModel(e) {
             let index = e.target.selectedIndex
-            global.model = this.models[index]
+            app.modelService.setModel(this.models[index])
         },
         showDiagram() {
             app.setView(View.Diagram)
@@ -90,10 +90,10 @@ export default Vue.extend({
             return store.notebook.notebook.models
         },
         selectedModel() {
-            return global.model
+            return store.model.model
         },
         tapes() {
-            return global.model.tapes
+            return store.model.model.tapes
         }
     },
     data() {

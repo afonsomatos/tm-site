@@ -44,6 +44,7 @@ import Mutation from "@/store/modules/diagram/mutation"
 import Getter from "@/store/modules/diagram/getter"
 
 import global from "@/store/global"
+import { store } from "@/shared/app/store"
 
 export default Vue.extend({
     data() {
@@ -61,10 +62,10 @@ export default Vue.extend({
     },
     computed: {
         tapeNumber() {
-            return global.model.tapes
+            return store.model.model.tapes
         },
         tapes() {
-            return _.times(global.model.tapes, i => i + 1)
+            return _.times(store.model.model.tapes, i => i + 1)
         },
         transition() {
             return this.$store.state.diagram.transition

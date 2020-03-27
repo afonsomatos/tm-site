@@ -36,6 +36,7 @@ import { Point } from "@/shared/types"
 
 import global from "@/store/global"
 import { store } from "@/shared/app/store"
+import { app } from "../../shared/app"
 
 export default Vue.extend({
 	data() {
@@ -45,7 +46,7 @@ export default Vue.extend({
 	},
 	computed: {
 		canEdit: () => store.canEdit,
-		model: () => global.model,
+		model: () => store.model.model,
 	},
 	watch: {
 		canEdit(value: boolean) {
@@ -105,9 +106,11 @@ export default Vue.extend({
 			}
 		}
 
+		app.diagramService.setGraph(graph)
+		
 		this.$store.state.diagram.graph = graph
 
-		graph.setModel(global.model)
+		graph.setModel(store.model.model)
 		
 		// Set diagram referential transform when SVG size has stabilized
 		this.$nextTick(() => graph.resetZoom())

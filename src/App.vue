@@ -96,7 +96,7 @@ export default Vue.extend({
 			return store.tab.sideBar
 		},
 		model() {
-			return global.model
+			return store.model.model
 		}
 	},
 	created() {

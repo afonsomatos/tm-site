@@ -53,7 +53,7 @@ export default Vue.extend({
 	},
 	computed: {
 		canEdit: () => store.canEdit,
-		model: () => global.model
+		model: () => store.model.model
 	},
 	watch: {
 		model(newModel) {
@@ -91,7 +91,7 @@ export default Vue.extend({
 		}
 
 		this.table = table
-		table.model = global.model
+		table.model = store.model.model
 		this.$store.state.table.table = table
 	},
 	components: { IconBtn }
