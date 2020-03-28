@@ -243,7 +243,7 @@ export default class Graph {
 
         let startLink = this.linkGroup
             .selectAll<SVGPathElement, State>("#start-link")
-            .data([ this.model.start ])
+            .data(this.model.start ? [this.model.start] : [])
 
         startLink.exit().remove()
         
