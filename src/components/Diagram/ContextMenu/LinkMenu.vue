@@ -46,10 +46,7 @@ export default Vue.extend({
         },
 
         add() {
-            let link: Link = store.diagram.link
-
-            let transition = app.modelService.getDefaultTransition(link)
-            app.modelService.execute(Command.addTransition(transition))
+            let transition = app.diagramService.createDefaultTransition()
             this.clickTransition(transition)
         },
 

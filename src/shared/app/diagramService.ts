@@ -16,6 +16,7 @@ export class DiagramService implements IDiagramService {
 
 	private graph: Graph
 	private state: State
+	private link: Link
 	private transition: Transition
 
 	private graphPosition: Vector
@@ -31,6 +32,14 @@ export class DiagramService implements IDiagramService {
 		this.modelService.execute(
 			ModelCommand.removeTransition(this.transition)
 		)
+	}
+
+	createDefaultTransition(): Transition {
+		let transition = this.modelService.getDefaultTransition(this.link)
+		this.modelService.execute(
+			ModelCommand.addTransition(transition)
+		)
+		return transition
 	}
 
 	renameState(name: string) {
@@ -70,6 +79,7 @@ export class DiagramService implements IDiagramService {
 	}
 
 	setEditLink(link: Link) {
+		this.link = link
 		this.diagramStore.link = link
 	}
 
