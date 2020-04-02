@@ -2,9 +2,10 @@
 import { IModelStore } from "./store"
 import { Model, Transition, State, Type } from "../model"
 import { ICommand, IInvoker, Invoker } from "../command"
-import { IDiagramService } from "./diagramService"
 import { Vector } from "../types"
-import { toUnicode } from "punycode"
+import { IModelHandlerService } from "./IModelService"
+import { IDiagramService } from "./IDiagramService"
+import { IApplication } from "./IApplication"
 
 export interface IModelProperties {
 	wildcard?: string,
@@ -12,32 +13,8 @@ export interface IModelProperties {
 	tapes: number
 }
 
-export interface IModelService {
-	execute(cmd: (arg: IModelHandlerService) => ICommand): void
-	undo(): void
-	redo(): void
-	setModel(model: Model): void
-	// addTransition(transition: Transition): void
-	// removeTransition(transition: Transition): void
-	// getTransitions(): Transition[]
-	// getStartState(): State
-	// setStartState(state: State): void
-	// setProperties(modelProperties: IModelProperties): void
-	//getProperties(): IModelProperties
-	getStateType(state: State): Type
-	getModel(): Model
-	getStartState(): State
-	getTransitions(): Transition[]
-}
 
-export interface IModelHandlerService extends IModelService {
-	setStateType(state: State, type: Type): void
-	removeState(state: State): void
-	addState(state: State): void
-	setStartState(state: State): void
-	removeTransition(transition: Transition): void
-	addTransition(transition: Transition): void
-}
+
 
 export interface IStateProperties {
 	label: string,
@@ -50,9 +27,13 @@ export class ModelService implements IModelHandlerService {
 	private model: Model
 	private invoker: Map<Model, IInvoker>
 
+	private get diagramService(): IDiagramService {
+		return this.app.diagramService
+	}
+
 	constructor(
 		private modelStore: IModelStore,
-		private diagramService: IDiagramService
+		private app: IApplication
 	) {
 		this.invoker = new Map()
 	}

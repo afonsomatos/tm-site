@@ -5,7 +5,7 @@ import exampleNotebook from "@/shared/notebook/example"
 import { Model } from "../model"
 import _ from "lodash"
 import { ICommand, complexCommand, IInvoker, Invoker } from "../command"
-import { IModelService } from "./modelService"
+import { IModelService } from "./IModelService"
 
 export interface INotebookService {
 	execute(cmd: (arg: INotebookService) => ICommand): void,

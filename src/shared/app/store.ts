@@ -5,7 +5,6 @@ import { Status } from "@/shared/app/types"
 import Notebook from "../notebook"
 import { Model, Transition, Type, Link, State } from "../model"
 import { Point, Vector } from "../types"
-import { DeepReadonly } from "ts-essentials"
 
 export interface IStore {
 	notebook: INotebookStore,

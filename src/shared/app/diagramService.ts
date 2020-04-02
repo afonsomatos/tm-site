@@ -2,26 +2,17 @@ import Graph from "@/components/Diagram/Graph"
 import { IDiagramStore } from "./store"
 import { Vector } from "../types"
 import { Link, State, Type, Transition } from "../model"
-import { IModelService, Command as ModelCommand} from "./modelService"
-
-export interface IDiagramService {
-	createLink(link: Link): Transition
-	createTransition(): void
-	addState(): void,
-	setGraphPosition(pos: Vector): void,
-	setContextMenuPosition(position: Vector): void
-	setContextMenu(menu: string | null): void
-	setEditLink(link: Link): void
-	setEditTransition(transition: Transition): void
-	setEditState(state: State): void
-	setGraph(graph: Graph): void
-	update(): void
-}
+import { Command as ModelCommand} from "./modelService"
+import { IApplication } from "./IApplication"
+import { IModelService } from "./IModelService"
+import { IDiagramService } from "./IDiagramService"
 
 export class DiagramService implements IDiagramService {
 
 	// refactor this
-	public modelService: IModelService
+	public get modelService(): IModelService {
+		return this.app.modelService
+	}
 
 	private graph: Graph
 	private state: State
@@ -29,7 +20,8 @@ export class DiagramService implements IDiagramService {
 	private graphPosition: Vector
 
 	constructor(
-		private diagramStore: IDiagramStore
+		private diagramStore: IDiagramStore,
+		private app: IApplication
 	) {
 
 	}

@@ -3,18 +3,11 @@ import Tab from "@/components/Tab"
 import { View } from "@/store/global"
 import { IRunService, RunService } from "./runService"
 import { INotebookService, NotebookService } from "./notebookService"
-import { ModelService, IModelService } from "./modelService"
-import { IDiagramService, DiagramService } from "./diagramService"
-
-export interface IApplication {
-	setTab(tab: Tab): void
-	setView(view: View): void
-
-	readonly runService: 		IRunService
-	readonly notebookService: 	INotebookService
-	readonly diagramService:	IDiagramService
-	readonly modelService:		IModelService
-}
+import { ModelService } from "./modelService"
+import { DiagramService } from "./diagramService"
+import { IDiagramService } from "./IDiagramService"
+import { IModelService } from "./IModelService"
+import { IApplication } from "./IApplication"
 
 export class Application implements IApplication {
 
@@ -26,13 +19,10 @@ export class Application implements IApplication {
 	constructor(
 		private store: IStore
 	) {
-		let diagramService		= new DiagramService(store.diagram)
+		this.diagramService		= new DiagramService(store.diagram, this)
 		this.runService 		= new RunService(store.run)
-		this.modelService 		= new ModelService(store.model, diagramService)
+		this.modelService 		= new ModelService(store.model, this)
 		this.notebookService 	= new NotebookService(store.notebook, this.modelService)
-
-		diagramService.modelService = this.modelService
-		this.diagramService = diagramService
 	}
 
 	setTab(tab: Tab) {
