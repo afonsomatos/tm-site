@@ -100,6 +100,18 @@ export default Vue.extend({
 		})
 		// TODO: Find better way
 		setInterval(() => app.notebookService.save(), 500)
+		// Redo and undo
+		document.body.addEventListener("keydown", e => {
+			if (e.ctrlKey && (e.which == 89 || e.shiftKey && e.which == 90)) {
+				e.preventDefault()
+				console.log("[redo key]")
+				app.modelService.redo()
+			} else if (e.ctrlKey && e.which == 90) {
+				e.preventDefault()
+				console.log("[undo key]")
+				app.modelService.undo()
+			}
+		})
 	},
 	components: { ActionBar, SideBar, Middle, ContextMenu }
 })
