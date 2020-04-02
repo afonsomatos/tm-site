@@ -79,9 +79,7 @@ export default Vue.extend({
         },
 
         remove() {
-            app.modelService.execute(
-                Command.removeTransition(this.transition)
-            )
+            app.diagramService.deleteTransition()
             this.goBack()
         },
 

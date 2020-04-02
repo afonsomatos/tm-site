@@ -3,6 +3,8 @@ import { Vector } from "../types";
 import Graph from "@/components/Diagram/Graph";
 
 export interface IDiagramService {
+	deleteTransition(): void
+	renameState(name: string): void
 	createTransition(): void
 	addState(): void,
 	setGraphPosition(pos: Vector): void,

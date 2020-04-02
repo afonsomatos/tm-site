@@ -118,6 +118,7 @@ export class ModelService implements IModelHandlerService {
 		}
 		return newTransition	
 	}
+
 }
 
 export namespace Command {
@@ -203,4 +204,5 @@ export namespace Command {
 			comment: "change state"
 		}
 	}
+
 }

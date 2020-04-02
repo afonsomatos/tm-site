@@ -26,9 +26,7 @@ export default Vue.extend({
             app.diagramService.setContextMenu("state")
         },
         onRename(e) {
-            app.modelService.execute(
-                Command.changeState(this.state, { label: e.target.value })
-            )
+            app.diagramService.renameState(e.target.value)
         }
     }
 })

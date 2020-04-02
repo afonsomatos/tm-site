@@ -33,7 +33,6 @@ export interface IModelHandlerService extends IModelService {
 	setStartState(state: State): void
 	removeTransition(transition: Transition): void
 	addTransition(transition: Transition): void
-
 	setStateProperties(state: State, properties: IStateProperties): void
 	getStateProperties(state: State): IStateProperties
 }

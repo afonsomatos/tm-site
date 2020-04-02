@@ -2,7 +2,7 @@ import Graph from "@/components/Diagram/Graph"
 import { IDiagramStore } from "./store"
 import { Vector } from "../types"
 import { Link, State, Type, Transition } from "../model"
-import { Command as ModelCommand} from "./modelService"
+import { Command as ModelCommand } from "./modelService"
 import { IApplication } from "./IApplication"
 import { IModelService } from "./IModelService"
 import { IDiagramService } from "./IDiagramService"
@@ -16,6 +16,7 @@ export class DiagramService implements IDiagramService {
 
 	private graph: Graph
 	private state: State
+	private transition: Transition
 
 	private graphPosition: Vector
 
@@ -26,7 +27,20 @@ export class DiagramService implements IDiagramService {
 
 	}
 
+	deleteTransition() {
+		this.modelService.execute(
+			ModelCommand.removeTransition(this.transition)
+		)
+	}
+
+	renameState(name: string) {
+		this.modelService.execute(
+			ModelCommand.changeState(this.state, { label: name })
+		)
+	}
+
 	setEditTransition(transition: Transition) {
+		this.transition = transition
 		this.diagramStore.transition = transition
 	}
 
