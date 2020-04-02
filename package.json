@@ -7,7 +7,8 @@
     "start": "webpack --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "test": "jest --verbose",
-    "test:depcruise": "depcruise -v .dependency-cruiser.js src"
+    "test:depcruise": "depcruise -v .dependency-cruiser.js src",
+    "depcruise": "depcruise -v .dependency-cruiser.js src --output-type text"
   },
   "keywords": [],
   "author": "Afonso Matos",
@@ -28,7 +29,7 @@
     "@vue/cli": "^3.12.1",
     "css-loader": "^3.4.2",
     "@types/vue": "^2.0.0",
-    "dependency-cruiser": "^8.0.1",
+    "dependency-cruiser": "^8.1.0",
     "node-sass": "^4.13.1",
     "sass-loader": "^7.3.1",
     "ts-loader": "^6.2.1",
