@@ -1,7 +1,7 @@
 <template>
     <div class="rename">
         <!-- <icon-btn class="icon" icon="left-arrow-alt" @click="goBack" :clickable="true" /> -->
-        <input ref="input" class="input" v-model="state.label" @input="onRename" @change="goBack" v-focus />
+        <input ref="input" class="input" :value="state.label" @input="onRename" @change="goBack" v-focus />
     </div>
 </template>
 
@@ -12,6 +12,7 @@ import Vue from 'vue'
 import IconBtn from "@/components/IconBtn.vue"
 import { app } from '../../../shared/app'
 import { store } from '../../../shared/app/store'
+import { Command } from '@/shared/app/modelService'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -25,7 +26,9 @@ export default Vue.extend({
             app.diagramService.setContextMenu("state")
         },
         onRename(e) {
-            app.diagramService.update()
+            app.modelService.execute(
+                Command.changeState(this.state, { label: e.target.value })
+            )
         }
     }
 })
