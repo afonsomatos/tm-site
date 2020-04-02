@@ -30,11 +30,6 @@ export class DiagramService implements IDiagramService {
 		this.diagramStore.transition = transition
 	}
 
-	createLink(link: Link): Transition {
-		// refactor
-		return this.graph.createTransition(link.from, link.to)
-	}
-
 	createTransition() {
 		this.graph.newTransition(this.state)
 	}

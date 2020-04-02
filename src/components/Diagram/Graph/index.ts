@@ -19,6 +19,13 @@ function transitionLabel({ read, write, direction }: Transition): string {
     return `${read.join('')} &rarr; ${write.join('')}, ${direction.join('')}`
 }
 
+export interface IEventHandler {
+    onStateRightClick:  (state: State) => void,
+    onStateReposition:  (state: State, position: Vector) => void,
+    onLinkRightClick:   (link: Link) => void
+    onLinkCreation:     (link: Link) => void
+}
+
 export default class Graph {
 
     private svg: Selection<SVGSVGElement, any, any, any>
@@ -52,6 +59,9 @@ export default class Graph {
     // Placeholder for the transition being created
     private temporaryLink: d3.Selection<SVGPathElement, null, null, null>
 
+    // Keep temporary positions of each state before drop.
+    private temporaryPositions: Map<State, Vector> = new Map()
+
     // Last known position for the mouse
     public mousePosition: Point = [0, 0]
 
@@ -69,7 +79,9 @@ export default class Graph {
     // Marks the center of the diagram
     public referentialMarker: SVGElement
 
-    constructor(svgElement: SVGSVGElement) {
+    constructor(svgElement: SVGSVGElement,
+        private eventHandler: IEventHandler
+        ) {
 
         this.model = new Model()
         this.transform = { x: 0, y: 0, k: 1}
@@ -94,6 +106,10 @@ export default class Graph {
         this.setup()
     }
 
+    private positionOf(state: State): Vector {
+        return this.temporaryPositions.get(state) || state.position
+    }
+
     /**
      * Current global mouse position, taking zoom and pan into consideration.
      */
@@ -104,13 +120,6 @@ export default class Graph {
             (y - this.transform.y) / this.transform.k
         ]
     }
-
-    /**
-     * Events handlers.
-     */
-    public onStateRightClick: (state: State) => void
-    public onLinkRightClick: (link: Link) => void
-    //public onTransform: (transform: Transform) => void
 
     /**
      * Creates a new temporary transition from a node, till the user clicks on another node. 
@@ -134,25 +143,6 @@ export default class Graph {
         this.svg.classed("newTransition", false)
         this.temporaryLink.style("visibility", "hidden")
         this.temporaryTransition.active = false
-    }
-
-    /**
-     * Creates a new transition between the node `from` and `to`.
-     */
-    public createTransition(from: State, to: State): Transition {
-        
-        let newTransition = {
-            from, to,
-            direction: [],
-            read: [],
-            write: [],
-        }
-
-        this.model.addTransition(newTransition)
-        this.model.normalize()
-        this.update()
-
-        return newTransition
     }
 
     private setupTemporaryLink() {
@@ -185,7 +175,7 @@ export default class Graph {
                     if (this.model.areLinked(from, to)) {
                         console.log("Link already created from", from.label, "to", to.label)
                     } else {
-                        this.createTransition(this.temporaryTransition.from, this.stateHovering)
+                        this.eventHandler.onLinkCreation({ from: this.temporaryTransition.from, to: this.stateHovering })
                     }
                 }
 
@@ -199,7 +189,7 @@ export default class Graph {
      */
     private temporaryLine() {
 
-        let source: Vector = this.temporaryTransition.from.position
+        let source: Vector = this.positionOf(this.temporaryTransition.from)
         
         if (this.stateHovering === this.temporaryTransition.from) {
             // To self (loop)
@@ -218,7 +208,7 @@ export default class Graph {
         
         } else {
             // Another node (straight line to border of the target node)
-            let target = this.stateHovering.position
+            let target = this.positionOf(this.stateHovering)
             let diff = sub(target, source)
 
             let to = sub(target, mul(unit(diff), this.nodeRadius))
@@ -256,7 +246,7 @@ export default class Graph {
                 .filter(s => s !== null)
                 .attr("d", state => {
                     // Left tip of start node
-                    const target = add(state.position, { x: -this.nodeRadius, y: 0 })
+                    const target = add(this.positionOf(state), { x: -this.nodeRadius, y: 0 })
                     const source = add(target, { x: -lineLength, y: 0 })
                     const linePath = `M ${source.x} ${source.y} L ${target.x} ${target.y}`
 
@@ -320,9 +310,16 @@ export default class Graph {
 		})
     }
 
+    private nodeDropped(state: State, position: Vector) {
+        this.temporaryPositions.delete(state)
+        this.eventHandler.onStateReposition(state, position)
+        this.update()
+    }
+
     private nodeDragged(state: State, x: number, y: number, el: SVGGElement) {
 
-        state.position = { x, y }
+        // update temporary position
+        this.temporaryPositions.set(state, { x, y })
 
         // Make node visible
         d3.select(el)
@@ -370,6 +367,11 @@ export default class Graph {
                     self.nodeDragged(d, d3.event.x, d3.event.y, this)
                 }
             })
+            .on("end", function(d) {
+                if (self.enableNodeDrag) {
+                    self.nodeDropped(d, { x: d3.event.x, y: d3.event.y })
+                }
+            })
 
         let nodeSelection = this.nodeGroup
             .selectAll<SVGGElement, State>(".node")
@@ -384,7 +386,7 @@ export default class Graph {
                 .append("g")
                 .on("mouseenter", state => this.stateHovering = state)
                 .on("mouseleave", () => this.stateHovering = undefined)
-                .on("contextmenu", state => this.onStateRightClick(state))
+                .on("contextmenu", state => this.eventHandler.onStateRightClick(state))
 
         newNodes.append("circle")
                 .attr("class", "circle")
@@ -399,7 +401,7 @@ export default class Graph {
         allNodes
             .attr("class", state => this.nodeClass(state))
             .attr("transform", state => {
-                let { x, y } = state.position
+                let { x, y } = this.positionOf(state)
                 return transformAttr({ x, y, k: 1})
             })
 
@@ -430,12 +432,15 @@ export default class Graph {
         if (reversed)
             [from, to] = [to, from]
 
-        let diff = sub(to.position, from.position)
+        let fromPosition = this.positionOf(from)
+        let toPosition = this.positionOf(to)
+
+        let diff = sub(toPosition, fromPosition)
 
         if (from == to) {
             // Loop
-            let source = add(from.position, vec(this.nodeRadius, -Math.PI / 2))
-            let target = add(from.position, vec(this.nodeRadius, 0))
+            let source = add(fromPosition, vec(this.nodeRadius, -Math.PI / 2))
+            let target = add(fromPosition, vec(this.nodeRadius, 0))
 
             return `M ${source.x} ${source.y} A ${this.nodeRadius} ${this.nodeRadius} 0 1 1 ${target.x} ${target.y}`
         }
@@ -445,8 +450,8 @@ export default class Graph {
 
         if (forward !== backward) {
             // Straight
-            let source = add(from.position, mul(unit(diff), this.nodeRadius))
-            let target = sub(to.position, mul(unit(diff), this.nodeRadius))
+            let source = add(fromPosition, mul(unit(diff), this.nodeRadius))
+            let target = sub(toPosition, mul(unit(diff), this.nodeRadius))
             
             return `M ${source.x} ${source.y} L ${target.x} ${target.y}`
         } else {
@@ -457,8 +462,8 @@ export default class Graph {
 
             let angle = ang(diff);
             let radius = 1.2 * norm(diff)
-            let source = add(from.position, vec(this.nodeRadius, angle - sep))
-            let target = add(to.position, vec(this.nodeRadius, angle - Math.PI + sep))
+            let source = add(fromPosition, vec(this.nodeRadius, angle - sep))
+            let target = add(toPosition, vec(this.nodeRadius, angle - Math.PI + sep))
             
             return `M ${source.x} ${source.y} A ${radius} ${radius} 0 0 ${sweep} ${target.x} ${target.y}`
         }
@@ -496,7 +501,7 @@ export default class Graph {
             let group = d3.select(this)
             let transitions = self.model.linkToTransitions(link)
 
-            let reversed = link.from.position.x > link.to.position.x
+            let reversed = self.positionOf(link.from).x > self.positionOf(link.to).x
             let linePath = self.line(link, reversed)
 
             let linkEl = group.select(".link")
@@ -509,7 +514,7 @@ export default class Graph {
                 .on("mouseenter", () => linkEl.classed("active", true))
                 .on("mouseleave", () => linkEl.classed("active", false))
                 .on("contextmenu", () => {
-                    self.onLinkRightClick(link)
+                    self.eventHandler.onLinkRightClick(link)
                 })
 
             let linkText = group
@@ -527,7 +532,7 @@ export default class Graph {
             // Special design for loops
             if (link.from === link.to) {
                 linkText
-                    .attr("transform", translateAttr(link.from.position))
+                    .attr("transform", translateAttr(self.positionOf(link.from)))
                     .attr("dy", (_, i) => -3 - 1.4 * i + "em")
                     .html(transitionLabel)
             } else {

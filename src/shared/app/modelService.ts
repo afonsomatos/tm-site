@@ -1,9 +1,9 @@
 
 import { IModelStore } from "./store"
-import { Model, Transition, State, Type } from "../model"
+import { Model, Transition, State, Type, Link } from "../model"
 import { ICommand, IInvoker, Invoker } from "../command"
-import { Vector } from "../types"
-import { IModelHandlerService } from "./IModelService"
+import { Vector, Direction } from "../types"
+import { IModelHandlerService, IStateProperties } from "./IModelService"
 import { IDiagramService } from "./IDiagramService"
 import { IApplication } from "./IApplication"
 
@@ -12,15 +12,6 @@ export interface IModelProperties {
 	blank: string,
 	tapes: number
 }
-
-
-
-
-export interface IStateProperties {
-	label: string,
-	position: Vector
-}
-
 
 export class ModelService implements IModelHandlerService {
 
@@ -105,6 +96,28 @@ export class ModelService implements IModelHandlerService {
 		this.diagramService.update()
 	}
 
+	setStateProperties(state: State, properties: IStateProperties): void {
+		state.label = properties.label
+		state.position = properties.position
+		this.diagramService.update()
+	}
+	
+	getStateProperties(state: State): IStateProperties {
+		return {
+			label: state.label,
+			position: state.position
+		}
+	}
+
+	getDefaultTransition(link: Link): Transition {
+        let newTransition = {
+            ...link,
+            direction: 	Array(this.model.tapes).fill(Direction.Right),
+            read: 		Array(this.model.tapes).fill(this.model.blank),
+            write: 		Array(this.model.tapes).fill(this.model.blank),
+		}
+		return newTransition	
+	}
 }
 
 export namespace Command {
@@ -114,6 +127,14 @@ export namespace Command {
 			comment: "add state",
 			execute: () => modelService.addState(state),
 			undo: () => modelService.removeState(state)
+		}
+	}
+
+	export const addTransition = (transition: Transition) => (modelService: IModelHandlerService): ICommand => {
+		return {
+			comment: "add transition",
+			execute: () => modelService.addTransition(transition),
+			undo: () => modelService.removeTransition(transition),
 		}
 	}
 
@@ -168,9 +189,18 @@ export namespace Command {
 		}
 	}
 
+	export const changeState = (state: State, properties: Partial<IStateProperties>) => (modelService: IModelHandlerService): ICommand => {
+		let oldProperties: IStateProperties
+		return {
+			execute() {
+				oldProperties = modelService.getStateProperties(state)
+				let newProperties = { ...oldProperties, ...properties }
+				modelService.setStateProperties(state, newProperties)
+			},
+			undo() {
+				modelService.setStateProperties(state, oldProperties)
+			},
+			comment: "change state"
+		}
+	}
 }
-
-/**
-
-
- */

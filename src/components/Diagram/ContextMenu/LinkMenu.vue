@@ -23,6 +23,7 @@ import Graph from "@/components/Diagram/Graph/index"
 
 import { app } from '../../../shared/app'
 import { store } from '@/shared/app/store'
+import { Command } from '@/shared/app/modelService'
 
 export default Vue.extend({
     components: { IconBtn },
@@ -47,7 +48,8 @@ export default Vue.extend({
         add() {
             let link: Link = store.diagram.link
 
-            let transition = app.diagramService.createLink(link)
+            let transition = app.modelService.getDefaultTransition(link)
+            app.modelService.execute(Command.addTransition(transition))
             this.clickTransition(transition)
         },
 

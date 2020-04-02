@@ -28,11 +28,12 @@ import Vue from "vue"
 import Graph from "./Graph/index"
 
 import { State, Link } from "@/shared/model"
-import { Point } from "@/shared/types"
+import { Point, Vector } from "@/shared/types"
 
 import global from "@/store/global"
 import { store } from "@/shared/app/store"
 import { app } from "../../shared/app"
+import { Command } from "@/shared/app/modelService"
 
 export default Vue.extend({
 	data() {
@@ -82,21 +83,32 @@ export default Vue.extend({
 		}, true)
 
 		// Initialize graph and SVG
-		let graph = new Graph(svg)
-
-		graph.onStateRightClick = (state: State) => {
-			if (this.canEdit) {
-				this.selectState(state)
-				this.openMenu("state")
+		let graph = new Graph(svg, {
+			onStateRightClick: (state: State) => {
+				if (this.canEdit) {
+					this.selectState(state)
+					this.openMenu("state")
+				}
+			},
+			onLinkRightClick: (link: Link) => {
+				if (this.canEdit) {
+					app.diagramService.setEditLink(link)
+					this.openMenu("link")
+				}
+			},
+			onStateReposition: (state: State, position: Vector) => {
+				app.modelService.execute(
+					Command.changeState(state, { position })
+				)
+			},
+			onLinkCreation: (link: Link) => {
+				app.modelService.execute(
+					Command.addTransition(
+						app.modelService.getDefaultTransition(link)
+					)
+				)
 			}
-		}
-
-		graph.onLinkRightClick = (link: Link) => {
-			if (this.canEdit) {
-				app.diagramService.setEditLink(link)
-				this.openMenu("link")
-			}
-		}
+		})
 
 		app.diagramService.setGraph(graph)
 		

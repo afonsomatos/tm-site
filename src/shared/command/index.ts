@@ -26,7 +26,7 @@ export class Invoker implements IInvoker {
 	private redoStack: ICommand[] = [] 
 
 	execute(command: ICommand): void {
-		// console.log(`[execute] ${command.comment}`)
+		console.log(`[execute] ${command.comment}`)
 		this.undoStack.push(command)
 		this.redoStack = []
 		command.execute()

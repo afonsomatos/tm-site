@@ -1,5 +1,11 @@
-import { Model, Type, Transition, State } from "../model";
+import { Model, Type, Transition, State, Link } from "../model";
 import { ICommand } from "../command";
+import { Vector } from "../types";
+
+export interface IStateProperties {
+	label: string,
+	position: Vector
+}
 
 export interface IModelService {
 	execute(cmd: (arg: IModelHandlerService) => ICommand): void
@@ -17,6 +23,7 @@ export interface IModelService {
 	getModel(): Model
 	getStartState(): State
 	getTransitions(): Transition[]
+	getDefaultTransition(link: Link): Transition
 }
 
 export interface IModelHandlerService extends IModelService {
@@ -26,4 +33,7 @@ export interface IModelHandlerService extends IModelService {
 	setStartState(state: State): void
 	removeTransition(transition: Transition): void
 	addTransition(transition: Transition): void
+
+	setStateProperties(state: State, properties: IStateProperties): void
+	getStateProperties(state: State): IStateProperties
 }

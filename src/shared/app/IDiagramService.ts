@@ -3,7 +3,6 @@ import { Vector } from "../types";
 import Graph from "@/components/Diagram/Graph";
 
 export interface IDiagramService {
-	createLink(link: Link): Transition
 	createTransition(): void
 	addState(): void,
 	setGraphPosition(pos: Vector): void,
