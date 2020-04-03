@@ -22,6 +22,32 @@ export class TableService implements ITableService {
 
 	}
 
+	setUndefined(undefined: boolean) {
+		this.app.modelService.execute(
+			Command.setTransition(this.transition, { undefined })
+		)
+	}
+
+	setDirection(direction: Direction) {
+		this.app.modelService.execute(
+			Command.changeTransition(this.transition, 0, { direction })
+		)
+	}
+
+	setWrite(write: string) {
+		this.app.modelService.execute(
+			Command.changeTransition(this.transition, 0, {
+				write: write || this.app.modelService.getProperties().blank
+			})
+		)
+	}
+
+	setStateTo(state: State) {
+		this.app.modelService.execute(
+			Command.setTransition(this.transition, { to: state })
+		)
+	}
+
 	renameState(name: string) {
 		this.app.modelService.execute(
 			Command.changeState(this.state, { label: name })
@@ -58,6 +84,7 @@ export class TableService implements ITableService {
 		this.state = state
 		this.store.state = state
 		this.setMode(Mode.State)
+		this.store.type = this.app.modelService.getModel().getType(this.state)
 	}
 
 	setChar(char: string) {
@@ -68,8 +95,7 @@ export class TableService implements ITableService {
 
 	deleteState() {
 		this.app.modelService.execute(Command.removeState(this.state))
-		this.setState(null)
-		this.update()
+		this.setMode(null)
 	}
 
 	addState() {
@@ -79,7 +105,6 @@ export class TableService implements ITableService {
 				position: { x: 0, y: 0}
 			})
 		)
-		this.update()
 	}
 
 	deleteChar() {
@@ -87,14 +112,12 @@ export class TableService implements ITableService {
 			deleteCharCommand(this.char)
 		)
 		this.setMode(null)
-		this.update()
 	}
 
 	renameChar(newChar: string) {
 		this.app.modelService.execute(
-			renameCharCommand(newChar)
+			renameCharCommand(this.char, newChar)
 		)
-		this.update()
 		this.setChar(newChar)
 	}
 
@@ -102,12 +125,14 @@ export class TableService implements ITableService {
 		this.app.modelService.execute(
 			addCharCommand
 		)
-		this.update()
 		this.setMode(null)
 	}
 
 	update() {
-		this.table.update()
+		if (this.state)
+			this.store.type = this.app.modelService.getModel().getType(this.state)
+		if (this.table)
+			this.table.update()
 	}
 
 }
@@ -145,11 +170,11 @@ const deleteCharCommand = (char: string) => (modelService: IModelHandlerService)
 	}
 } 
 
-const renameCharCommand = (char: string) => (modelService: IModelHandlerService): ICommand => {
+const renameCharCommand = (oldChar: string, char: string) => (modelService: IModelHandlerService): ICommand => {
 	return complexCommand(
 		modelService.getModel()
 			.allTransitions
-			.filter(t => t.read[0] === char)
+			.filter(t => t.read[0] === oldChar)
 			.map(t => Command.changeTransition(t, 0, { read: char })(modelService))
 	)
 }

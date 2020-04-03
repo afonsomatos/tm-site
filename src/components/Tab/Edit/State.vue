@@ -80,14 +80,9 @@ export default Vue.extend({
     },
     methods: {
 
-        // ...mapMutations("table", {
-        //     setMode: Mutation.SET_MODE
-        // }),
-
-        // ...mapActions("table", {
-        //     delete: Action.DELETE_STATE,
-        //     setStateType: Action.SET_STATE_TYPE
-        // }),
+        setStateType(type: Type) {
+            app.tableService.setStateType(type)
+        },
 
         setType(type: Type) {
             if (this.stateType === type) {
@@ -103,7 +98,8 @@ export default Vue.extend({
         },
 
         onRename(name) {
-            app.tableService.renameState(name)
+            if (name)
+                app.tableService.renameState(name)
         }
     },
     components: { Section, Input, Button, Field, IconBtn }

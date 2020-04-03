@@ -94,7 +94,7 @@ export default Vue.extend({
             return store.view === View.Grid
         },
         currentEditor() {
-            return this.$store.state.table.mode
+            return store.table.mode
         }
     },
 })

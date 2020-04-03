@@ -6,6 +6,7 @@ import Notebook from "../notebook"
 import { Model, Transition, Type, Link, State } from "../model"
 import { Point, Vector } from "../types"
 import Table from "../Table"
+import { DeepReadonly } from "ts-essentials"
 
 export interface IStore {
 	table: ITableStore,
@@ -110,4 +111,4 @@ export const mut: IStore = Vue.observable({
 	}
 })
 
-export const store: Readonly<IStore> = mut
+export const store: DeepReadonly<IStore> = mut

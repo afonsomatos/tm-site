@@ -69,7 +69,7 @@ export default Vue.extend({
 		}
 	},
 	activated() {
-		this.graph.update()
+		app.diagramService.update()
 	},
 	mounted() {
 

@@ -22,11 +22,11 @@ export class Application implements IApplication {
 	constructor(
 		private store: IStore
 	) {
+		this.tableService		= new TableService(store.table, this)
 		this.diagramService		= new DiagramService(store.diagram, this)
 		this.runService 		= new RunService(store.run)
 		this.modelService 		= new ModelService(store.model, this)
 		this.notebookService 	= new NotebookService(store.notebook, this.modelService)
-		this.tableService		= new TableService(store.table, this)
 	}
 
 	setTab(tab: Tab) {

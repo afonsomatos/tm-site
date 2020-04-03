@@ -13,10 +13,6 @@ export class ModelService implements IModelHandlerService {
 	private model: Model
 	private invoker: Map<Model, IInvoker>
 
-	private get diagramService(): IDiagramService {
-		return this.app.diagramService
-	}
-
 	constructor(
 		private modelStore: IModelStore,
 		private app: IApplication
@@ -26,6 +22,7 @@ export class ModelService implements IModelHandlerService {
 
 	setProperties(props: Partial<IModelProperties>) {
 		Object.assign(this.model, props)
+		this.update()
 	}
 
 	getProperties(): IModelProperties {
@@ -57,12 +54,12 @@ export class ModelService implements IModelHandlerService {
 
 	removeState(state: State): void {
 		this.model.removeState(state)
-		this.diagramService.update()
+		this.update()
 	}
 	
 	addState(state: State): void {
 		this.model.addState(state)
-		this.diagramService.update()
+		this.update()
 	}
 
 	setModel(model: Model) {
@@ -71,7 +68,7 @@ export class ModelService implements IModelHandlerService {
 		}
 		this.model = model
 		this.modelStore.model = model
-		this.diagramService.update()
+		this.update()
 	}
 
 	getModel(): Model {
@@ -80,17 +77,17 @@ export class ModelService implements IModelHandlerService {
 
 	setStartState(state: State) {
 		this.model.start = state
-		this.diagramService.update()
+		this.update()
 	}
 
 	addTransition(transition: Transition): void {
 		this.model.addTransition(transition)
-		this.diagramService.update()
+		this.update()
 	}
 	
 	removeTransition(transition: Transition): void {
 		this.model.removeTransition(transition)
-		this.diagramService.update()
+		this.update()
 	}
 
 	getStartState() {
@@ -107,13 +104,13 @@ export class ModelService implements IModelHandlerService {
 
 	setStateType(state: State, type: Type) {
 		this.model.setType(state, type)
-		this.diagramService.update()
+		this.update()
 	}
 
 	setStateProperties(state: State, properties: IStateProperties): void {
 		state.label = properties.label
 		state.position = properties.position
-		this.diagramService.update()
+		this.update()
 	}
 	
 	getStateProperties(state: State): IStateProperties {
@@ -133,17 +130,17 @@ export class ModelService implements IModelHandlerService {
 		return newTransition	
 	}
 
-	changeTransitionLink(transition: Transition, newLink: Link) {
-		transition.to = newLink.to
-		transition.from = newLink.from
-		this.diagramService.update()
+	changeTransitionPartial(transition: Transition, transition2: Transition) {
+		Object.assign(transition, transition2)
+		this.update()
 	}
 
 	changeTransition(transition: Transition, tape: number, edit: SimpleTransition) {
 		transition.direction[tape]  = edit.direction
 		transition.read[tape]		= edit.read
 		transition.write[tape]		= edit.write
-		this.diagramService.update()
+		console.log("stuff happened", transition, tape, edit)
+		this.update()
 	}
 
 	getTransitionTape(transition: Transition, tape: number): SimpleTransition {
@@ -152,6 +149,11 @@ export class ModelService implements IModelHandlerService {
 			read: 		transition.read[tape],
 			write:		transition.write[tape]
 		}
+	}
+
+	update() {
+		this.app.diagramService.update()
+		this.app.tableService.update()
 	}
 }
 
@@ -191,10 +193,10 @@ export namespace Command {
 				modelService.removeState(state)
 			},
 			undo() {
-				modelService.addState(this.state)
+				modelService.addState(state)
 		
 				if (wasStart) {
-					modelService.setStartState(this.state)
+					modelService.setStartState(state)
 				}
 		
 				deletedTransitions.forEach(t => modelService.addTransition(t))
@@ -211,15 +213,18 @@ export namespace Command {
 	}
 
 	export const editStateType = (state: State, type: Type) => (modelService: IModelHandlerService): ICommand => {
+		let oldStart: State
 		let oldType: Type
 		return {
 			comment: "edit state type",
 			execute() {
+				oldStart = modelService.getStartState()
 				oldType = modelService.getStateType(state)
 				modelService.setStateType(state, type)
 			},
 			undo() {
 				modelService.setStateType(state, oldType)
+				modelService.setStartState(oldStart)
 			}
 		}
 	}
@@ -269,7 +274,6 @@ export namespace Command {
 					newTransition.direction = _.times(tapes, i => t.direction[i] || Direction.Right).slice(0, tapes + 1)
 					newTransition.read 		= _.times(tapes, i => t.read[i] 	 || modelService.getProperties().blank).slice(0, tapes + 1)
 					newTransition.write		= _.times(tapes, i => t.write[i]	 || modelService.getProperties().blank).slice(0, tapes + 1)
-					console.log(newTransition)
 					modelService.addTransition(newTransition)
 					return newTransition
 				})
@@ -293,6 +297,21 @@ export namespace Command {
 			},
 			undo() {
 				modelService.changeTransition(transition, tape, oldTransition)
+			}
+		}
+	}
+
+	export const setTransition = (transition: Transition, partial: Partial<Transition>) => (modelService: IModelHandlerService): ICommand => {
+		let oldTransition: Transition
+		return {
+			comment: "change transition link",
+			execute() {
+				oldTransition = { ...transition }
+				let newTransition = { ...transition, ...partial }
+				modelService.changeTransitionPartial(transition, newTransition)
+			},
+			undo() {
+				modelService.changeTransitionPartial(transition, oldTransition)
 			}
 		}
 	}

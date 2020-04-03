@@ -1,5 +1,5 @@
 <template>
-    <div id="table" class="wrapper" :class="{ view: !canEdit }">
+    <div id="table" class="wrapper" :class="{ view: true }">
         <div class="main">
             <div class="row-label">States</div>
             <div class="col-label">Characters</div>
@@ -74,18 +74,18 @@ export default Vue.extend({
 		let table = new Table(wrapper)
 
 		table.onTransitionClick = (transition: Transition) => {
-			if (this.canEdit)
-				app.tableService.setTransition(transition)
+			// if (this.canEdit)
+			// 	app.tableService.setTransition(transition)
 		}
 
 		table.onStateClick = (state: State) => {
-			if (this.canEdit)
-				app.tableService.setState(state)
+			// if (this.canEdit)
+			// 	app.tableService.setState(state)
 		}
 
 		table.onCharClick = (char: string) => {
-			if (this.canEdit)
-				app.tableService.setChar(char)
+			// if (this.canEdit)
+			// 	app.tableService.setChar(char)
 		}
 
 		app.tableService.setTable(table)

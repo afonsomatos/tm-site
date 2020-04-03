@@ -156,11 +156,11 @@ export class Model {
 	 */
 	public removeState(state: State): boolean {
 		// Remove all transitions that have this state
-		for (let t of this.transitions) {
-			if (t.from === state || t.to === state) {
-				this._transitions.delete(t)
-			}
-		}
+		// for (let t of this.transitions) {
+		// 	if (t.from === state || t.to === state) {
+		// 		this._transitions.delete(t)
+		// 	}
+		// }
 		if (this._start === state) {
 			this._start = null
 		}

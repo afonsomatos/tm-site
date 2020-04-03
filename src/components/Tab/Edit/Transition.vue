@@ -22,7 +22,7 @@
             <Field name="Write">
                 <Input
                     title="A character to write"
-                    v-model="transition.write[0]"
+                    :value="transition.write[0]"
                     class="char-input"
                     maxlength="1"
                     @input="onWriteChange"
@@ -79,21 +79,24 @@ export default Vue.extend({
             let index = e.target.selectedIndex
             app.tableService.setStateTo(this.states[index])
         },
-        update() {
-            this.$store.state.table.table.update()
-        },
+        // update() {
+        //     this.$store.state.table.table.update()
+        // },
         onWriteChange() {
-            if (this.transition.write[0].length === 0) {
-                this.transition.write[0] = store.model.model.blank
-            }
-            this.update()
+            app.tableService.setWrite(this.transition.write[0] || null)
+            // if (this.transition.write[0].length === 0) {
+            //     this.transition.write[0] = store.model.model.blank
+            // }
+            // this.update()
         },
         setDirection(dir: Direction) {
-            this.transition.direction[0] = dir
-            this.update()
+            app.tableService.setDirection(dir)
+
+            // this.transition.direction[0] = dir
+            // this.update()
         },
         setUndefined(event) {
-            this.update()
+            app.tableService.setUndefined(event.target.value as boolean)
         }
     },
     components: { Section, Icon, Input, Toggle, Field }
