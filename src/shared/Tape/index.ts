@@ -3,16 +3,10 @@ import _ from "lodash"
 
 import simulator from "@/shared/simulator"
 import { Snapshot } from "@/tm"
-import { Direction } from "@/shared/types"
+import { Direction, SimpleTransition as Transition } from "@/shared/types"
 
 const translate = (x: number, y: number) => `translate(${x}, ${y})`
 
-
-export interface Transition {
-    read: string,
-    write: string,
-    direction: Direction
-}
 
 export default class Tape {
 

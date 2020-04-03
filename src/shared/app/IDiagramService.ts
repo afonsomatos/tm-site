@@ -1,8 +1,10 @@
-import { Link, Transition, State } from "../model";
+import { Link, Transition, State } from "../model"
+import { SimpleTransition } from "@/shared/types"
 import { Vector } from "../types";
 import Graph from "@/components/Diagram/Graph";
 
 export interface IDiagramService {
+	changeTransition(tapeIndex: number, partial: Partial<SimpleTransition>): void
 	createDefaultTransition(): Transition
 	deleteTransition(): void
 	renameState(name: string): void

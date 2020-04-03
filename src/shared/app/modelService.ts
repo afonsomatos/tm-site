@@ -1,17 +1,12 @@
 
+import _ from "lodash"
 import { IModelStore } from "./store"
 import { Model, Transition, State, Type, Link } from "../model"
-import { ICommand, IInvoker, Invoker } from "../command"
-import { Vector, Direction } from "../types"
-import { IModelHandlerService, IStateProperties } from "./IModelService"
+import { ICommand, IInvoker, Invoker, complexCommand } from "../command"
+import { Vector, Direction, SimpleTransition } from "../types"
+import { IModelHandlerService, IStateProperties, IModelProperties } from "./IModelService"
 import { IDiagramService } from "./IDiagramService"
 import { IApplication } from "./IApplication"
-
-export interface IModelProperties {
-	wildcard?: string,
-	blank: string,
-	tapes: number
-}
 
 export class ModelService implements IModelHandlerService {
 
@@ -27,6 +22,25 @@ export class ModelService implements IModelHandlerService {
 		private app: IApplication
 	) {
 		this.invoker = new Map()
+	}
+
+	setProperties(props: Partial<IModelProperties>) {
+		Object.assign(this.model, props)
+	}
+
+	getProperties(): IModelProperties {
+		return {
+			blank: this.model.blank,
+			wildcard: this.model.wildcard
+		}
+	}
+
+	getTapes() {
+		return this.model.tapes
+	}
+
+	setTapes(value: number): void {
+		this.model.tapes = value
 	}
 
 	undo() {
@@ -119,6 +133,20 @@ export class ModelService implements IModelHandlerService {
 		return newTransition	
 	}
 
+	changeTransition(transition: Transition, tape: number, edit: SimpleTransition) {
+		transition.direction[tape]  = edit.direction
+		transition.read[tape]		= edit.read
+		transition.write[tape]		= edit.write
+		this.diagramService.update()
+	}
+
+	getTransitionTape(transition: Transition, tape: number): SimpleTransition {
+		return {
+			direction: 	transition.direction[tape],
+			read: 		transition.read[tape],
+			write:		transition.write[tape]
+		}
+	}
 }
 
 export namespace Command {
@@ -202,6 +230,64 @@ export namespace Command {
 				modelService.setStateProperties(state, oldProperties)
 			},
 			comment: "change state"
+		}
+	}
+
+	export const changeModel = (properties: Partial<IModelProperties>) => (modelService: IModelHandlerService): ICommand => {
+		let oldProperties: IModelProperties
+		return {
+			comment: "change model",
+			execute() {
+				oldProperties = modelService.getProperties()
+				modelService.setProperties(properties)
+			},
+			undo() {
+				modelService.setProperties(oldProperties)
+			}
+		}
+	}	
+
+	export const changeTapes = (tapes: number) => (modelService: IModelHandlerService): ICommand => {
+		// TODO: Set transitions method on modelService? 
+		let oldTransitions: Array<Transition>
+		let newTransitions: Array<Transition>
+		let oldTapes: number
+		return {
+			comment: "change tapes",
+			execute() {
+				oldTapes = modelService.getTapes()
+				oldTransitions = modelService.getTransitions()
+				newTransitions = oldTransitions.map(t => {
+					modelService.removeTransition(t)
+					let newTransition = _.clone(t)
+					newTransition.direction = _.times(tapes, i => t.direction[i] || Direction.Right).slice(0, tapes + 1)
+					newTransition.read 		= _.times(tapes, i => t.read[i] 	 || modelService.getProperties().blank).slice(0, tapes + 1)
+					newTransition.write		= _.times(tapes, i => t.write[i]	 || modelService.getProperties().blank).slice(0, tapes + 1)
+					console.log(newTransition)
+					modelService.addTransition(newTransition)
+					return newTransition
+				})
+				modelService.setTapes(tapes)
+			},
+			undo() {
+				newTransitions.forEach(t => modelService.removeTransition(t))
+				oldTransitions.forEach(t => modelService.addTransition(t))
+				modelService.setTapes(oldTapes)
+			}
+		}
+	}
+
+	export const changeTransition = (transition: Transition, tape: number, partial: Partial<SimpleTransition>) => (modelService: IModelHandlerService): ICommand => {
+		let oldTransition: SimpleTransition
+		return {
+			comment: "change transition",
+			execute() {
+				oldTransition = modelService.getTransitionTape(transition, tape)
+				modelService.changeTransition(transition, tape, { ...oldTransition, ...partial })
+			},
+			undo() {
+				modelService.changeTransition(transition, tape, oldTransition)
+			}
 		}
 	}
 

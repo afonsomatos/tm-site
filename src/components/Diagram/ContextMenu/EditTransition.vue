@@ -16,9 +16,9 @@
             <icon-btn icon="delete" class="icon red" @click="remove" :clickable="true" title="Delete transition" />
         </div>
         <div class="read-write">
-            <input v-model="transition.read[tapeIndex]" @input="update" maxlength="1" @focus="$event.target.select()"/>
+            <input :value="transition.read[tapeIndex]" @input="changeRead" maxlength="1" @focus="$event.target.select()"/>
             <div>→</div>
-            <input v-model="transition.write[tapeIndex]" @input="update" maxlength="1" @focus="$event.target.select()"/>
+            <input :value="transition.write[tapeIndex]" @input="changeWrite" maxlength="1" @focus="$event.target.select()"/>
         </div>
         <div class="direction">
             <div v-for="dir of directions"
@@ -73,7 +73,12 @@ export default Vue.extend({
     methods: {
 
 
-
+        changeRead(e) {
+            app.diagramService.changeTransition(this.tapeIndex, { read: e.target.value })
+        },
+        changeWrite(e) {
+            app.diagramService.changeTransition(this.tapeIndex, { write: e.target.value })
+        },
         goBack() {
             app.diagramService.setContextMenu("link")
         },
@@ -88,8 +93,7 @@ export default Vue.extend({
         },
 
         setDirection(dir: Direction) {
-            Vue.set(this.transition.direction, this.tapeIndex, dir)
-            app.diagramService.update()
+            app.diagramService.changeTransition(this.tapeIndex, { direction: dir })
         }
     }
 })

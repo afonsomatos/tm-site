@@ -1,6 +1,6 @@
 import Graph from "@/components/Diagram/Graph"
 import { IDiagramStore } from "./store"
-import { Vector } from "../types"
+import { Vector, SimpleTransition } from "../types"
 import { Link, State, Type, Transition } from "../model"
 import { Command as ModelCommand } from "./modelService"
 import { IApplication } from "./IApplication"
@@ -26,6 +26,12 @@ export class DiagramService implements IDiagramService {
 		private app: IApplication
 	) {
 
+	}
+
+	changeTransition(tape: number, partial: Partial<SimpleTransition>) {
+		this.modelService.execute(
+			ModelCommand.changeTransition(this.transition, tape, partial)
+		)	
 	}
 
 	deleteTransition() {

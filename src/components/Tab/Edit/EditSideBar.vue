@@ -52,6 +52,8 @@ import Input from "@/components/Input.vue"
 import { Mode } from "@/store/modules/table"
 import global, { View } from "@/store/global"
 import { store } from "@/shared/app/store"
+import { app } from "../../../shared/app"
+import { Command } from "@/shared/app/modelService"
 
 export default Vue.extend({
     components: { Transition, State, Char, Section, Field, Input, Category },
@@ -67,16 +69,18 @@ export default Vue.extend({
     },
     methods: {
         changeTapes(e) {
-            let tapes: number = e.target.value
-            store.model.model.tapes = Number(tapes)
-            store.model.model.normalize()
-            this.$store.state.diagram.graph.update()
+            let tapes = Number(e.target.value)
+            app.modelService.execute(Command.changeTapes(tapes))
         },
         renameBlank(value: string) {
-            store.model.model.blank = value || store.model.model.blank
+            app.modelService.execute(
+                Command.changeModel({ blank: value })
+            )
         },
         renameWildcard(value: string) {
-            store.model.model.wildcard = value || undefined
+            app.modelService.execute(
+                Command.changeModel({ wildcard: value || undefined })
+            )
         }
     },
     computed: {

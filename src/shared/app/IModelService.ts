@@ -1,10 +1,15 @@
 import { Model, Type, Transition, State, Link } from "../model";
 import { ICommand } from "../command";
-import { Vector } from "../types";
+import { Vector, SimpleTransition } from "../types";
 
 export interface IStateProperties {
 	label: string,
 	position: Vector
+}
+
+export interface IModelProperties {
+	wildcard?: string,
+	blank: string,
 }
 
 export interface IModelService {
@@ -12,18 +17,14 @@ export interface IModelService {
 	undo(): void
 	redo(): void
 	setModel(model: Model): void
-	// addTransition(transition: Transition): void
-	// removeTransition(transition: Transition): void
-	// getTransitions(): Transition[]
-	// getStartState(): State
-	// setStartState(state: State): void
-	// setProperties(modelProperties: IModelProperties): void
-	//getProperties(): IModelProperties
 	getStateType(state: State): Type
 	getModel(): Model
 	getStartState(): State
 	getTransitions(): Transition[]
 	getDefaultTransition(link: Link): Transition
+	getProperties(): IModelProperties
+	getTapes(): number
+	getTransitionTape(transition: Transition, tape: number): SimpleTransition
 }
 
 export interface IModelHandlerService extends IModelService {
@@ -35,4 +36,7 @@ export interface IModelHandlerService extends IModelService {
 	addTransition(transition: Transition): void
 	setStateProperties(state: State, properties: IStateProperties): void
 	getStateProperties(state: State): IStateProperties
+	setProperties(partial: Partial<IModelProperties>): void
+	setTapes(tapes: number): void
+	changeTransition(transition: Transition, tape: number, edit: SimpleTransition): void
 }

@@ -9,4 +9,10 @@ export interface Vector {
     y: number
 }
 
+export interface SimpleTransition {
+    read: string,
+    write: string,
+    direction: Direction
+}
+
 export type Point = [number, number]

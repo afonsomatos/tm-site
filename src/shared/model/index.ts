@@ -176,24 +176,24 @@ export class Model {
 	 */
 	public normalize() {
 
-		this._transitions.forEach(t => {
+		// this._transitions.forEach(t => {
 
-			_.times(this.tapes - t.direction.length, () => {
-				t.direction.push(Direction.Right)
-			})
+		// 	_.times(this.tapes - t.direction.length, () => {
+		// 		t.direction.push(Direction.Right)
+		// 	})
 
-			_.times(this.tapes - t.read.length, () => {
-				t.read.push(this.blank)
-			})
+		// 	_.times(this.tapes - t.read.length, () => {
+		// 		t.read.push(this.blank)
+		// 	})
 
-			_.times(this.tapes - t.write.length, () => {
-				t.write.push(this.blank)
-			})
+		// 	_.times(this.tapes - t.write.length, () => {
+		// 		t.write.push(this.blank)
+		// 	})
 
-			t.direction.splice(this.tapes)
-			t.read.splice(this.tapes)
-			t.write.splice(this.tapes)
-		})
+		// 	t.direction.splice(this.tapes)
+		// 	t.read.splice(this.tapes)
+		// 	t.write.splice(this.tapes)
+		// })
 
 		// this._transitions = new Set(_.uniqWith(
 		// 	Array(...this._transitions).reverse(),

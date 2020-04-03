@@ -27,7 +27,8 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 import _ from "lodash"
 import IconBtn from "@/components/IconBtn.vue"
-import Tape, { Transition as SimpleTransition } from "@/shared/Tape"
+import Tape from "@/shared/Tape"
+import { SimpleTransition } from "@/shared/types"
 import * as d3 from "d3"
 
 import global from "@/store/global"
