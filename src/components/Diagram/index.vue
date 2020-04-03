@@ -112,7 +112,7 @@ export default Vue.extend({
 
 		app.diagramService.setGraph(graph)
 		
-		graph.setModel(store.model.model)
+		graph.setModel(store.model.model as any)
 		
 		// Set diagram referential transform when SVG size has stabilized
 		this.$nextTick(() => graph.resetZoom())

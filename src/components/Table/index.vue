@@ -91,7 +91,7 @@ export default Vue.extend({
 		app.tableService.setTable(table)
 
 		this.table = table
-		table.model = store.model.model
+		table.model = store.model.model as any
 		this.$store.state.table.table = table
 	},
 	components: { IconBtn }

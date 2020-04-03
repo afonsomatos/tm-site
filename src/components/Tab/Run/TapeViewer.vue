@@ -78,7 +78,7 @@ export default Vue.extend({
         setupTapes() {
 
             // Refresh model and default tape
-            simulator.setModel(store.model.model)
+            simulator.setModel(store.model.model as any)
             simulator.load(Array(store.model.model.tapes).fill(""))
             simulator.reset()
             

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <component :is="editor[currentEditor]" v-if="isGridView" />
         <Category name="machine" />
         <Section>
             <Field name="Tapes">
@@ -40,9 +39,6 @@
 <script lang="ts">
 
 import Vue from "vue"
-import Transition from "./Transition.vue"
-import Char from "./Char.vue"
-import State from "./State.vue"
 
 import Section from "@/components/SideBar/Section.vue"
 import Category from "@/components/SideBar/Category.vue"
@@ -56,17 +52,7 @@ import { app } from "../../../shared/app"
 import { Command } from "@/shared/app/modelService"
 
 export default Vue.extend({
-    components: { Transition, State, Char, Section, Field, Input, Category },
-    data() {
-        return {
-            global,
-            editor: {
-                [Mode.Transition]: Transition,
-                [Mode.Char]: Char,
-                [Mode.State]: State
-            }
-        }
-    },
+    components: { Section, Field, Input, Category },
     methods: {
         changeTapes(e) {
             let tapes = Number(e.target.value)
@@ -90,12 +76,6 @@ export default Vue.extend({
         tapes() {
             return store.model.model.tapes
         },
-        isGridView() {
-            return store.view === View.Grid
-        },
-        currentEditor() {
-            return store.table.mode
-        }
     },
 })
 

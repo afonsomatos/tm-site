@@ -156,7 +156,8 @@ export default Vue.extend({
 					Command.removeModel(this.selectedModel)
 				)
 
-			    this.selectedModel = store.model.model = _.last(this.models)
+				app.modelService.setModel(_.last(this.models))
+			    this.selectedModel =_.last(this.models)
 			}
 		},
 		changeName(name: string) {
