@@ -5,8 +5,10 @@ import { Status } from "@/shared/app/types"
 import Notebook from "../notebook"
 import { Model, Transition, Type, Link, State } from "../model"
 import { Point, Vector } from "../types"
+import Table from "../Table"
 
 export interface IStore {
+	table: ITableStore,
 	notebook: INotebookStore,
 	run: IRunStore,
 	model: IModelStore,
@@ -20,6 +22,25 @@ export interface Info {
 	time: number,
 	space: number,
 	state: string
+}
+
+export enum Mode {
+	Transition = "transition",
+	Char = "char",
+	State = "state"
+}
+
+export interface ITableStore {
+	// Current transition being edited.
+	transition: Transition,
+	// Current character being edited.
+	char: string,
+	// Current state being edited.
+	state: State,
+	// Current mode of editing. Null means nothing is being edited.
+	mode: Mode | null,
+	// Last obtained state type.
+	type: Type | null,
 }
 
 export interface IDiagramStore {
@@ -54,6 +75,13 @@ export interface IRunStore {
 const NO_STATE = "~"
 
 export const mut: IStore = Vue.observable({
+	table: {
+		transition: null,
+		char: null,
+		type: null,
+		mode: null,
+		state: null
+	},
 	diagram: {
 		contextMenuPosition: {x:0,y:0},
 		transition: null,

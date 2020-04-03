@@ -32,6 +32,8 @@ import Input    from "@/components/Input.vue"
 
 import { Action, Getter } from "@/store/modules/table"
 import { mapActions, mapGetters } from 'vuex'
+import { store } from '../../../shared/app/store'
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
     data() {
@@ -45,26 +47,30 @@ export default Vue.extend({
         }
     },
     computed: {
-        ...mapGetters("table", {
-            available: Getter.AVAILABLE_CHAR
-        }),
+        // ...mapGetters("table", {
+        //     available: Getter.AVAILABLE_CHAR
+        // }),
         char() {
-            return this.$store.state.table.char
+            return store.table.char
+            // return this.$store.state.table.char
         }
     },
     methods: {
-        ...mapActions("table", {
-            renameChar: Action.RENAME_CHARACTER,
-            remove: Action.DELETE_CHARACTER,
-        }),
+        remove() {
+            app.tableService.deleteChar()
+        },
+        // ...mapActions("table", {
+        //     renameChar: Action.RENAME_CHARACTER,
+        //     remove: Action.DELETE_CHARACTER,
+        // }),
         rename(newChar: string) {
             if (this.char === newChar) {
                 return
             }
 
-            this.invalid = !this.available(newChar)
+            this.invalid = !app.tableService.availableChar(newChar)
             if (!this.invalid)  {
-                this.renameChar(newChar)
+                app.tableService.renameChar(newChar)
             }
         }
     },

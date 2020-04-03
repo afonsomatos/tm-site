@@ -3,7 +3,7 @@
         <!-- Toggle transition undefined -->
         <Section>
             <Field name="Undefined">
-                <Toggle v-model="transition.undefined" @change="setUndefined($event)" />
+                <Toggle :value="transition.undefined" @change="setUndefined($event)" />
             </Field>
         </Section>
         <Section v-if="!transition.undefined">
@@ -15,7 +15,7 @@
                         :key="i"
                         :selected="state === transition.to">
                         {{ state.label }}
-                    </option> 
+                    </option> v-model
                 </select>
             </Field>
             <!-- What to write on the tape -->
@@ -57,6 +57,7 @@ import { Direction } from "@/shared/types"
 
 import global from "@/store/global"
 import { store } from '@/shared/app/store'
+import { app } from '../../../shared/app'
 
 export default Vue.extend({
     data() {
@@ -70,14 +71,13 @@ export default Vue.extend({
             return store.model.model.states
         },
         transition(): Transition {
-            return this.$store.state.table.transition
+            return store.table.transition
         }
     },
     methods: {
         changeState(e) {
             let index = e.target.selectedIndex
-            this.transition.to = this.states[index]
-            this.update()
+            app.tableService.setStateTo(this.states[index])
         },
         update() {
             this.$store.state.table.table.update()

@@ -38,18 +38,16 @@ import { Transition, State } from "@/shared/model"
 
 import global from "@/store/global"
 import { store } from '@/shared/app/store'
+import { app } from '../../shared/app'
 
 export default Vue.extend({
     methods: {
-		...mapMutations("table", {
-			setState: Mutation.SET_STATE,
-			setChar: Mutation.SET_CHAR,
-			setTransition: Mutation.SET_TRANSITION
-		}),
-		...mapActions("table", {
-			addRow: Action.ADD_STATE,
-			addColumn: Action.ADD_CHARACTER,
-		})
+		addRow() {
+			app.tableService.addState()
+		},
+		addColumn() {
+			app.tableService.addChar()
+		}
 	},
 	computed: {
 		canEdit: () => store.canEdit,
@@ -77,18 +75,20 @@ export default Vue.extend({
 
 		table.onTransitionClick = (transition: Transition) => {
 			if (this.canEdit)
-				this.setTransition(transition)
+				app.tableService.setTransition(transition)
 		}
 
 		table.onStateClick = (state: State) => {
 			if (this.canEdit)
-				this.setState(state)
+				app.tableService.setState(state)
 		}
 
-		table.onCharClick = (char: String) => {
+		table.onCharClick = (char: string) => {
 			if (this.canEdit)
-				this.setChar(char)
+				app.tableService.setChar(char)
 		}
+
+		app.tableService.setTable(table)
 
 		this.table = table
 		table.model = store.model.model

@@ -25,6 +25,7 @@ export interface IModelService {
 	getProperties(): IModelProperties
 	getTapes(): number
 	getTransitionTape(transition: Transition, tape: number): SimpleTransition
+	changeTransitionLink(transition: Transition, link: Link): void
 }
 
 export interface IModelHandlerService extends IModelService {

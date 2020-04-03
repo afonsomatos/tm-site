@@ -3,7 +3,7 @@
         <Section>
             <!-- Renaming -->
             <Field name="Name">
-                <Input v-model="state.label" class="nameInput"  @input="onRename" />
+                <Input :value="state.label" class="nameInput" @input="onRename($event)" />
             </Field>
         </Section>
         <Section>
@@ -44,6 +44,8 @@ import Field from "@/components/SideBar/Field.vue"
 import { Action, Mutation, Getter } from "@/store/modules/table"
 import { Type } from "@/shared/model"
 import { store } from "../../../shared/app/store"
+import { app } from "../../../shared/app"
+import { Command } from "../../../shared/app/modelService"
 
 export default Vue.extend({
     data() {
@@ -65,24 +67,27 @@ export default Vue.extend({
         this.label = this.state.label
     },
     computed: {
-        ...mapGetters("table", {
-            stateType: Getter.STATE_TYPE
-        }),
+        stateType() {
+            return store.table.type
+        },
+        // ...mapGetters("table", {
+        //     stateType: Getter.STATE_TYPE
+        // }),
 
         state() {
-            return this.$store.state.table.state
+            return store.table.state
         }
     },
     methods: {
 
-        ...mapMutations("table", {
-            setMode: Mutation.SET_MODE
-        }),
+        // ...mapMutations("table", {
+        //     setMode: Mutation.SET_MODE
+        // }),
 
-        ...mapActions("table", {
-            delete: Action.DELETE_STATE,
-            setStateType: Action.SET_STATE_TYPE
-        }),
+        // ...mapActions("table", {
+        //     delete: Action.DELETE_STATE,
+        //     setStateType: Action.SET_STATE_TYPE
+        // }),
 
         setType(type: Type) {
             if (this.stateType === type) {
@@ -93,12 +98,12 @@ export default Vue.extend({
         },
         
         handleDelete() {
-            this.delete()
-            this.setMode(null)
+            app.tableService.deleteState()
+            // this.setMode(null)
         },
 
-        onRename() {
-            this.$store.state.table.table.update()
+        onRename(name) {
+            app.tableService.renameState(name)
         }
     },
     components: { Section, Input, Button, Field, IconBtn }

@@ -133,6 +133,12 @@ export class ModelService implements IModelHandlerService {
 		return newTransition	
 	}
 
+	changeTransitionLink(transition: Transition, newLink: Link) {
+		transition.to = newLink.to
+		transition.from = newLink.from
+		this.diagramService.update()
+	}
+
 	changeTransition(transition: Transition, tape: number, edit: SimpleTransition) {
 		transition.direction[tape]  = edit.direction
 		transition.read[tape]		= edit.read
