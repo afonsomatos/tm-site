@@ -21,7 +21,6 @@ import Section from "@/components/SideBar/Section.vue"
 import Button from "@/components/Button.vue"
 import Input from "@/components/Input.vue"
 
-import global from "@/store/global"
 import { text } from 'd3'
 
 import assert from "assert"
@@ -32,8 +31,7 @@ import { store } from '@/shared/app/store'
 export default Vue.extend({
     data() {
         return {
-            input: [],
-            global
+            input: []
         }
     },
     watch: {

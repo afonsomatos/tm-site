@@ -2,8 +2,7 @@
     <div class="middle">
         <div class="main">
             <keep-alive> <!-- Keep alive will save the component's state -->
-                <Table v-if="isGrid" />
-                <Diagram v-else />
+                <Diagram />
             </keep-alive>
             <div class="top-bar">
                 <select @change="changeModel">
@@ -36,10 +35,8 @@
 
 import Vue      from "vue"
 import Icon     from "@/components/Icon.vue"
-import Table    from "@/components/Table/index.vue"
 import Diagram  from "@/components/Diagram/index.vue"
 
-import global, { View } from "@/store/global"
 import { store } from "@/shared/app/store"
 
 import * as d3 from "d3"
@@ -53,12 +50,6 @@ export default Vue.extend({
         changeModel(e) {
             let index = e.target.selectedIndex
             app.modelService.setModel(this.models[index])
-        },
-        showDiagram() {
-            app.setView(View.Diagram)
-        },
-        showGrid() {
-            app.setView(View.Grid)
         },
         enter(el, done) {
             d3.select(el)
@@ -80,12 +71,6 @@ export default Vue.extend({
         bottom() {
             return store.tab.bottomFloat
         },
-        isDiagram() {
-            return store.view === View.Diagram
-        },
-        isGrid() {
-            return store.view === View.Grid
-        },
         models() {
             return store.notebook.notebook.models
         },
@@ -102,15 +87,7 @@ export default Vue.extend({
             global,
         }
     },
-    watch: {
-        tapes(tapes: number) {
-            // Temporarily switch to diagram view for multiple-tapes 
-            if (tapes > 1 && store.view === View.Grid) {
-                app.setView(View.Diagram)
-            }
-        }
-    },
-    components: { Icon, Table, Diagram }
+    components: { Icon, Diagram }
 })
 
 </script>

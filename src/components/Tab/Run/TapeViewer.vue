@@ -31,8 +31,6 @@ import Tape from "@/shared/Tape"
 import { SimpleTransition } from "@/shared/types"
 import * as d3 from "d3"
 
-import global from "@/store/global"
-
 import simulator, { Event } from '@/shared/simulator'
 
 import { Transition } from "@/tm"
@@ -45,7 +43,6 @@ export default Vue.extend({
     components: { IconBtn },
     data() {
         return {
-            global,
             tape: null,
             transition: null,
             resetTape: null,

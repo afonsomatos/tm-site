@@ -153,7 +153,6 @@ export class ModelService implements IModelHandlerService {
 
 	update() {
 		this.app.diagramService.update()
-		this.app.tableService.update()
 	}
 }
 

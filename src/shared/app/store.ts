@@ -1,11 +1,9 @@
 import Vue from "vue"
-import { View } from "../../store/global"
 import Tab from "@/components/Tab"
 import { Status } from "@/shared/app/types"
 import Notebook from "../notebook"
 import { Model, Transition, Type, Link, State } from "../model"
 import { Point, Vector } from "../types"
-import Table from "../Table"
 import { DeepReadonly } from "ts-essentials"
 
 export interface IStore {
@@ -14,7 +12,6 @@ export interface IStore {
 	run: IRunStore,
 	model: IModelStore,
 	diagram: IDiagramStore,
-	view: View,
 	tab: Tab,
 	readonly canEdit: boolean
 }
@@ -104,7 +101,6 @@ export const mut: IStore = Vue.observable({
 			state: NO_STATE
 		}
 	},
-	view: View.Diagram,
 	tab: null,
 	get canEdit() {
 		return this.tab.canEdit

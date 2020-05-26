@@ -30,17 +30,11 @@ import Graph from "./Graph/index"
 import { State, Link } from "@/shared/model"
 import { Point, Vector } from "@/shared/types"
 
-import global from "@/store/global"
 import { store } from "@/shared/app/store"
 import { app } from "../../shared/app"
 import { Command } from "@/shared/app/modelService"
 
 export default Vue.extend({
-	data() {
-		return {
-			global,
-		}
-	},
 	computed: {
 		canEdit: () => store.canEdit,
 		model: () => store.model.model,

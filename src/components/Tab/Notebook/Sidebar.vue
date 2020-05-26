@@ -63,7 +63,6 @@ import Field from "@/components/SideBar/Field.vue"
 import Input from "@/components/Input.vue"
 import IconBtn from "@/components/IconBtn.vue"
 
-import global from "@/store/global"
 import exampleModel from "@/shared/model/example"
 import exampleNotebook from "@/shared/notebook/example"
 import Notebook from "@/shared/notebook"
@@ -77,7 +76,6 @@ export default Vue.extend({
 	data() {
 		return {
 			selectedModel: store.model.model,
-			global,
 		}
 	},
 	methods: {
@@ -86,9 +84,6 @@ export default Vue.extend({
 				app.notebookService.execute(Command.reset)
 			}
 		},
-
-
-		
 		loadEm(e) {
 			for (let file of e.target.files) {
 				let fileReader = new FileReader()

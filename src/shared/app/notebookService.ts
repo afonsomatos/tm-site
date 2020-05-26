@@ -1,6 +1,5 @@
 import { INotebookStore } from "./store"
 import Notebook from "../notebook"
-import global from "@/store/global"
 import exampleNotebook from "@/shared/notebook/example"
 import { Model } from "../model"
 import _ from "lodash"

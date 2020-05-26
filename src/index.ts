@@ -1,5 +1,4 @@
 import Vue from "vue"
-import store from "@/store"
 import App from "./App.vue"
 
 /**
@@ -30,7 +29,6 @@ Vue.directive("selectOnFocus", {
 })
 
 new Vue({
-    store,
     el: '#main',
     template: `<App/>`,
     components: { App },

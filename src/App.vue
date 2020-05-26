@@ -54,8 +54,6 @@ import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 
 import simulator, { Event } from "@/shared/simulator"
 
-import global, { View } from "@/store/global"
-
 import { store } from "@/shared/app/store"
 import { app } from "./shared/app"
 import Run from "./components/Tab/Run"
@@ -82,8 +80,7 @@ export default Vue.extend({
 	},
 	computed: {
 		showContextMenu() {
-			return store.diagram.menu !== null &&
-					store.view === View.Diagram && store.canEdit
+			return store.diagram.menu !== null && store.canEdit
 		},
 		sidebar() {
 			return store.tab.sideBar

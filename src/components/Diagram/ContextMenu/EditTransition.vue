@@ -39,7 +39,6 @@ import IconBtn from "@/components/IconBtn.vue"
 
 import { Direction } from "@/shared/types"
 
-import global from "@/store/global"
 import { store } from "@/shared/app/store"
 import { app } from "../../../shared/app"
 import { Command } from "@/shared/app/modelService"
@@ -47,7 +46,6 @@ import { Command } from "@/shared/app/modelService"
 export default Vue.extend({
     data() {
         return {
-            global,
             tapeIndex: 0,
             directions: [Direction.Left, Direction.Stay, Direction.Right]
         }

@@ -45,8 +45,6 @@ import Category from "@/components/SideBar/Category.vue"
 import Field from "@/components/SideBar/Field.vue"
 import Input from "@/components/Input.vue"
 
-import { Mode } from "@/store/modules/table"
-import global, { View } from "@/store/global"
 import { store } from "@/shared/app/store"
 import { app } from "../../../shared/app"
 import { Command } from "@/shared/app/modelService"
