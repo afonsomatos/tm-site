@@ -14,10 +14,6 @@
                         {{ displayName(model) }}
                     </option> 
                 </select>
-                <div class="view-mode" v-if="tapes === 1">
-                    <Icon class="icon" icon="diagram"   @click.native="showDiagram()"   :class="{ active: isDiagram }"/>
-                    <Icon class="icon" icon="grid"      @click.native="showGrid()"      :class="{ active: isGrid }" />
-                </div>
             </div>
         </div>
         <div class="float">
