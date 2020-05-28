@@ -2,10 +2,9 @@
 import _ from "lodash"
 import { IModelStore } from "./store"
 import { Model, Transition, State, Type, Link } from "../model"
-import { ICommand, IInvoker, Invoker, complexCommand } from "../command"
-import { Vector, Direction, SimpleTransition } from "../types"
+import { ICommand, IInvoker, Invoker } from "../command"
+import { Direction, SimpleTransition } from "../types"
 import { IModelHandlerService, IStateProperties, IModelProperties } from "./IModelService"
-import { IDiagramService } from "./IDiagramService"
 import { IApplication } from "./IApplication"
 
 export class ModelService implements IModelHandlerService {
@@ -139,7 +138,6 @@ export class ModelService implements IModelHandlerService {
 		transition.direction[tape]  = edit.direction
 		transition.read[tape]		= edit.read
 		transition.write[tape]		= edit.write
-		console.log("stuff happened", transition, tape, edit)
 		this.update()
 	}
 

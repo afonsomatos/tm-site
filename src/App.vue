@@ -52,6 +52,7 @@ import SideBar      from "@/components/SideBar/SideBar.vue"
 import Middle       from "@/components/Middle/Middle.vue"
 import ContextMenu 	from "@/components/Diagram/ContextMenu/index.vue"
 
+import Notebook		from "@/components/Tab/Notebook"
 import simulator, { Event } from "@/shared/simulator"
 
 import { store } from "@/shared/app/store"
@@ -102,11 +103,17 @@ export default Vue.extend({
 			if (e.ctrlKey && (e.which == 89 || e.shiftKey && e.which == 90)) {
 				e.preventDefault()
 				console.log("[redo key]")
-				app.modelService.redo()
+				if (store.tab == Notebook)
+					app.notebookService.redo()
+				else
+					app.modelService.redo()
 			} else if (e.ctrlKey && e.which == 90) {
 				e.preventDefault()
 				console.log("[undo key]")
-				app.modelService.undo()
+				if (store.tab == Notebook)
+					app.notebookService.undo()
+				else
+					app.modelService.undo()
 			}
 		})
 	},

@@ -16,6 +16,8 @@ export interface INotebookService {
 	setNotebookName(name: string)
 	getNotebook(): Notebook
 	getNotebookName(): string
+	redo(): void
+	undo(): void
 }
 
 const localStorageRootName = "notebook"
@@ -38,10 +40,12 @@ export class NotebookService implements INotebookService {
 	}
 
 	redo() {
+		console.log("redo!")
 		this.invoker.redo()
 	}
 
 	undo() {
+		console.log("undo!")
 		this.invoker.undo()
 	}
 
